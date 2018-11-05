@@ -32,6 +32,12 @@
         <property name="basename" value="messages"/>
     </bean>
 
-    <!-- email config -->
-    <import resource="classpath:applicationContext-mail.xml"/>
+    <!-- velocity模板配置 -->
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="resourceLoaderPath" value="classpath:templates/vms/"/>
+    </bean>
+
+    <bean id="mailUtil" class="com.wafersystems.notice.util.EmailUtil">
+        <property name="velocityEngine" ref="velocityEngine"/>
+    </bean>
 </beans>

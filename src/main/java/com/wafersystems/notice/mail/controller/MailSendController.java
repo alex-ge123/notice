@@ -126,6 +126,7 @@ public class MailSendController extends BaseController {
      */
   @RequestMapping("/testSend")
   public Object testMailSend(@RequestParam String title) {
+      log.info("发送测试邮件【{}】", title);
     List<String> params = new ArrayList<>();
     params.add(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");// 开始时间
     params.add(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");// 结束时间
