@@ -58,11 +58,11 @@ public class AuthFilter extends BaseController implements Filter {
       if (!StrUtil.isEmptyStr(userId)) {
         filterChain.doFilter(servletRequest, servletResponse);
       } else {
-        ((HttpServletResponse) servletResponse).getWriter()
+        servletResponse.getWriter()
             .write(JSON.toJSONString(getForceLogoutMsg()));
       }
     } else {
-      ((HttpServletResponse) servletResponse).getWriter()
+      servletResponse.getWriter()
           .write(JSON.toJSONString(getForceLogoutMsg()));
     }
   }
