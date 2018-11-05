@@ -11,7 +11,6 @@ import java.io.Serializable;
 @SuppressWarnings("PMD.UnusedPrivateField")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "ntc_weather")
 public class Weather implements Serializable {

@@ -2,6 +2,7 @@ package com.wafersystems.notice.message.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.base.controller.BaseController;
+import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.message.model.MessageDto;
 import com.wafersystems.notice.message.model.MessageToUserDto;
@@ -43,6 +44,21 @@ public class MessagesController extends BaseController {
   private TaskExecutor taskExecutor;
   @Autowired
   private ApplicationContext resource;
+
+  @Autowired
+  private BaseDao baseDao;
+
+  @RequestMapping("/testSave")
+  @ResponseBody
+  public Object testSave(@RequestParam String lang){
+    Locale locale = ParamConstant.getLocaleByStr(lang);
+    MessageDto messageDto = new MessageDto();
+    messageDto.setUrls("http***"+System.currentTimeMillis());
+    baseDao.save(messageDto);
+//    int a=2/0;
+    return returnBackMap(resource.getMessage("msg.email.subjectNull", null, locale),
+            ConfConstant.RESULT_FAIL);
+  }
 
   /**
    * 消息发送.

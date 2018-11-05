@@ -16,3 +16,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL5Dialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
+logging:
+  level:
+    root: debug

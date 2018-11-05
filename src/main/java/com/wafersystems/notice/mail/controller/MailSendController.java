@@ -3,20 +3,23 @@ package com.wafersystems.notice.mail.controller;
 import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
-import com.wafersystems.notice.util.ConfConstant;
-import com.wafersystems.notice.util.ParamConstant;
-import com.wafersystems.notice.util.StrUtil;
+import com.wafersystems.notice.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.apache.commons.httpclient.NameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -37,7 +40,7 @@ public class MailSendController extends BaseController {
 
   /**
    * 邮件发送.
-   * 
+   *
    * @param subject 邮件主题
    * @param toMail 接收人
    * @param copyTo 抄送人
@@ -115,5 +118,48 @@ public class MailSendController extends BaseController {
         throw new RuntimeException();
       }
     }
+  }
+
+    /**
+     * 测试发送邮件
+     * @param title 标题
+     * @return
+     */
+  @RequestMapping("/testSend")
+  public Object testMailSend(@RequestParam String title) {
+    List<String> params = new ArrayList<String>();
+    params.add(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");// 开始时间
+    params.add(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");// 结束时间
+    params.add("-1");// 状态(-1.纯文本信息,0.邮件事件[带邀请按钮],1.邮件事件[无按钮])
+    params.add("测试"+DateUtil.getDateTimeStr(new Date(), ""));// 邮件title称呼
+    params.add("7");// 邮件类型(1-邀请|2-被创建|3-主持人邀请|4-删除参会人|5-创建人取消会议邮件|6-参会人取消邮件|7-提醒|8-修改|9-同意邀请|10-拒绝邀请)
+    params.add("chenlei");// 创建人或被邀请者
+    params.add("华山");// 会议室名称
+    params.add("开发会议");// 会议主题
+    params.add("李四");// 主持人
+    params.add("张三;王五");// 参会人姓名
+    params.add("无");// 会议备注
+    params.add("每天6:00——7:00");// 会议周期
+    params.add("");// (value5=9和value5=10时 回执邮件中 **接受或**拒绝了会议邀请中的 **）
+    params.add("https://bkdev.virsical.cn:8499/smartmeeting/smart/third/jumpToWebEx?meetingId=32&type=1");// WebEx会议URL
+    params.add("https://bkdev.virsical.cn:8499/smartmeeting/smart/third/jumpToReceipt?meetingId=32&userId=zhangyi&type=0");// 回执URL
+
+      NameValuePair[] nameValuePair = new NameValuePair[6 + params.size()];
+      nameValuePair[0] = new NameValuePair("tempName", "meeting");
+      nameValuePair[1] = new NameValuePair("subject", StringUtil.replaceStr(title));
+      nameValuePair[2] = new NameValuePair("toMail", "tandongkui@wafersystems.com");
+      nameValuePair[3] = new NameValuePair("copyTo", "286414791@qq.com");
+      nameValuePair[4] = new NameValuePair("logo", "2");
+      nameValuePair[5] = new NameValuePair("lang", "zh_CN");
+      int count = 6;
+      for (String temp : params) {
+          nameValuePair[count] =
+                  new NameValuePair("value" + (count - 5), StringUtil.replaceStr(temp));
+          count++;
+      }
+      String url = "http://localhost:20110/mail/sendMail";
+      String result = HttpClientUtil.getPostResponseWithHttpClient(url, "utf-8", nameValuePair);//, null);
+
+    return result;
   }
 }
