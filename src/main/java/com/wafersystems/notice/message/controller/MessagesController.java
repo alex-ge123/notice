@@ -14,7 +14,7 @@ import com.wafersystems.notice.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -22,6 +22,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.TextMessage;
 
+import javax.transaction.Transactional;
 import java.util.Locale;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ import java.util.Map;
  * Created with Intellij IDEA. Description: 消息处理类 Author: waferzy DateTime:
  * 2016/7/18 14:37 Company: wafersystems
  */
-@Log4j
+@Slf4j
 @RestController
 @RequestMapping("/msg")
 public class MessagesController extends BaseController {
@@ -50,12 +51,18 @@ public class MessagesController extends BaseController {
 
   @RequestMapping("/testSave")
   @ResponseBody
-  public Object testSave(@RequestParam String lang){
+  @Transactional
+  public Object saveTest(@RequestParam String lang){
+    // 测试日志
+    log.info("开始保存{}", System.currentTimeMillis());
     Locale locale = ParamConstant.getLocaleByStr(lang);
     MessageDto messageDto = new MessageDto();
     messageDto.setUrls("http***"+System.currentTimeMillis());
+    // 测试db操作
     baseDao.save(messageDto);
+    // 测试事务
 //    int a=2/0;
+    // 测试国际化
     return returnBackMap(resource.getMessage("msg.email.subjectNull", null, locale),
             ConfConstant.RESULT_FAIL);
   }

@@ -4,7 +4,7 @@ import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.base.service.GlobalParamService;
 import com.wafersystems.notice.util.ParamConstant;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
@@ -19,7 +19,7 @@ import java.util.Map;
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/14 11:27 Company:
  * wafersystems
  */
-@Log4j
+@Slf4j
 @Service
 public class GlobalParamServiceImpl implements GlobalParamService {
 

@@ -1,6 +1,8 @@
 server:
   port: 20110
 spring:
+  application:
+    name: virsical-notice
   datasource:
     url: jdbc:mysql://localhost:3306/ntc?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useSSL=false
     username: root
@@ -16,6 +18,8 @@ spring:
         dialect: org.hibernate.dialect.MySQL5Dialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
+# 日志文件
 logging:
+  file: ${user.dir}/logs/${spring.application.name}-${server.port}.log
   level:
     root: info

@@ -6,7 +6,7 @@ import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.ParamConstant;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * 
  * @author Administrator
  */
-@Log4j
+@Slf4j
 @Service
 public class MailNoticeServiceImpl implements MailNoticeService {
 

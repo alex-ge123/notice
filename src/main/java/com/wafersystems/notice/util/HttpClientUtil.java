@@ -1,12 +1,12 @@
 package com.wafersystems.notice.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ import java.util.List;
  * 
  * @author Moon
  */
+@Slf4j
 public class HttpClientUtil {
 
-  private static final Logger LOGGER = Logger.getLogger(HttpClientUtil.class);
 
   private static final MultiThreadedHttpConnectionManager MANAGER =
       new MultiThreadedHttpConnectionManager();
@@ -281,7 +281,7 @@ public class HttpClientUtil {
       result = HttpClientUtil.converterStringCode(resultBuffer.toString(),
           post.getResponseCharSet(), encode);
     } catch (Exception exception) {
-      LOGGER.error("getPostResponseWithHttpClient Error", exception);
+      log.error("getPostResponseWithHttpClient Error", exception);
 
       result = "";
     } finally {

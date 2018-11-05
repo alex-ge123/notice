@@ -1,6 +1,6 @@
 package com.wafersystems.notice.util;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/18 11:45 Company:
  * wafersystems
  */
-@Log4j
+@Slf4j
 public class WebSocketSessionUtil {
 
 

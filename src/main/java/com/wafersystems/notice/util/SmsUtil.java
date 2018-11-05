@@ -1,6 +1,7 @@
 package com.wafersystems.notice.util;
 
 import com.wafersystems.security.SecurityUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -9,7 +10,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -22,9 +22,8 @@ import java.util.Map;
 /**
  * 短信工具类.
  */
+@Slf4j
 public class SmsUtil {
-
-  private static final Logger logger = Logger.getLogger(SmsUtil.class);
 
   /**
    * @param templetId 模板ID
@@ -104,9 +103,9 @@ public class SmsUtil {
         return "0";
       } else {
         // 失败
-        logger.error(response.getStatusLine().getStatusCode());
+        log.error(response.getStatusLine().getStatusCode() + "");
         try {
-          logger.error(EntityUtils.toString(response.getEntity()));
+          log.error(EntityUtils.toString(response.getEntity()));
         } catch (ParseException pe) {
           pe.printStackTrace();// 异常信息
         } catch (IOException io) {

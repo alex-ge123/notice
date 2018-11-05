@@ -1,6 +1,6 @@
 package com.wafersystems.notice.listener;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -11,7 +11,7 @@ import javax.servlet.annotation.WebListener;
  * wafersystems
  */
 @WebListener
-@Log4j
+@Slf4j
 public class ServletServiceListener implements ServletContextListener {
 
   /**

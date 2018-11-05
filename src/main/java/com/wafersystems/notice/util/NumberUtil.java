@@ -1,6 +1,6 @@
 package com.wafersystems.notice.util;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -12,8 +12,8 @@ import java.util.Random;
  * @Description: 数字工具类
  * @author superwing
  */
+@Slf4j
 public class NumberUtil {
-  private static final Logger logger = Logger.getLogger(NumberUtil.class);
   /**
    * 默认除法运算精度
    */
@@ -177,14 +177,14 @@ public class NumberUtil {
     }
   }
 
-  /**
-   * 测试方法.
-   */
-  public static void main(String[] args) {
-    logger.info(NumberUtil.getMoney(123540111.132555, 3));
-    logger.info(NumberUtil.getMoney(1.100000000000000, 3));
-    // logger.info(NumberUtil.isNumber("111102243434324234230077423424"));
-    // logger.info(NumberUtil.isNumber("90999993333i9'"));
-    // logger.info(NumberUtil.mul(0.15, 1000));
-  }
+//  /**
+//   * 测试方法.
+//   */
+//  public static void main(String[] args) {
+//    log.info(NumberUtil.getMoney(123540111.132555, 3));
+//    log.info(NumberUtil.getMoney(1.100000000000000, 3));
+//    // logger.info(NumberUtil.isNumber("111102243434324234230077423424"));
+//    // logger.info(NumberUtil.isNumber("90999993333i9'"));
+//    // logger.info(NumberUtil.mul(0.15, 1000));
+//  }
 }

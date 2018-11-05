@@ -1,13 +1,13 @@
 package com.wafersystems.notice.util;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ClassName: AccesstokenUtil Description: 访问令牌工具类.
  * 
  * @author gelin
  */
-@Log4j
+@Slf4j
 public final class AccesstokenUtil {
 
   /**

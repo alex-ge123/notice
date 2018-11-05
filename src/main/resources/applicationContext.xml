@@ -12,14 +12,6 @@
     <task:executor id="taskExecutor" pool-size="5-100" queue-capacity="500" keep-alive="300"/>
     <task:annotation-driven/>
 
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations">
-            <list>
-                <value>classpath:config.properties</value>
-            </list>
-        </property>
-    </bean>
-
     <!-- websocket消息处理 -->
     <bean id="websocket" class="com.wafersystems.notice.message.controller.WebSocketEndPoint"/>
     <websocket:handlers allowed-origins="*">

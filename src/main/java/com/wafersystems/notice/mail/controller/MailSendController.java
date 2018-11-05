@@ -7,7 +7,7 @@ import com.wafersystems.notice.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.NameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -25,7 +25,7 @@ import java.util.Locale;
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/5/13 9:56 Company:
  * wafersystems
  */
-@Log4j
+@Slf4j
 @RestController
 @RequestMapping("/mail")
 public class MailSendController extends BaseController {

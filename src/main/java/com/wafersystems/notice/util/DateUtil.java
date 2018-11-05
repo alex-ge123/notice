@@ -10,7 +10,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
  * JDK:1.7.80.
  * </pre>
  */
-@Log4j
+@Slf4j
 public class DateUtil {
 
   /**

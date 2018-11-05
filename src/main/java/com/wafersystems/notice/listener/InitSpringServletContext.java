@@ -3,7 +3,7 @@ package com.wafersystems.notice.listener;
 import com.wafersystems.notice.base.service.GlobalParamService;
 import com.wafersystems.notice.message.service.impl.GeTuiServiceImpl;
 import com.wafersystems.notice.util.ParamConstant;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
@@ -13,7 +13,7 @@ import javax.servlet.ServletContext;
 /**
  * ClassName: InitSpringServletContext Description: Spring初始化类.
  */
-@Log4j
+@Slf4j
 @Component
 public class InitSpringServletContext implements ServletContextAware {
 

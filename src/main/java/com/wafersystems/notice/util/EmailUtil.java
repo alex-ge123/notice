@@ -2,7 +2,7 @@ package com.wafersystems.notice.util;
 
 import com.wafersystems.notice.mail.model.MailBean;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -24,7 +24,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 
-@Log4j
+@Slf4j
 @Component
 public class EmailUtil {
 

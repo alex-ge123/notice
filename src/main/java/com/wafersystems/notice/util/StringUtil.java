@@ -1,6 +1,6 @@
 package com.wafersystems.notice.util;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.oro.text.regex.*;
 import sun.misc.BASE64Decoder;
 
@@ -22,8 +22,8 @@ import java.util.*;
  * JDK:1.7.80
  * </pre>
  */
+@Slf4j
 public class StringUtil {
-  private static final Logger logger = Logger.getLogger(StringUtil.class);
   /**
    * 分隔符:并号(&).
    */
@@ -399,7 +399,7 @@ public class StringUtil {
     try {
       return str == null ? null : new String(str.getBytes(ENCODING_UTF8), ENCODING_ISO8859_1);
     } catch (UnsupportedEncodingException ex) {
-      logger.error("UTF8转ISO8859-1错误：" + str, ex);
+      log.error("UTF8转ISO8859-1错误：" + str, ex);
       return null;
     }
   }
@@ -418,7 +418,7 @@ public class StringUtil {
     try {
       return str == null ? null : new String(str.getBytes(ENCODING_UTF8), ENCODING_UTF8);
     } catch (UnsupportedEncodingException ex) {
-      logger.error("--字符串转UTF8错误：" + str, ex);
+      log.error("--字符串转UTF8错误：" + str, ex);
       return null;
     }
   }
@@ -437,7 +437,7 @@ public class StringUtil {
     try {
       return str.getBytes(ENCODING_GBK);
     } catch (UnsupportedEncodingException ex) {
-      logger.error("--字符串转GBK错误：" + str, ex);
+      log.error("--字符串转GBK错误：" + str, ex);
       return null;
     }
   }
@@ -570,7 +570,7 @@ public class StringUtil {
       }
       return new String(new BASE64Decoder().decodeBuffer(content), ENCODING_UTF8);
     } catch (IOException ioe) {
-      logger.error("解密失败：", ioe);
+      log.error("解密失败：", ioe);
       return content;
     }
   }
@@ -815,7 +815,7 @@ public class StringUtil {
       Object obj = oii.readObject();
       return obj;
     } catch (Exception ex) {
-      logger.error(ex.getMessage(), ex);
+      log.error(ex.getMessage(), ex);
     }
     return null;
   }
@@ -888,7 +888,7 @@ public class StringUtil {
 //      return convert.toString();
 //    } catch (Exception e1) {
 //      e1.printStackTrace();
-//      logger.error("转换拼音失败，原字符串为："+src);
+//      log.error("转换拼音失败，原字符串为："+src);
 //    }
 //    return convert.toString();
 //  }

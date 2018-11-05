@@ -1,6 +1,6 @@
 package com.wafersystems.notice.util;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -17,7 +17,7 @@ import java.security.SecureRandom;
  * 
  * @author gelin
  */
-@Log4j
+@Slf4j
 public final class AesUtil {
 
   private static final int OXFF = 0xFF;

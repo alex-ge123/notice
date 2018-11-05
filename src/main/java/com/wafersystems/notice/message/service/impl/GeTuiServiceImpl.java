@@ -15,7 +15,7 @@ import com.wafersystems.notice.util.AesUtil;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.notice.util.StrUtil;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/9/27 15:36 Company:
  * wafersystems
  */
-@Log4j
+@Slf4j
 @Component
 public class GeTuiServiceImpl {
 

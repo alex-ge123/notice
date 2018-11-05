@@ -3,7 +3,7 @@ package com.wafersystems.notice.filter;
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.util.*;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Created with IntelliJ IDEA. User: roc Date: 13-5-10 Time: 下午5:08 Email: liu.pengcheng@live.cn
  */
-@Log4j
+@Slf4j
 public class AuthFilter extends BaseController implements Filter {
 
   /**

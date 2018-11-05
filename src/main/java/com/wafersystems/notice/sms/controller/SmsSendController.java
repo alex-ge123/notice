@@ -5,15 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.sms.model.SmsContentValueDto;
 import com.wafersystems.notice.util.*;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -25,11 +23,10 @@ import java.util.Map;
  * Created with Intellij IDEA. Description: 短信服务类 Author: waferzy DateTime: 2016/5/19 9:54 Company:
  * wafersystems
  */
-@Log4j
+@Slf4j
 @RestController
 @RequestMapping("/sms")
 public class SmsSendController extends BaseController {
-  private static final Logger logger = Logger.getLogger(SmsSendController.class);
 
   @Autowired
   private ApplicationContext resource;
@@ -40,7 +37,7 @@ public class SmsSendController extends BaseController {
     String result = null;
     try {
       if (StringUtil.isEmptyStr(telephones)) {
-        logger.info("--发送号码[" + telephones + "]短信发送失败,结果:手机号码不能为空!");
+        log.info("--发送号码[" + telephones + "]短信发送失败,结果:手机号码不能为空!");
         return false;
       }
       telephones = telephones.replaceAll(";", ",");
@@ -86,10 +83,10 @@ public class SmsSendController extends BaseController {
         JSONObject node = JSON.parseObject(result);
         Integer res = (Integer) node.get("status");
         if (0 == res) {
-          logger.info("--发送短信[" + telephones + "]成功!");
+          log.info("--发送短信[" + telephones + "]成功!");
           return true;
         } else {
-          logger.info("--发送短信[" + telephones + "]失败,结果:" + result);
+          log.info("--发送短信[" + telephones + "]失败,结果:" + result);
         }
       }
     }catch (Exception e){

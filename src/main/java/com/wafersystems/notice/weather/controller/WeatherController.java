@@ -6,7 +6,7 @@ import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.util.*;
 import com.wafersystems.notice.weather.model.Weather;
 import com.wafersystems.notice.weather.service.WeatherInfoService;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.Map;
  * 
  * @author zhuyi
  */
-@Log4j
+@Slf4j
 @RestController
 @RequestMapping("/weather")
 public class WeatherController extends BaseController {

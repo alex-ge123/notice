@@ -1,7 +1,7 @@
 package com.wafersystems.notice.message.interceptor;
 
 import com.wafersystems.notice.util.*;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -14,7 +14,7 @@ import java.util.Map;
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/18 10:42 Company:
  * wafersystems
  */
-@Log4j
+@Slf4j
 public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 
   @Override

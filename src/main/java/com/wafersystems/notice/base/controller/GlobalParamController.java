@@ -4,7 +4,8 @@ import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.base.service.GlobalParamService;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ import java.util.Map;
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/14 11:30 Company:
  * wafersystems
  */
-@Log4j
+@Slf4j
 @RestController
 @RequestMapping("/init")
 public class GlobalParamController extends BaseController {

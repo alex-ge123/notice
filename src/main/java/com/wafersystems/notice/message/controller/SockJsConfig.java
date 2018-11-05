@@ -2,7 +2,7 @@ package com.wafersystems.notice.message.controller;
 
 import com.alibaba.fastjson.support.spring.FastjsonSockJsMessageCodec;
 import com.wafersystems.notice.message.interceptor.HandshakeInterceptor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -16,7 +16,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
  * Created with Intellij IDEA. Description: SockJS Author: waferzy DateTime: 2016/8/3 14:46 Company:
  * wafersystems
  */
-@Log4j
+@Slf4j
 @Configuration
 @EnableWebMvc
 @EnableWebSocket

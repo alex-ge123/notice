@@ -8,7 +8,7 @@ import com.wafersystems.notice.message.model.MessageToUserDto;
 import com.wafersystems.notice.message.model.MessageType;
 import com.wafersystems.notice.message.service.MessagesService;
 import com.wafersystems.notice.util.*;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ import java.util.Map;
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/18 10:39 Company: wafersystems
  */
 
-@Log4j
+@Slf4j
 @Component
 public class WebSocketEndPoint extends TextWebSocketHandler {
 
