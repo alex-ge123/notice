@@ -49,23 +49,28 @@ public class MessagesController extends BaseController {
   @Autowired
   private BaseDao baseDao;
 
-  @RequestMapping("/testSave")
-  @ResponseBody
-  @Transactional
-  public Object saveTest(@RequestParam String lang){
-    // 测试日志
-    log.info("开始保存{}", System.currentTimeMillis());
-    Locale locale = ParamConstant.getLocaleByStr(lang);
-    MessageDto messageDto = new MessageDto();
-    messageDto.setUrls("http***"+System.currentTimeMillis());
-    // 测试db操作
-    baseDao.save(messageDto);
-    // 测试事务
-//    int a=2/0;
-    // 测试国际化
-    return returnBackMap(resource.getMessage("msg.email.subjectNull", null, locale),
-            ConfConstant.RESULT_FAIL);
-  }
+//  /**
+//   * 测试接口
+//   * @param lang 语言
+//   * @return
+//   */
+//  @RequestMapping("/testSave")
+//  @ResponseBody
+//  @Transactional
+//  public Object saveTest(@RequestParam String lang){
+//    // 测试日志
+//    log.info("开始保存{}", System.currentTimeMillis());
+//    Locale locale = ParamConstant.getLocaleByStr(lang);
+//    MessageDto messageDto = new MessageDto();
+//    messageDto.setUrls("http***"+System.currentTimeMillis());
+//    // 测试db操作
+//    baseDao.save(messageDto);
+//    // 测试事务
+////    int a=2/0;
+//    // 测试国际化
+//    return returnBackMap(resource.getMessage("msg.email.subjectNull", null, locale),
+//            ConfConstant.RESULT_FAIL);
+//  }
 
   /**
    * 消息发送.

@@ -31,69 +31,70 @@ public class SmsSendController extends BaseController {
   @Autowired
   private ApplicationContext resource;
 
-  @RequestMapping("/testSend")
-  public Object testSendSms(String telephones, String content, String lang) {
-    String url = "http://localhost:20110/sms/sendSms";
-    String result = null;
-    try {
-      if (StringUtil.isEmptyStr(telephones)) {
-        log.info("--发送号码[" + telephones + "]短信发送失败,结果:手机号码不能为空!");
-        return false;
-      }
-      telephones = telephones.replaceAll(";", ",");
-      telephones = telephones.replaceAll("\\+86", "").replaceAll("\\+852", "");
-      if (url.toLowerCase().startsWith("http://")) {
-        NameValuePair[] nameValuePair = new NameValuePair[9];
-        nameValuePair[0] = new NameValuePair("url",
-                "http://bill.virsical.cn/caas/caashelper/caasAbility/smsSendByTemplet");
-        nameValuePair[1] = new NameValuePair("token",
-                "E2327CDED0C6968438F1A1A936FE0B6A75121213470985B173B02066A5B0269E2A29598CF11D070BB8728088BFA01AC2");
-        nameValuePair[2] = new NameValuePair("calleeNbr", telephones);
-        if (!StringUtil.isEmptyStr(lang) && lang.contains("en")) {
-          nameValuePair[3] = new NameValuePair("templetId", "100428");
-        } else {
-          nameValuePair[3] = new NameValuePair("templetId", "100427");
-        }
-        nameValuePair[4] = new NameValuePair("clientId", "100002");
-        nameValuePair[5] = new NameValuePair("secret", "wafer");
-        nameValuePair[6] = new NameValuePair("value1", StringUtil.replaceStr(content));
-        nameValuePair[7] = new NameValuePair("requestTime", System.currentTimeMillis() + "");
-        nameValuePair[8] = new NameValuePair("lang", StringUtil.isEmptyStr(lang) ? "zh_CN" : lang);
-        result = HttpClientUtil.getPostResponseWithHttpClient(url, "utf-8", nameValuePair);//, null);
-      } else if (url.toLowerCase().startsWith("https://")) {
-        Map<String, String> createMap = new HashMap<>();
-        createMap.put("url",
-                "http://bill.virsical.cn/caas/caashelper/caasAbility/smsSendByTemplet");
-        createMap.put("token",
-                "E2327CDED0C6968438F1A1A936FE0B6A75121213470985B173B02066A5B0269E2A29598CF11D070BB8728088BFA01AC2");
-        createMap.put("calleeNbr", telephones);
-        if (!StringUtil.isEmptyStr(lang) && lang.contains("en")) {
-          createMap.put("templetId", "100428");
-        } else {
-          createMap.put("templetId", "100427");
-        }
-        createMap.put("clientId", "100002");
-        createMap.put("secret", "wafer");
-        createMap.put("value1", StringUtil.replaceStr(content));
-        createMap.put("requestTime", System.currentTimeMillis() + "");
-        createMap.put("lang", StringUtil.isEmptyStr(lang) ? "zh_CN" : lang);
-        result = HttpsPostClientUtil.doPost(url, createMap, "UTF-8");//, null);
-      }
-      if (!StringUtil.isEmptyStr(result)) {
-        JSONObject node = JSON.parseObject(result);
-        Integer res = (Integer) node.get("status");
-        if (0 == res) {
-          log.info("--发送短信[" + telephones + "]成功!");
-          return true;
-        } else {
-          log.info("--发送短信[" + telephones + "]失败,结果:" + result);
-        }
-      }
-    }catch (Exception e){
-      e.printStackTrace();
-    }
-    return result;
-  }
+//  @RequestMapping("/testSend")
+//  public Object testSendSms(String telephones, String content, String lang) {
+//    String url = "http://localhost:20110/sms/sendSms";
+//    String result = null;
+//    try {
+//      if (StringUtil.isEmptyStr(telephones)) {
+//        log.info("--发送号码[" + telephones + "]短信发送失败,结果:手机号码不能为空!");
+//        return false;
+//      }
+//      telephones = telephones.replaceAll(";", ",");
+//      telephones = telephones.replaceAll("\\+86", "").replaceAll("\\+852", "");
+//      if (url.toLowerCase().startsWith("http://")) {
+//        NameValuePair[] nameValuePair = new NameValuePair[9];
+//        nameValuePair[0] = new NameValuePair("url",
+//                "http://bill.virsical.cn/caas/caashelper/caasAbility/smsSendByTemplet");
+//        nameValuePair[1] = new NameValuePair("token",
+//                "E2327CDED0C6968438F1A1A936FE0B6A75121213470985B173B02066A5B0269E2A29598CF11D070BB8728088BFA01AC2");
+//        nameValuePair[2] = new NameValuePair("calleeNbr", telephones);
+//        if (!StringUtil.isEmptyStr(lang) && lang.contains("en")) {
+//          nameValuePair[3] = new NameValuePair("templetId", "100428");
+//        } else {
+//          nameValuePair[3] = new NameValuePair("templetId", "100427");
+//        }
+//        nameValuePair[4] = new NameValuePair("clientId", "100002");
+//        nameValuePair[5] = new NameValuePair("secret", "wafer");
+//        nameValuePair[6] = new NameValuePair("value1", StringUtil.replaceStr(content));
+//        nameValuePair[7] = new NameValuePair("requestTime", System.currentTimeMillis() + "");
+//        nameValuePair[8] = new NameValuePair("lang", StringUtil.isEmptyStr(lang) ? "zh_CN" : lang);
+//        result = HttpClientUtil.getPostResponseWithHttpClient(url, "utf-8", nameValuePair);//, null);
+//      } else if (url.toLowerCase().startsWith("https://")) {
+//        Map<String, String> createMap = new HashMap<>();
+//        createMap.put("url",
+//                "http://bill.virsical.cn/caas/caashelper/caasAbility/smsSendByTemplet");
+//        createMap.put("token",
+//                "E2327CDED0C6968438F1A1A936FE0B6A75121213470985B173B02066A5B0269E2A29598CF11D070BB8728088BFA01AC2");
+//        createMap.put("calleeNbr", telephones);
+//        if (!StringUtil.isEmptyStr(lang) && lang.contains("en")) {
+//          createMap.put("templetId", "100428");
+//        } else {
+//          createMap.put("templetId", "100427");
+//        }
+//        createMap.put("clientId", "100002");
+//        createMap.put("secret", "wafer");
+//        createMap.put("value1", StringUtil.replaceStr(content));
+//        createMap.put("requestTime", System.currentTimeMillis() + "");
+//        createMap.put("lang", StringUtil.isEmptyStr(lang) ? "zh_CN" : lang);
+//        result = HttpsPostClientUtil.doPost(url, createMap, "UTF-8");//, null);
+//      }
+//      if (!StringUtil.isEmptyStr(result)) {
+//        JSONObject node = JSON.parseObject(result);
+//        Integer res = (Integer) node.get("status");
+//        if (0 == res) {
+//          log.info("--发送短信[" + telephones + "]成功!");
+//          return true;
+//        } else {
+//          log.info("--发送短信[" + telephones + "]失败,结果:" + result);
+//        }
+//      }
+//    }catch (Exception e){
+//      e.printStackTrace();
+//    }
+//    return result;
+//  }
+
   /**
    * 短信发送.
    * 
