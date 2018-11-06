@@ -128,11 +128,9 @@
             <version>4.0.0.4</version>
         </dependency>
         <dependency>
-            <groupId>security</groupId>
+            <groupId>com.wafersystems</groupId>
             <artifactId>security</artifactId>
             <version>0.0.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/security-0.0.2.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -143,6 +141,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
+                    <executable>true</executable>
                 </configuration>
             </plugin>
             <plugin>
