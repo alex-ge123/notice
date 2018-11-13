@@ -2,7 +2,6 @@ package com.wafersystems.notice.message.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.base.controller.BaseController;
-import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.message.model.MessageDto;
 import com.wafersystems.notice.message.model.MessageToUserDto;
@@ -22,7 +21,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.TextMessage;
 
-import javax.transaction.Transactional;
 import java.util.Locale;
 import java.util.Map;
 
@@ -45,32 +43,6 @@ public class MessagesController extends BaseController {
   private TaskExecutor taskExecutor;
   @Autowired
   private ApplicationContext resource;
-
-  @Autowired
-  private BaseDao baseDao;
-
-//  /**
-//   * 测试接口
-//   * @param lang 语言
-//   * @return
-//   */
-//  @RequestMapping("/testSave")
-//  @ResponseBody
-//  @Transactional
-//  public Object saveTest(@RequestParam String lang){
-//    // 测试日志
-//    log.info("开始保存{}", System.currentTimeMillis());
-//    Locale locale = ParamConstant.getLocaleByStr(lang);
-//    MessageDto messageDto = new MessageDto();
-//    messageDto.setUrls("http***"+System.currentTimeMillis());
-//    // 测试db操作
-//    baseDao.save(messageDto);
-//    // 测试事务
-////    int a=2/0;
-//    // 测试国际化
-//    return returnBackMap(resource.getMessage("msg.email.subjectNull", null, locale),
-//            ConfConstant.RESULT_FAIL);
-//  }
 
   /**
    * 消息发送.
