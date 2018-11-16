@@ -48,6 +48,8 @@ spring:
   jpa:
     show-sql: true
     hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQL5Dialect
     properties:
