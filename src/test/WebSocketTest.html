@@ -5,7 +5,8 @@
     <title>Title</title>
     <script src="http://cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
     <script>
-        var sock = new SockJS('http://localhost:20110/websocket?token=968D48E2BBEF90277F44030B973B66AA1D2CDC72D993EAF6DA1380A65E13BEA5AA9C996A11DF85F10B68B57F33E703C8');
+        var sock = new SockJS('http://localhost:8082/websocket?token=6AE633BB2BE605FC9DDC9135FCD2AC0E056C92733B7BC980832536E529BB34E7332A80DA7E387D2CBF777D3D8DCC46D8');
+        // var sock = new SockJS('http://localhost:8082/websocket?token=968D48E2BBEF90277F44030B973B66AA1D2CDC72D993EAF6DA1380A65E13BEA5AA9C996A11DF85F10B68B57F33E703C8');
         sock.onopen = function() {
             console.log('open');
         };

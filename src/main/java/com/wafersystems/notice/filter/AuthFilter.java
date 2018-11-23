@@ -43,7 +43,7 @@ public class AuthFilter extends BaseController implements Filter {
     servletResponse.setCharacterEncoding("UTF-8");
     servletResponse.setContentType("text/html;charset=UTF-8");
     String url = request.getServletPath();
-    log.debug("客户端IP为：" + getIp(request) + ",当前拦截的url为：" + url);
+    log.info("客户端IP为：" + getIp(request) + ",当前拦截的url为：" + url);
     if (ParamConstant.getUNCHECK_URL().contains(url) || url.endsWith("jpg") || url.endsWith("jpeg")
         || url.endsWith("png")) {
       filterChain.doFilter(servletRequest, servletResponse);
