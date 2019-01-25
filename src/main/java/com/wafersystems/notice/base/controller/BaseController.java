@@ -33,6 +33,7 @@ public class BaseController {
     return map;
   }
 
+
   /**
    * 根据token获取用户Id.
    *
