@@ -55,6 +55,18 @@ public class SmsUtil {
     if (params.size() > 1 && StringUtils.isNotBlank(params.get(1))) {
       hashMap.put("value2", params.get(1));
     }
+    if (params.size() > 2 && StringUtils.isNotBlank(params.get(2))) {
+      hashMap.put("value3", params.get(2));
+    }
+    if (params.size() > 3 && StringUtils.isNotBlank(params.get(3))) {
+      hashMap.put("value4", params.get(3));
+    }
+    if (params.size() > 4 && StringUtils.isNotBlank(params.get(4))) {
+      hashMap.put("value5", params.get(4));
+    }
+    if (params.size() > 5 && StringUtils.isNotBlank(params.get(5))) {
+      hashMap.put("value6", params.get(5));
+    }
     hashMap.put("smsSign", ParamConstant.getSMS_SIGN_NAME());// 签名
     hashMap.put("suffix", "false");// 签名是否前缀
     hashMap.put("timestamp", System.currentTimeMillis() + "");// 必须和服务器时间差三分钟以内的时间戳才能通过验证

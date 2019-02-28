@@ -1,12 +1,12 @@
 package com.wafersystems.notice.sms.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.sms.model.SmsContentValueDto;
-import com.wafersystems.notice.util.*;
+import com.wafersystems.notice.util.ConfConstant;
+import com.wafersystems.notice.util.ParamConstant;
+import com.wafersystems.notice.util.SmsUtil;
+import com.wafersystems.notice.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with Intellij IDEA. Description: 短信服务类 Author: waferzy DateTime: 2016/5/19 9:54 Company:
@@ -117,6 +115,18 @@ public class SmsSendController extends BaseController {
         params.add(StrUtil.regStr(String.valueOf(bean.getValue1())));
         if (StringUtils.isNotBlank(bean.getValue2())) {
           params.add(StrUtil.regStr(String.valueOf(bean.getValue2())));
+        }
+        if (StringUtils.isNotBlank(bean.getValue3())) {
+          params.add(StrUtil.regStr(String.valueOf(bean.getValue3())));
+        }
+        if (StringUtils.isNotBlank(bean.getValue4())) {
+          params.add(StrUtil.regStr(String.valueOf(bean.getValue4())));
+        }
+        if (StringUtils.isNotBlank(bean.getValue5())) {
+          params.add(StrUtil.regStr(String.valueOf(bean.getValue5())));
+        }
+        if (StringUtils.isNotBlank(bean.getValue6())) {
+          params.add(StrUtil.regStr(String.valueOf(bean.getValue6())));
         }
         if (bean.getCalleeNbr().contains(ConfConstant.COMMA)) {
           String[] no = bean.getCalleeNbr().split(ConfConstant.COMMA);
