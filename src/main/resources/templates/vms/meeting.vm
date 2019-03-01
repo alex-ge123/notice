@@ -251,7 +251,7 @@
 	               	<td>&nbsp;&nbsp;&nbsp;#message('msg.email.content.virsical.value3')<br />
 	               	&nbsp;&nbsp;&nbsp;#message('msg.email.content.virsical.value4')：400-685-3160<br />
 	               	&nbsp;&nbsp;&nbsp;#message('msg.email.content.virsical.value5')：<a href="http://www.virsical.com/">www.virsical.com</a><br /></td>
-	               	<td align="right"><img src="$!{TemVal.imageDirectory}/code_vsk.jpg" width="60" height="60"  alt="#message('msg.email.content.virsical.value6')"  title="#message('msg.email.content.virsical.value6')"/>&nbsp;&nbsp;</td>
+	               	<td align="right"><img src="$!{TemVal.imageDirectory}/virsical_dimcode.jpg" width="60" height="60"  alt="#message('msg.email.content.virsical.value6')"  title="#message('msg.email.content.virsical.value6')"/>&nbsp;&nbsp;</td>
 	             </tr>
 	           </table>
 	       </td>
