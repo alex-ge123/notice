@@ -1,5 +1,6 @@
 package com.wafersystems.notice.sms.controller;
 
+import com.pig4cloud.pigx.common.core.tenant.TenantContextHolder;
 import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.sms.model.SmsContentValueDto;
 import com.wafersystems.notice.util.ConfConstant;
@@ -28,6 +29,11 @@ public class SmsSendController extends BaseController {
 
   @Autowired
   private ApplicationContext resource;
+
+  @RequestMapping("/test")
+  public String test(){
+    return TenantContextHolder.getUsername();
+  }
 
 //  @RequestMapping("/testSend")
 //  public Object testSendSms(String telephones, String content, String lang) {
