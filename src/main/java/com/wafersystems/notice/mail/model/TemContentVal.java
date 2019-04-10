@@ -7,6 +7,11 @@ import org.springframework.context.ApplicationContext;
 import java.io.Serializable;
 import java.util.Locale;
 
+/**
+ * 邮件数据(模版形式)
+ *
+ * @author wafer
+ */
 @Data
 public class TemContentVal implements Serializable {
 
@@ -38,7 +43,8 @@ public class TemContentVal implements Serializable {
   private String value24;
   private Locale locale;
   private transient ApplicationContext resource;
-  private String imageDirectory;// 图片目录地址
+  // 图片目录地址
+  private String imageDirectory;
 
   public String getValue1() {
     return StrUtil.regStr(value1);
@@ -107,22 +113,27 @@ public class TemContentVal implements Serializable {
   public String getValue18() {
     return StrUtil.regStr(value18);
   }
-  
+
   public String getValue19() {
     return StrUtil.regStr(value19);
   }
+
   public String getValue20() {
     return StrUtil.regStr(value20);
   }
+
   public String getValue21() {
     return StrUtil.regStr(value21);
   }
+
   public String getValue22() {
     return StrUtil.regStr(value22);
   }
+
   public String getValue23() {
     return StrUtil.regStr(value23);
   }
+
   public String getValue24() {
     return StrUtil.regStr(value24);
   }

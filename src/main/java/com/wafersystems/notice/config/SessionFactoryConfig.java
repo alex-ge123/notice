@@ -10,17 +10,19 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  * sessionFactory配置类
+ *
+ * @author wafer
  */
 @Configuration
 @EnableAutoConfiguration
 @EnableTransactionManagement
 public class SessionFactoryConfig {
 
-    @Bean
-    public SessionFactory sessionFactory(EntityManagerFactory factory) {
-        if (factory.unwrap(SessionFactory.class) == null) {
-            throw new NullPointerException("factory is not a hibernate factory");
-        }
-        return factory.unwrap(SessionFactory.class);
+  @Bean
+  public SessionFactory sessionFactory(EntityManagerFactory factory) {
+    if (factory.unwrap(SessionFactory.class) == null) {
+      throw new NullPointerException("factory is not a hibernate factory");
     }
+    return factory.unwrap(SessionFactory.class);
+  }
 }

@@ -128,11 +128,11 @@ public class SmsUtil {
     return "1";
   }
 
-  public static void main(String[] args) {
-    List<String> params = new ArrayList<String>();
-    params
-        .add("Meeting Remind:Hi [yz], This is a remainder that you have an updated appointment with [人名] at [织田] on [2018-04-09 11:30 ~ 11:45], Please reply with Click to confirm http://t.cn/RmVpvp9 .【威发系统】");
-    String flag = sendSms("100427", "+8618729861476", params, "wafersystems.com");
-    System.out.println(flag);
-  }
+//  public static void main(String[] args) {
+//    List<String> params = new ArrayList<String>();
+//    params
+//        .add("Meeting Remind:Hi [yz], This is a remainder that you have an updated appointment with [人名] at [织田] on [2018-04-09 11:30 ~ 11:45], Please reply with Click to confirm http://t.cn/RmVpvp9 .【威发系统】");
+//    String flag = sendSms("100427", "+8618729861476", params, "wafersystems.com");
+//    System.out.println(flag);
+//  }
 }

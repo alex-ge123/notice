@@ -11,7 +11,9 @@ import org.springframework.web.context.ServletContextAware;
 import javax.servlet.ServletContext;
 
 /**
- * ClassName: InitSpringServletContext Description: Spring初始化类.
+ * Spring初始化类.
+ *
+ * @author wafer
  */
 @Slf4j
 @Component
@@ -24,9 +26,10 @@ public class InitSpringServletContext implements ServletContextAware {
 
   /**
    * 初始化参数.
-   * 
+   *
    * @param context -
    */
+  @Override
   public void setServletContext(ServletContext context) {
     System.setProperty("java.awt.headless", "true");
     // 初始化系统参数

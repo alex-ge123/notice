@@ -5,16 +5,16 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/5/19 10:00 Company:
- * wafersystems
+ * 短信内容数据传输对象
+ *
+ * @author wafer
  */
-@SuppressWarnings("PMD.UnusedPrivateField")
 @Data
 public class SmsContentValueDto implements Serializable {
 
   private String clientId;
-  private String templetId;
   private String secret;
+  private String templateId;
   private String domain;
   private String calleeNbr;
   private String value1;
