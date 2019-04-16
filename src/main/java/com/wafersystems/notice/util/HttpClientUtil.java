@@ -363,17 +363,17 @@ public class HttpClientUtil {
     return new String(source.getBytes(srcEncode), destEncode);
   }
 
-  /**
-   * 测试主方法.
-   * 
-   * @param arg -
-   * @throws IOException 异常
-   */
-  public static void main(String[] arg) throws IOException {
-    String url =
-        "http://192.168.0.159:8080/wse/deviceif!getPowerState.do?devName=SEP0004F2ED799D&level=11&userName=peteryang&pwd=12345";
-    String encode = "utf-8";
-    String content = getPostResponseWithHttpClient(url, encode);
-    System.out.println(content);
-  }
+//  /**
+//   * 测试主方法.
+//   *
+//   * @param arg -
+//   * @throws IOException 异常
+//   */
+//  public static void main(String[] arg) throws IOException {
+//    String url =
+//        "http://192.168.0.159:8080/wse/deviceif!getPowerState.do?devName=SEP0004F2ED799D&level=11&userName=peteryang&pwd=12345";
+//    String encode = "utf-8";
+//    String content = getPostResponseWithHttpClient(url, encode);
+//    System.out.println(content);
+//  }
 }

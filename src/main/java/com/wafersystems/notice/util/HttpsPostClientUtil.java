@@ -63,21 +63,21 @@ public class HttpsPostClientUtil {
    * 
    * @param args -
    */
-  public static void main(String[] args) {
-    String url = "https://mtest.avic-intl.cn/";
-    String charset = "utf-8";
-
-    String httpOrgCreateTest = url + "/inter/message/sendPlatfromServiceMsg";
-    Map<String, String> createMap = new HashMap<String, String>();
-    createMap.put("domain", "avic.cn");
-    createMap.put("content", "201511122157");
-    createMap.put("type", "81");
-    createMap.put("serviceId", "localService");
-    createMap.put("serviceName", "内部服务");
-    createMap.put("icon", "http://dfsf");
-    createMap.put("userId", "waferhanwu@avic.cn");
-    String httpOrgCreateTestRtn = doPost(httpOrgCreateTest, createMap, charset);
-    System.out.println("result:" + httpOrgCreateTestRtn);
-  }
+//  public static void main(String[] args) {
+//    String url = "https://mtest.avic-intl.cn/";
+//    String charset = "utf-8";
+//
+//    String httpOrgCreateTest = url + "/inter/message/sendPlatfromServiceMsg";
+//    Map<String, String> createMap = new HashMap<String, String>();
+//    createMap.put("domain", "avic.cn");
+//    createMap.put("content", "201511122157");
+//    createMap.put("type", "81");
+//    createMap.put("serviceId", "localService");
+//    createMap.put("serviceName", "内部服务");
+//    createMap.put("icon", "http://dfsf");
+//    createMap.put("userId", "waferhanwu@avic.cn");
+//    String httpOrgCreateTestRtn = doPost(httpOrgCreateTest, createMap, charset);
+//    System.out.println("result:" + httpOrgCreateTestRtn);
+//  }
 
 }
