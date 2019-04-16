@@ -1280,21 +1280,21 @@ public class DateUtil {
   }
 
 
-  /**
-   * 测试主方法。
-   */
-  public static void main(String[] args) {
-
-
-    Date dateTime = DateUtil.formatDate("2017-02-03 17:30:20");
-    String startTime = formatDateNewTimeStr(dateTime);
-    dateTime = getDateNewTime(startTime);
-
-    System.out.println(startTime);
-    System.out.println(dateTime);
-
-    String dateString = formatRangeCn(new Date(), new Date());
-    System.out.println(dateString);
+//  /**
+//   * 测试主方法。
+//   */
+//  public static void main(String[] args) {
+//
+//
+//    Date dateTime = DateUtil.formatDate("2017-02-03 17:30:20");
+//    String startTime = formatDateNewTimeStr(dateTime);
+//    dateTime = getDateNewTime(startTime);
+//
+//    System.out.println(startTime);
+//    System.out.println(dateTime);
+//
+//    String dateString = formatRangeCn(new Date(), new Date());
+//    System.out.println(dateString);
     // String date = "1970-01-01 00:00:00";
     // String time = "1461032462000";
     // String to = "1462032000000";
@@ -1331,9 +1331,9 @@ public class DateUtil {
     // System.out.println("月末：" + getMaxMonthDate(date));
     // System.out.println("所在周开始日期：" + getMinWeekDate(date));
     // System.out.println("所在周结束日期：" + getMaxWeekDate(date));
-    System.out.println(formatWeek(new Date(), "en"));
-    System.out.println(handCorn(new Date()));
-  }
+//    System.out.println(formatWeek(new Date(), "en"));
+//    System.out.println(handCorn(new Date()));
+//  }
 
   public static String handCorn(Date startTaskTime) {
     String format = "ss mm HH * * ?";

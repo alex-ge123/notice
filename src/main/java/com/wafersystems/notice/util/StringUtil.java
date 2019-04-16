@@ -740,16 +740,16 @@ public class StringUtil {
     return num;
   }
 
-  /**
-   * 
-   * <pre>
-   * 描述: 主方法测试.
-   * 作者:wafer
-   * 时间:2017年2月15日 下午3:19:21
-   * 参数：(参数列表)
-   * </pre>
-   */
-  public static void main(String[] args) {
+//  /**
+//   *
+//   * <pre>
+//   * 描述: 主方法测试.
+//   * 作者:wafer
+//   * 时间:2017年2月15日 下午3:19:21
+//   * 参数：(参数列表)
+//   * </pre>
+//   */
+//  public static void main(String[] args) {
     /*
      * System.out.println(fillString("1001", 3, false)); System.out.println("13659285211[大陆]: " +
      * telMatches("13659285211")); System.out.println("+8613659285211[大陆]: " +
@@ -766,11 +766,11 @@ public class StringUtil {
      * System.out.println(extractionAssemble("123654ggg"));
      * System.out.println(sort("5;4;6;3;7;2;9;1", ";"));
      */
-    // System.out.println(encodeRandomNumber(5234));
-    String a = padLeft("000", "0", 3);
-    System.out.println(a);
-//    System.out.println(isMatchEmail("@com.com"));
-  }
+//    // System.out.println(encodeRandomNumber(5234));
+//    String a = padLeft("000", "0", 3);
+//    System.out.println(a);
+////    System.out.println(isMatchEmail("@com.com"));
+//  }
 
   /**
    * <pre>

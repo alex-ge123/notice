@@ -199,13 +199,13 @@ public final class AesUtil {
     }
   }
   
-  /**
-   *测试主函数. 
-   */
-  public static void main(String[] args) {
-    String test = decryptBase64("5oKo5aW9IFvnpZ0g5bCP5biFXSzmj5DphpLmgqjmnInkuIDku73mnInlhbNb"
-        + "5b6q546v5Lya6K6u5rWL6K+VMl3nmoTlj5bmtojpgJrnn6XjgILkvJrorq7lnLDngrnvvJpb5rWL6K+V"
-        + "XeS7peWPiuaXtumXtO+8mlsyMDE3LTAzLTE3IDE1OjAwIH4gMTU6MTVd44CC");
-    System.out.println(test);
-  }
+//  /**
+//   *测试主函数.
+//   */
+//  public static void main(String[] args) {
+//    String test = decryptBase64("5oKo5aW9IFvnpZ0g5bCP5biFXSzmj5DphpLmgqjmnInkuIDku73mnInlhbNb"
+//        + "5b6q546v5Lya6K6u5rWL6K+VMl3nmoTlj5bmtojpgJrnn6XjgILkvJrorq7lnLDngrnvvJpb5rWL6K+V"
+//        + "XeS7peWPiuaXtumXtO+8mlsyMDE3LTAzLTE3IDE1OjAwIH4gMTU6MTVd44CC");
+//    System.out.println(test);
+//  }
 }
