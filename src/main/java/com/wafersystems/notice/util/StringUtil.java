@@ -138,7 +138,7 @@ public class StringUtil {
    * </pre>
    */
   public static String formatStr(String str) {
-    if (null == str || str.equals("null")) {
+    if (null == str || "null".equals(str)) {
       return "";
     } else {
       return str.trim();
@@ -516,7 +516,7 @@ public class StringUtil {
   public static String randomNumber(int len, boolean flag) {
     StringBuffer number = new StringBuffer(Integer.toString(new Random().nextInt(10)));
     if (flag) {
-      while (number.toString().equals("0")) {
+      while ("0".equals(number.toString())) {
         number = new StringBuffer(Integer.toString(new Random().nextInt(10)));
       }
     }
@@ -933,8 +933,9 @@ public class StringUtil {
           break;
         }
       }
-      if (!exist)
+      if (!exist) {
         return false;
+      }
     }
     return true;
   }

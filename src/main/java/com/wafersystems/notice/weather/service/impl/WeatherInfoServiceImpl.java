@@ -40,6 +40,7 @@ public class WeatherInfoServiceImpl implements WeatherInfoService {
   /**
    *保存. 
    */
+  @Override
   public void save(Weather bean) {
     baseDao.save(bean);
   }
