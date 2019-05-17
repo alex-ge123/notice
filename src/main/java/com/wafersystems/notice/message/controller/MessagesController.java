@@ -244,6 +244,7 @@ public class MessagesController extends BaseController {
      *
      * @see Thread#run()
      */
+    @Override
     public void run() {
       // websocket消息发送
       if (StringUtils.isNotBlank(recipientId)) {
