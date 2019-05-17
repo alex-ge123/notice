@@ -13,7 +13,7 @@ spring:
       name: ${spring.application.name}
       profile: ${spring.profiles.active}
       # 指定config server地址
-      uri: http://pig:pig@pigx-config:8888
+      uri: http://wafer:wafer@virsical-config:8888
       # 配置从注册发现中获取config server
 #      discovery:
 #        enabled: true
@@ -29,4 +29,4 @@ eureka:
     leaseExpirationDurationInSeconds: 30
   client:
     service-url:
-      defaultZone: http://pig:pig@pigx-eureka:8761/eureka/
+      defaultZone: http://wafer:wafer@virsical-eureka:8761/eureka/

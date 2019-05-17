@@ -5,7 +5,7 @@
 
     <groupId>com.wafersystems</groupId>
     <artifactId>virsical-notice</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>notice</name>
@@ -142,8 +142,8 @@
         <!--微服务公共资源包-->
         <dependency>
             <groupId>com.wafersystems</groupId>
-            <artifactId>virsical-common-security-jar</artifactId>
-            <version>1.0.6</version>
+            <artifactId>virsical-common-security</artifactId>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 

@@ -1,8 +1,8 @@
 package com.wafersystems.notice.config;
 
-import com.pig4cloud.pigx.common.core.constant.CommonConstants;
-import com.pig4cloud.pigx.common.core.exception.BusinessException;
-import com.pig4cloud.pigx.common.core.util.R;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.exception.BusinessException;
+import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
