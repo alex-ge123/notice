@@ -1,7 +1,7 @@
 package com.wafersystems.notice;
 
-import com.pig4cloud.pigx.common.security.annotation.EnablePigxFeignClients;
-import com.pig4cloud.pigx.common.security.annotation.EnablePigxResourceServer;
+import com.wafersystems.virsical.common.security.annotation.EnableCustomFeignClients;
+import com.wafersystems.virsical.common.security.annotation.EnableCustomResourceServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.context.annotation.ImportResource;
@@ -12,8 +12,8 @@ import org.springframework.context.annotation.ImportResource;
  * @author tandk
  */
 @SpringCloudApplication
-@EnablePigxFeignClients
-@EnablePigxResourceServer
+@EnableCustomFeignClients
+@EnableCustomResourceServer
 @ImportResource(locations = {"classpath:applicationContext.xml"})
 public class NoticeApplication {
 

@@ -23,6 +23,7 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
   private static Logger logger = LoggerFactory.getLogger(MyDailyRollingFileAppender.class);
   private int maxFileSize = 60;
 
+  @Override
   void rollOver() throws IOException {
     super.rollOver();
 
@@ -54,6 +55,7 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
    */
   private void sortFiles(List<File> fileList) {
     Collections.sort(fileList, new Comparator<File>() {
+      @Override
       public int compare(File o1, File o2) {
         try {
           if (getDateStr(o1).isEmpty()) {
@@ -99,6 +101,7 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
     }
 
     File files[] = logPath.listFiles(new FileFilter() {
+      @Override
       public boolean accept(File pathname) {
         try {
           if (getDateStr(pathname).isEmpty()) {

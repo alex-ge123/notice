@@ -29,6 +29,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   /**
    * 保存SystemParam
    */
+  @Override
   public void save(GlobalParameter gp) {
     baseDao.update(gp);
   }
@@ -39,6 +40,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * @param paramKey
    * @return
    */
+  @Override
   public GlobalParameter getSystemParamByParamKey(String paramKey) {
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     criteria.add(Restrictions.eq("paramKey", paramKey));
@@ -52,6 +54,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   /**
    * 初始化系统参数.
    */
+  @Override
   public void initSystemParam() {
     log.debug("开始加载系统数据库配置相关参数");
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);

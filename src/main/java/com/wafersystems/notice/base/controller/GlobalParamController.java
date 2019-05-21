@@ -38,6 +38,7 @@ public class GlobalParamController extends BaseController {
    * @param status 是否出现异常
    * @return 返回给前端
    */
+  @Override
   protected Map<String, Object> returnBackMap(Object obj, int status) {
     Map<String, Object> map = new HashMap<>();
     if (ConfConstant.RESULT_SUCCESS == status) {
