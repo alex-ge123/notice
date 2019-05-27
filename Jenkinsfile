@@ -8,7 +8,7 @@ pipeline {
     environment {
         RD_ENV = 'dev'  // 标识开发测试环境，缺省为开发环境：dev
         GROUP_NAME = ''
-        SERVICE_NAME = '-ntc'
+        SERVICE_NAME = '-notice'
         PVC_WORK = ''
         K8S_CLUSTER_NAME = 'kubernetes'
     }
@@ -86,8 +86,8 @@ pipeline {
 
                 script {
                     datas = readYaml file: 'src/main/resources/bootstrap.yml'
-                    datas.eureka.client['service-url'].defaultZone = "http://pig:pig@${GROUP_NAME}-eureka:8080/eureka/"
-                    datas.spring.cloud.config.uri = "http://pig:pig@${GROUP_NAME}-config:8080"
+                    datas.eureka.client['service-url'].defaultZone = "http://wafer:wafer@${GROUP_NAME}-eureka:8080/eureka/"
+                    datas.spring.cloud.config.uri = "http://wafer:wafer@${GROUP_NAME}-config:8080"
                     datas.server.port = 8080
 
                     writeYaml file: "tmp/config/bootstrap.yml", data: datas
