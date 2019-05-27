@@ -8,7 +8,7 @@ pipeline {
     environment {
         RD_ENV = 'dev'  // 标识开发测试环境，缺省为开发环境：dev
         GROUP_NAME = ''
-        SERVICE_NAME = '-ntc'
+        SERVICE_NAME = '-notice'
         PVC_WORK = ''
         K8S_CLUSTER_NAME = 'kubernetes'
     }
