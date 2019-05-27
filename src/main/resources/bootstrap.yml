@@ -17,7 +17,7 @@ spring:
       # 配置从注册发现中获取config server
 #      discovery:
 #        enabled: true
-#        service-id: pigx-config
+#        service-id: virsical-config
 
 # 注册中心配置
 eureka:
