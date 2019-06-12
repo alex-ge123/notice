@@ -2,6 +2,8 @@ package com.wafersystems.notice.base.service;
 
 import com.wafersystems.notice.base.model.GlobalParameter;
 
+import java.util.List;
+
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/14 11:27 Company:
  * wafersystems
@@ -19,7 +21,14 @@ public interface GlobalParamService {
    * @param paramKey
    * @return
    */
-  public GlobalParameter getSystemParamByParamKey(String paramKey);
+  GlobalParameter getSystemParamByParamKey(String paramKey);
+
+  /**
+   * 获取所有配置参数
+   *
+   * @return list
+   */
+  List<GlobalParameter> getSystemParamList();
 
   /**
    * 保存SystemParam

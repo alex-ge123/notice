@@ -4,13 +4,11 @@ import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.base.service.GlobalParamService;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
-import lombok.extern.slf4j.Slf4j;
+import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,7 +21,6 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/init")
 public class GlobalParamController extends BaseController {
 
   @Autowired
@@ -33,8 +30,8 @@ public class GlobalParamController extends BaseController {
 
   /**
    * Description: author dingfeng DateTime 2016年3月10日 下午2:18:39
-   * 
-   * @param obj 返回的数据,异常时表示异常信息
+   *
+   * @param obj    返回的数据,异常时表示异常信息
    * @param status 是否出现异常
    * @return 返回给前端
    */
@@ -52,7 +49,7 @@ public class GlobalParamController extends BaseController {
     return map;
   }
 
-  @RequestMapping("/getSmsSingName")
+  @RequestMapping("/init/getSmsSingName")
   public Object getSmsSingName() {
     GlobalParameter gp = globalParamService.getSystemParamByParamKey("SMS_SIGN_NAME");
     if (gp == null) {
@@ -61,7 +58,7 @@ public class GlobalParamController extends BaseController {
     return returnBackMap(gp, ConfConstant.RESULT_SUCCESS);
   }
 
-  @RequestMapping("/setSmsSingName")
+  @RequestMapping("/init/setSmsSingName")
   public Object setSmsSingName(String paramValue, String lang) {
     GlobalParameter gp = globalParamService.getSystemParamByParamKey("SMS_SIGN_NAME");
     if (gp == null) {
@@ -75,11 +72,11 @@ public class GlobalParamController extends BaseController {
 
   /**
    * 更新系统配置信息到缓存.
-   * 
+   *
    * @param lang -
    * @return -
    */
-  @RequestMapping(method = RequestMethod.POST)
+  @RequestMapping(value = "/init", method = RequestMethod.POST)
   public Object initSysParam(String lang) {
     Locale locale = ParamConstant.getLocaleByStr(lang);
     try {
@@ -88,7 +85,37 @@ public class GlobalParamController extends BaseController {
     } catch (Exception ex) {
       log.error("更新系统配置信息异常：", ex);
       return returnBackMap(resource.getMessage("msg.action.fail", null, locale),
-          ConfConstant.RESULT_SUCCESS);
+        ConfConstant.RESULT_SUCCESS);
     }
+  }
+
+  /**
+   * 获取所有参数
+   *
+   * @return Object
+   */
+  @GetMapping("/parameter/get")
+  public R get() {
+    return R.ok(globalParamService.getSystemParamList());
+  }
+
+  /**
+   * 设置某个参数值
+   *
+   * @param paramKey   参数key
+   * @param paramValue 参数值
+   * @param lang       语言
+   * @return Object
+   */
+  @PostMapping("/parameter/set")
+  public R set(@RequestParam String paramKey, @RequestParam String paramValue, @RequestParam String lang) {
+    GlobalParameter gp = globalParamService.getSystemParamByParamKey(paramKey);
+    if (gp == null) {
+      return R.fail("当前配置参数key不存在：" + paramKey);
+    }
+    gp.setParamValue(paramValue);
+    globalParamService.save(gp);
+    initSysParam(lang);
+    return R.ok();
   }
 }
