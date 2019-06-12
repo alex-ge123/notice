@@ -17,6 +17,15 @@ public class TemContentVal implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private String logo;
+  /**
+   * 邮件顶部图片URL地址
+   */
+  private String imgPathBanner;
+  /**
+   * 邮件底部威思客首页二维码图片地址
+   */
+  private String imgPathDimcode;
+
   private String value1;
   private String value2;
   private String value3;
