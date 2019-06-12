@@ -4,6 +4,7 @@ import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.*;
+import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,7 @@ public class MailSendController extends BaseController {
    * @param lang     语言
    * @return -
    */
+  @Inner
   @RequestMapping(value = "/sendMail", method = RequestMethod.POST)
   public Object sendMail(@RequestParam String subject, @RequestParam String toMail, String copyTo, @RequestParam String tempName,
                          @RequestBody TemContentVal con, String lang) {

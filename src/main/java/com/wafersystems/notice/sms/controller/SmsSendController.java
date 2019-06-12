@@ -6,6 +6,7 @@ import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.notice.util.StrUtil;
+import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class SmsSendController extends BaseController {
    * @param lang 语言
    * @return -
    */
+  @Inner
   @RequestMapping(value = "/sendSms", method = RequestMethod.POST)
   public Object sendSms(@RequestBody SmsContentValueDto bean, String lang) {
     try {
