@@ -6,14 +6,12 @@ import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/14 11:30 Company:
@@ -27,6 +25,9 @@ public class GlobalParamController extends BaseController {
   private GlobalParamService globalParamService;
   @Autowired
   private ApplicationContext resource;
+
+  @Autowired
+  private StringEncryptor stringEncryptor;
 
   /**
    * Description: author dingfeng DateTime 2016年3月10日 下午2:18:39
@@ -64,7 +65,7 @@ public class GlobalParamController extends BaseController {
     if (gp == null) {
       return returnBackMap("短息签名不存在", ConfConstant.RESULT_FAIL);
     }
-    gp.setParamValue(paramValue);
+    gp.setParamValue(stringEncryptor.encrypt(paramValue));
     globalParamService.save(gp);
     initSysParam(lang);
     return returnBackMap(null, ConfConstant.RESULT_SUCCESS);
@@ -96,7 +97,15 @@ public class GlobalParamController extends BaseController {
    */
   @GetMapping("/parameter/get")
   public R get() {
-    return R.ok(globalParamService.getSystemParamList());
+    List<GlobalParameter> systemParamList = globalParamService.getSystemParamList();
+    systemParamList.forEach(globalParameter -> {
+      try {
+        globalParameter.setParamValue(stringEncryptor.decrypt(globalParameter.getParamValue()));
+      } catch (Exception e) {
+        log.info("参数值解密异常：key[{}]，value[{}]", globalParameter.getParamKey(), globalParameter.getParamValue());
+      }
+    });
+    return R.ok(systemParamList);
   }
 
   /**
@@ -113,7 +122,7 @@ public class GlobalParamController extends BaseController {
     if (gp == null) {
       return R.fail("当前配置参数key不存在：" + paramKey);
     }
-    gp.setParamValue(paramValue);
+    gp.setParamValue(stringEncryptor.encrypt(paramValue));
     globalParamService.save(gp);
     initSysParam(lang);
     return R.ok();

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,9 @@ public class GlobalParamServiceImpl implements GlobalParamService {
 
   @Autowired
   private BaseDao<GlobalParameter> baseDao;
+
+  @Autowired
+  private StringEncryptor stringEncryptor;
 
   /**
    * 保存SystemParam
@@ -76,7 +80,14 @@ public class GlobalParamServiceImpl implements GlobalParamService {
       if (StringUtils.isBlank(parameter.getParamValue())) {
         log.debug("DBParam [" + parameter.getParamKey() + "] is null, ignore!");
       } else {
-        map.put(parameter.getParamKey(), parameter.getParamValue());
+        // 参数值解密，解密失败按原文处理
+        String value = parameter.getParamValue();
+        try {
+          value = stringEncryptor.decrypt(value);
+        } catch (Exception e) {
+          log.info("参数值解密异常：key[{}]，value[{}]", parameter.getParamKey(), parameter.getParamValue());
+        }
+        map.put(parameter.getParamKey(), value);
       }
     }
     if (!map.isEmpty()) {
