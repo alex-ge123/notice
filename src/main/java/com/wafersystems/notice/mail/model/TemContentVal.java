@@ -21,11 +21,11 @@ public class TemContentVal implements Serializable {
   /**
    * 邮件顶部图片URL地址
    */
-  private String imgPathBanner = ParamConstant.getIMAGE_DIRECTORY() + "top_banner.jpg";
+  private String imgPathBanner = ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg";
   /**
    * 邮件底部威思客首页二维码图片地址
    */
-  private String imgPathDimcode = ParamConstant.getIMAGE_DIRECTORY() + "virsical_dimcode.jpg";
+  private String imgPathDimcode = ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg";
 
   private String value1;
   private String value2;
