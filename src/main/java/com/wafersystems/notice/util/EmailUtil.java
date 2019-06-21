@@ -225,14 +225,14 @@ public class EmailUtil {
     return multipart;
   }
 
-  /*
+  /**
    * 模板解析
    * 
    * @param mailBean
    * 
    * @return
    */
-  private String getMessage(MailBean mailBean) throws Exception {
+  public String getMessage(MailBean mailBean) throws Exception {
     StringWriter writer = new StringWriter();
     VelocityContext context;
     try {
@@ -263,7 +263,7 @@ public class EmailUtil {
     }
   }
 
-  /*
+  /**
    * check 邮件
    */
   private boolean checkMailBean(MailBean mailBean) {
