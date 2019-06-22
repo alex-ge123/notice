@@ -32,7 +32,7 @@ public class SmsUtil {
    * @throws IOException IOException
    */
   public static String sendSms(String templetId, String phoneNum, List<String> params,
-      String domain) {
+      String domain, String smsSign) {
     // String url = "https://work.virsical.cn/sms/ability";
     // String clientId = "meeting";
     // String secret = "23cbf2b615184418";
@@ -67,7 +67,7 @@ public class SmsUtil {
     if (params.size() > 5 && StringUtils.isNotBlank(params.get(5))) {
       hashMap.put("value6", params.get(5));
     }
-    hashMap.put("smsSign", ParamConstant.getSMS_SIGN_NAME());// 签名
+    hashMap.put("smsSign", smsSign);// 签名
     hashMap.put("suffix", "false");// 签名是否前缀
     hashMap.put("timestamp", System.currentTimeMillis() + "");// 必须和服务器时间差三分钟以内的时间戳才能通过验证
     String privateKey = "47a31cf3b5bea2e4e9a12659f4181283";

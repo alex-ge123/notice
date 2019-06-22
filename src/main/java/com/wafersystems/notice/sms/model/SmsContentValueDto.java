@@ -16,6 +16,7 @@ public class SmsContentValueDto implements Serializable {
   private String secret;
   private String templateId;
   private String domain;
+  private String smsSign;
   private String calleeNbr;
   private String value1;
   private String value2;
