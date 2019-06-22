@@ -42,7 +42,7 @@ public class SmsUtil {
     url += '/' + clientId + '/' + secret;
     String prefix = "";
     if (phoneNum.indexOf("+") != -1) {
-      if (!phoneNum.substring(0, 3).equals("+86")) {
+      if (!"+86".equals(phoneNum.substring(0, 3))) {
         prefix = phoneNum.substring(0, 3);
       }
       phoneNum = phoneNum.substring(3);

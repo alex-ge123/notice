@@ -73,8 +73,8 @@ public class EmailUtil {
       // 添加第一个body内容
       multipart.addBodyPart(bodyPart);
       // 使用多个body体填充邮件内容。
-      if (mailBean.getTemplate().equals("meeting.vm")
-          || mailBean.getTemplate().equals("virsical.vm")) {
+      if ("meeting.vm".equals(mailBean.getTemplate())
+          || "virsical.vm".equals(mailBean.getTemplate())) {
         message.setContent(this.sendEventEmail(mailBean));
       } else {
         message.setContent(multipart);
