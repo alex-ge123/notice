@@ -18,29 +18,42 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.UUID;
 
-
+/**
+ * 邮件工具类
+ */
 @Slf4j
 @Component
 public class EmailUtil {
 
   @Setter
-  private VelocityEngine velocityEngine; // 模板解析
+  private VelocityEngine velocityEngine;
 
 
   /**
-   * Title: sendMail. Description: 发送邮件收件人地址(多个地址之间使用“,”进行分割)|抄送人地址(多个地址之间使用“,”进行分割)
+   * 发送邮件
+   *
+   * @param mailBean 邮件对象
+   * @throws Exception Exception
    */
   public void send(MailBean mailBean) throws Exception {
     try {
       Properties props = System.getProperties();
+      if (ParamConstant.getDEFAULT_MAIL_PORT() == 465) {
+        // 发送SSL加密邮件
+        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+        props.put("mail.smtp.socketFactory.port", ParamConstant.getDEFAULT_MAIL_PORT());
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "false");
+      }
       // 设置SMTP服务器地址
       props.put("mail.smtp.host", ParamConstant.getDEFAULT_MAIL_HOST());
-   // 设置端口
+      // 设置端口
       props.put("mail.smtp.port", ParamConstant.getDEFAULT_MAIL_PORT());
       // 设置邮件的字符集为GBK
       props.put("mail.mime.charset", ParamConstant.getDEFAULT_MAIL_CHARSET());
@@ -52,14 +65,14 @@ public class EmailUtil {
       MimeMessage message = new MimeMessage(session);
       // 发件人
       message.setFrom(new InternetAddress(ParamConstant.getDEFAULT_MAIL_FROM(),
-          ParamConstant.getDEFAULT_MAIL_MAILNAME()));
+        ParamConstant.getDEFAULT_MAIL_MAILNAME()));
       // 多个发送地址
       message.addRecipients(Message.RecipientType.TO,
-          InternetAddress.parse(mailBean.getToEmails()));
+        InternetAddress.parse(mailBean.getToEmails()));
       // 多个抄送地址
       if (!StrUtil.isEmptyStr(mailBean.getCopyTo())) {
         message.addRecipients(Message.RecipientType.CC,
-            InternetAddress.parse(mailBean.getCopyTo()));
+          InternetAddress.parse(mailBean.getCopyTo()));
       }
       // 邮件主题
       message.setSubject(mailBean.getSubject());
@@ -74,7 +87,7 @@ public class EmailUtil {
       multipart.addBodyPart(bodyPart);
       // 使用多个body体填充邮件内容。
       if ("meeting.vm".equals(mailBean.getTemplate())
-          || "virsical.vm".equals(mailBean.getTemplate())) {
+        || "virsical.vm".equals(mailBean.getTemplate())) {
         message.setContent(this.sendEventEmail(mailBean));
       } else {
         message.setContent(multipart);
@@ -84,12 +97,13 @@ public class EmailUtil {
       // 使用认证模式发送邮件。
       Transport transport = session.getTransport("smtp");
       //设置端口
-      transport.connect(ParamConstant.getDEFAULT_MAIL_HOST(),ParamConstant.getDEFAULT_MAIL_PORT(), ParamConstant.getDEFAULT_MAIL_FROM(),
-          ParamConstant.getDEFAULT_MAIL_PASSWORD());
+      transport.connect(ParamConstant.getDEFAULT_MAIL_HOST(), ParamConstant.getDEFAULT_MAIL_PORT(),
+        ParamConstant.getDEFAULT_MAIL_FROM(),
+        ParamConstant.getDEFAULT_MAIL_PASSWORD());
       transport.sendMessage(message, message.getAllRecipients());
       transport.close();
       log.debug(
-          "mail send success: Subject:" + mailBean.getSubject() + ", TO:" + mailBean.getToEmails());
+        "mail send success: Subject:" + mailBean.getSubject() + ", TO:" + mailBean.getToEmails());
     } catch (Exception ex) {
       log.error("发送邮件异常【" + mailBean.getSubject() + "】", ex);
       throw ex;
@@ -98,7 +112,7 @@ public class EmailUtil {
 
   /**
    * 发送事件邮件(不支持html格式).
-   * 
+   *
    * @param mailBean -
    * @return -
    */
@@ -143,8 +157,8 @@ public class EmailUtil {
    */
 
   /**
-   * Description: 发送会议邀请邮件(支持html格式)
-   * 
+   * 发送会议邀请邮件(支持html格式)
+   *
    * @param mailBean -
    * @throws Exception 异常
    */
@@ -164,9 +178,9 @@ public class EmailUtil {
       SimpleDateFormat resultSim = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       final String endStr = sim.format(cal.getTime());
       mailBean.getTemVal()
-          .setValue1(resultSim.format(Long.parseLong(mailBean.getTemVal().getValue1())));
+        .setValue1(resultSim.format(Long.parseLong(mailBean.getTemVal().getValue1())));
       mailBean.getTemVal()
-          .setValue2(resultSim.format(Long.parseLong(mailBean.getTemVal().getValue2())));
+        .setValue2(resultSim.format(Long.parseLong(mailBean.getTemVal().getValue2())));
       String method;
       Integer status = Integer.parseInt(mailBean.getTemVal().getValue3());
       if (status == 0) {
@@ -181,25 +195,25 @@ public class EmailUtil {
 
       // Exchange发送邮件时，要求正文部分必须放在附件部分的前面，不然会把正文也作为附件一起发送
       bodyPart.setDataHandler(new DataHandler(
-              new ByteArrayDataSource(this.getMessage(mailBean), "text/html;charset=UTF-8")));
+        new ByteArrayDataSource(this.getMessage(mailBean), "text/html;charset=UTF-8")));
       multipart.addBodyPart(bodyPart);
 
       // 在正文后面，增加附件部分，邮件日程提醒是以附件形式实现的
       StringBuilder buffer = new StringBuilder("");
       buffer.append("BEGIN:VCALENDAR\n").append("PRODID:-//Events Calendar//iCal4j 1.0//EN\n")
-          .append("VERSION:2.0\n").append("METHOD:").append(method).append("\nBEGIN:VEVENT\n")
-          // 屏蔽日历时间 "接受"、"暂定"、"拒绝" 按钮
-          .append("ATTENDEE;ROLE=REQ-PARTICIPANT;RSVP=TRUE:MAILTO:")
-          .append(mailBean.getToEmails().contains(ConfConstant.COMMA)
-              ? mailBean.getToEmails().split(ConfConstant.COMMA) : mailBean.getToEmails())
-          .append("\nORGANIZER:MAILTO:").append(ParamConstant.getDEFAULT_MAIL_FROM())
-          .append("\nDTSTART:").append(startStr).append("Z\nDTEND:").append(endStr)
-          .append("Z\nLOCATION:").append(mailBean.getTemVal().getValue7()).append("\nUID:")
-          .append(UUID.randomUUID().toString()).append("\nSEQUENCE:").append(2)
-          .append("\nCATEGORIES:SuccessCentral Reminder\nDESCRIPTION:\n\nSUMMARY:")
-          .append(mailBean.getSubject()).append("\n");
+        .append("VERSION:2.0\n").append("METHOD:").append(method).append("\nBEGIN:VEVENT\n")
+        // 屏蔽日历时间 "接受"、"暂定"、"拒绝" 按钮
+        .append("ATTENDEE;ROLE=REQ-PARTICIPANT;RSVP=TRUE:MAILTO:")
+        .append(mailBean.getToEmails().contains(ConfConstant.COMMA)
+          ? mailBean.getToEmails().split(ConfConstant.COMMA) : mailBean.getToEmails())
+        .append("\nORGANIZER:MAILTO:").append(ParamConstant.getDEFAULT_MAIL_FROM())
+        .append("\nDTSTART:").append(startStr).append("Z\nDTEND:").append(endStr)
+        .append("Z\nLOCATION:").append(mailBean.getTemVal().getValue7()).append("\nUID:")
+        .append(UUID.randomUUID().toString()).append("\nSEQUENCE:").append(2)
+        .append("\nCATEGORIES:SuccessCentral Reminder\nDESCRIPTION:\n\nSUMMARY:")
+        .append(mailBean.getSubject()).append("\n");
       buffer.append("PRIORITY:5\nCLASS:PUBLIC\nBEGIN:VALARM\nTRIGGER:-PT10M\nREPEAT:3\nDURATION:"
-          + "PT5M\nACTION:DISPLAY\nDESCRIPTION:Reminder\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR");
+        + "PT5M\nACTION:DISPLAY\nDESCRIPTION:Reminder\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR");
       String contentType;
       if (status == 0) {
         contentType = "text/calendar;method=REQUEST;charset=UTF-8";
@@ -215,7 +229,7 @@ public class EmailUtil {
 
       MimeBodyPart icalAttachment = new MimeBodyPart();
       icalAttachment
-          .setDataHandler(new DataHandler(new ByteArrayDataSource(buffer.toString(), contentType)));
+        .setDataHandler(new DataHandler(new ByteArrayDataSource(buffer.toString(), contentType)));
       multipart.addBodyPart(icalAttachment);
       // multipart.setSubType("related"); // 以附件形式显示
     } catch (Exception ex) {
@@ -227,9 +241,8 @@ public class EmailUtil {
 
   /**
    * 模板解析
-   * 
+   *
    * @param mailBean
-   * 
    * @return
    */
   public String getMessage(MailBean mailBean) throws Exception {
@@ -273,17 +286,17 @@ public class EmailUtil {
     }
     if (StrUtil.isEmptyStr(mailBean.getSubject())) {
       log.warn("Warn mailBean.getSubject() is null (Thread name=" + Thread.currentThread().getName()
-          + ") ");
+        + ") ");
       return false;
     }
     if (mailBean.getToEmails() == null) {
       log.warn("Warn mailBean.getToEmails() is null (Thread name="
-          + Thread.currentThread().getName() + ") ");
+        + Thread.currentThread().getName() + ") ");
       return false;
     }
     if (StrUtil.isEmptyStr(mailBean.getTemplate()) && StrUtil.isNullObject(mailBean.getData())) {
       log.warn("Warn mailBean.getTemplate() is null (Thread name="
-          + Thread.currentThread().getName() + ") ");
+        + Thread.currentThread().getName() + ") ");
       return false;
     }
     return true;
