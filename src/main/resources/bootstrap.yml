@@ -1,5 +1,6 @@
 server:
   port: 8082
+
 spring:
   application:
     name: virsical-notice
@@ -42,17 +43,7 @@ eureka:
     # 表示eureka client间隔多久去拉取服务注册信息，默认为30秒
     registry-fetch-interval-seconds: 5
 
-# 加解密根密码
-jasypt:
-  encryptor:
-    password: wafer
-
+# 邮件模板路径
 mail:
   template:
-    path: d:/vms
-
-# 日志文件
-logging:
-  file: ${user.dir}/logs/${spring.application.name}-${server.port}.log
-  level:
-    root: info
+    path: d:/vms/
