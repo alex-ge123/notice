@@ -68,11 +68,11 @@ public class SmsSendController extends BaseController {
         if (bean.getCalleeNbr().contains(ConfConstant.COMMA)) {
           String[] no = bean.getCalleeNbr().split(ConfConstant.COMMA);
           for (String temp : no) {
-            result = SmsUtil.sendSms(bean.getTemplateId(), temp, params, "");
+            result = SmsUtil.sendSms(bean.getTemplateId(), temp, params, bean.getDomain(), bean.getSmsSign());
             log.debug("电话号码" + temp + "发送短信的结果为：" + result);
           }
         } else {
-          result = SmsUtil.sendSms(bean.getTemplateId(), bean.getCalleeNbr(), params, "");
+          result = SmsUtil.sendSms(bean.getTemplateId(), bean.getCalleeNbr(), params, bean.getDomain(), bean.getSmsSign());
           log.debug("电话号码" + bean.getCalleeNbr() + "发送短信的结果为：" + result);
         }
         if (ConfConstant.RESULT_SUCCESS.toString().equals(result)) {
