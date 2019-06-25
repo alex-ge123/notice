@@ -4,10 +4,7 @@ import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
-import com.wafersystems.notice.util.ConfConstant;
-import com.wafersystems.notice.util.EmailUtil;
-import com.wafersystems.notice.util.ParamConstant;
-import com.wafersystems.notice.util.StrUtil;
+import com.wafersystems.notice.util.*;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.AllArgsConstructor;
@@ -27,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -228,7 +226,7 @@ public class MailSendController extends BaseController {
    */
   @RequestMapping("/testSend")
   public Object testMailSend(@RequestParam String title, @RequestParam String toMail, String copyTo,
-                             @RequestParam String tempName, @RequestParam String[] params,
+                             @RequestParam String tempName, String[] params,
                              @RequestParam String lang) throws Exception {
     log.info("发送测试邮件【{}】", title);
 //    con.setValue1(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");// 开始时间
@@ -248,6 +246,26 @@ public class MailSendController extends BaseController {
 //    // WebEx会议URL
 //    con.setValue15("https://bkdev.virsical.cn:8499/smartmeeting/smart/third/jumpToReceipt?meetingId=32&userId" +
 //      "=zhangyi&type=0");// 回执URL
+
+    // 如果没传模板参数，自动创建参数
+    if (params == null) {
+      List<String> list = new ArrayList<>();
+      if ("meeting.vm".equals(tempName)
+        || "virsical.vm".equals(tempName)) {
+        list.add(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");
+        list.add(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");
+        list.add("-1");
+        for (int i = 4; i < 20; i++) {
+          list.add("参数" + i);
+        }
+      } else {
+        for (int i = 1; i < 25; i++) {
+          list.add("参数" + i);
+        }
+      }
+      params = new String[list.size()];
+      list.toArray(params);
+    }
     sendMail(title, toMail, copyTo, tempName, getTemContentVal(params), lang);
     return R.ok();
   }
