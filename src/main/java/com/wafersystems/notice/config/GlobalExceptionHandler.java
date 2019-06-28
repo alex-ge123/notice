@@ -4,11 +4,11 @@ import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.exception.BusinessException;
 import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 全局异常处理
@@ -16,17 +16,38 @@ import javax.servlet.http.HttpServletRequest;
  * @author tandk
  * @date 2019/1/18
  */
-@ControllerAdvice
 @Slf4j
-@ResponseBody
+@RestControllerAdvice
 public class GlobalExceptionHandler {
-  @ExceptionHandler(value = Exception.class)
-  public Object exceptionHandler(HttpServletRequest request, Exception exception) {
-    if (exception instanceof BusinessException) {
-      log.warn("【业务异常】", exception);
-    } else {
-      log.error("【系统异常】", exception);
-    }
-    return R.builder().code(CommonConstants.FAIL).msg(exception.getMessage()).build();
+  /**
+   * 全局异常.
+   *
+   * @param e the e
+   * @return R
+   */
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public R handleGlobalException(Exception e) {
+    log.error("【系统异常】{}", e.getMessage(), e);
+    return R.builder()
+      .msg(e.getLocalizedMessage())
+      .code(CommonConstants.FAIL)
+      .build();
+  }
+
+  /**
+   * BusinessException
+   *
+   * @param e the e
+   * @return R
+   */
+  @ExceptionHandler(BusinessException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public R handleBusinessException(BusinessException e) {
+    return R.builder()
+      .msg(e.getLocalizedMessage())
+      .code(CommonConstants.FAIL)
+      .build();
   }
 }
+

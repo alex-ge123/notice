@@ -41,7 +41,3 @@ eureka:
     # 表示eureka client间隔多久去拉取服务注册信息，默认为30秒
     registry-fetch-interval-seconds: 5
 
-# 邮件模板路径
-mail:
-  template:
-    path: d:/vms/
