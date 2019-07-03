@@ -1,7 +1,7 @@
 package com.wafersystems.notice.sms.controller;
 
 import com.wafersystems.notice.base.controller.BaseController;
-import com.wafersystems.notice.sms.model.SmsContentValueDto;
+import com.wafersystems.notice.sms.model.SmsContentValueDTO;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.notice.util.SmsUtil;
@@ -40,7 +40,7 @@ public class SmsSendController extends BaseController {
    */
   @Inner
   @RequestMapping(value = "/sendSms", method = RequestMethod.POST)
-  public Object sendSms(@RequestBody SmsContentValueDto bean, String lang) {
+  public Object sendSms(@RequestBody SmsContentValueDTO bean, String lang) {
     try {
       if (!ParamConstant.isSMS_SWITCH()) {
         log.warn("未配置短信服务调用地址！");

@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author wafer
  */
 @Data
-public class SmsContentValueDto implements Serializable {
+public class SmsContentValueDTO implements Serializable {
 
   private String clientId;
   private String secret;
