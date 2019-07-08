@@ -113,11 +113,12 @@ public class MailSendController extends BaseController {
     Locale locale = ParamConstant.getLocaleByStr(lang != null ? lang : "zh_CN");
     // 创建邮件对象
     MailBean mailBean = new MailBean();
-    mailBean.setSubject(title);
-    mailBean.setToEmails(toMail);
-    mailBean.setCopyTo(copyTo);
+    mailBean.setSubject("这是一个邮件标题");
+    mailBean.setToEmails("收件人");
+    mailBean.setCopyTo("抄送人");
     mailBean.setType(ConfConstant.TypeEnum.VM);
     mailBean.setTemplate(tempName.contains(".vm") ? tempName : tempName + ".vm");
+    params = getTestParams(tempName, params);
     TemContentVal con = getTemContentVal(params);
     con.setLocale(locale);
     con.setResource(resource);
@@ -246,7 +247,20 @@ public class MailSendController extends BaseController {
 //    // WebEx会议URL
 //    con.setValue15("https://bkdev.virsical.cn:8499/smartmeeting/smart/third/jumpToReceipt?meetingId=32&userId" +
 //      "=zhangyi&type=0");// 回执URL
+    params = getTestParams(tempName, params);
 
+    sendMail(title, toMail, copyTo, tempName, getTemContentVal(params), lang);
+    return R.ok();
+  }
+
+  /**
+   * 获取邮件模板测试参数
+   *
+   * @param tempName 模板名称
+   * @param params   参数
+   * @return 参数
+   */
+  private String[] getTestParams(String tempName, String[] params) {
     // 如果没传模板参数，自动创建参数
     if (params == null) {
       List<String> list = new ArrayList<>();
@@ -266,8 +280,7 @@ public class MailSendController extends BaseController {
       params = new String[list.size()];
       list.toArray(params);
     }
-    sendMail(title, toMail, copyTo, tempName, getTemContentVal(params), lang);
-    return R.ok();
+    return params;
   }
 
   /**

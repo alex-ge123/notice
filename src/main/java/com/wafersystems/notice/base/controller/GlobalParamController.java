@@ -1,6 +1,7 @@
 package com.wafersystems.notice.base.controller;
 
 import com.wafersystems.notice.base.model.GlobalParameter;
+import com.wafersystems.notice.base.model.ParameterDTO;
 import com.wafersystems.notice.base.service.GlobalParamService;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
@@ -111,20 +112,18 @@ public class GlobalParamController extends BaseController {
   /**
    * 设置某个参数值
    *
-   * @param paramKey   参数key
-   * @param paramValue 参数值
-   * @param lang       语言
+   * @param param  参数对象
    * @return Object
    */
   @PostMapping("/parameter/set")
-  public R set(@RequestParam String paramKey, @RequestParam String paramValue, @RequestParam String lang) {
-    GlobalParameter gp = globalParamService.getSystemParamByParamKey(paramKey);
+  public R set(@RequestBody ParameterDTO param) {
+    GlobalParameter gp = globalParamService.getSystemParamByParamKey(param.getParamKey());
     if (gp == null) {
-      return R.fail("当前配置参数key不存在：" + paramKey);
+      return R.fail("当前配置参数key不存在：" + param.getParamKey());
     }
-    gp.setParamValue(stringEncryptor.encrypt(paramValue));
+    gp.setParamValue(stringEncryptor.encrypt(param.getParamValue()));
     globalParamService.save(gp);
-    initSysParam(lang);
+    initSysParam(param.getLang());
     return R.ok();
   }
 }
