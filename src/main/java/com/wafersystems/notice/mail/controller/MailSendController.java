@@ -1,6 +1,7 @@
 package com.wafersystems.notice.mail.controller;
 
 import com.wafersystems.notice.base.controller.BaseController;
+import com.wafersystems.notice.base.model.TestSendMailDTO;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
@@ -222,14 +223,12 @@ public class MailSendController extends BaseController {
   /**
    * 测试发送邮件
    *
-   * @param title 标题
+   * @param testSendMailDTO 测试发送邮件对象
    * @return Object
    */
   @RequestMapping("/testSend")
-  public Object testMailSend(@RequestParam String title, @RequestParam String toMail, String copyTo,
-                             @RequestParam String tempName, String[] params,
-                             @RequestParam String lang) throws Exception {
-    log.info("发送测试邮件【{}】", title);
+  public Object testMailSend(@RequestBody TestSendMailDTO testSendMailDTO) throws Exception {
+    log.info("发送测试邮件【{}】", testSendMailDTO.getTitle());
 //    con.setValue1(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");// 开始时间
 //    con.setValue2(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");// 结束时间
 //    con.setValue3("-1");// 状态(-1.纯文本信息,0.邮件事件[带邀请按钮],1.邮件事件[无按钮])
@@ -247,9 +246,8 @@ public class MailSendController extends BaseController {
 //    // WebEx会议URL
 //    con.setValue15("https://bkdev.virsical.cn:8499/smartmeeting/smart/third/jumpToReceipt?meetingId=32&userId" +
 //      "=zhangyi&type=0");// 回执URL
-    params = getTestParams(tempName, params);
-
-    sendMail(title, toMail, copyTo, tempName, getTemContentVal(params), lang);
+    sendMail(testSendMailDTO.getTitle(), testSendMailDTO.getToMail(),null, testSendMailDTO.getTempName(),
+      getTemContentVal(getTestParams(testSendMailDTO.getTempName(), null)), testSendMailDTO.getLang());
     return R.ok();
   }
 
@@ -264,8 +262,8 @@ public class MailSendController extends BaseController {
     // 如果没传模板参数，自动创建参数
     if (params == null) {
       List<String> list = new ArrayList<>();
-      if ("meeting.vm".equals(tempName)
-        || "virsical.vm".equals(tempName)) {
+      if ("meeting".equals(tempName)
+        || "virsical".equals(tempName)) {
         list.add(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");
         list.add(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");
         list.add("-1");
