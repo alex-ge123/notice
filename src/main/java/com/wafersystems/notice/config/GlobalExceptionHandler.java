@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
    * @return R
    */
   @ExceptionHandler(BusinessException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
   public R handleBusinessException(BusinessException e) {
     return R.builder()
       .msg(e.getLocalizedMessage())

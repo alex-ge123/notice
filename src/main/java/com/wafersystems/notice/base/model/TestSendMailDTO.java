@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * 测试发送邮件对象
+ * @author wafer
  */
 @Data
 public class TestSendMailDTO implements Serializable {

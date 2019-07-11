@@ -51,11 +51,6 @@ public class MailSendController extends BaseController {
   @Autowired
   private EmailUtil mailUtil;
 
-  @PostMapping("/aa")
-  public R aa(@RequestParam String aa) {
-    return R.ok(aa);
-  }
-
   /**
    * 获取所有邮件模板
    *
@@ -147,42 +142,37 @@ public class MailSendController extends BaseController {
    */
   @Inner
   @RequestMapping(value = "/sendMail", method = RequestMethod.POST)
-  public Object sendMail(@RequestParam String subject, @RequestParam String toMail, String copyTo,
-                         @RequestParam String tempName,
-                         @RequestBody TemContentVal con, String lang) {
+  public R sendMail(@RequestParam String subject, @RequestParam String toMail, String copyTo,
+                    @RequestParam String tempName,
+                    @RequestBody TemContentVal con, String lang) {
     Locale locale = ParamConstant.getLocaleByStr(lang);
     if (!ParamConstant.isEMAIL_SWITCH()) {
       log.warn("邮件服务参数未配置，将忽略主题【" + subject + "】的邮件发送");
-      return returnBackMap(resource.getMessage("msg.msg.emailServerNull", null, locale),
-        ConfConstant.RESULT_FAIL);
+      return R.fail(resource.getMessage("msg.msg.emailServerNull", null, locale));
     }
+    if (StrUtil.isEmptyStr(subject)) {
+      return R.fail(resource.getMessage("msg.email.subjectNull", null, locale));
+    } else if (StrUtil.isEmptyStr(toMail)) {
+      return R.fail(resource.getMessage("msg.email.toNull", null, locale));
+    } else if (StrUtil.isEmptyStr(tempName)) {
+      return R.fail(resource.getMessage("msg.email.temNull", null, locale));
+    }
+    if (StrUtil.isNullObject(con)) {
+      con = new TemContentVal();
+    }
+    con.setLogo(
+      StrUtil.isEmptyStr(con.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : con.getLogo());
+    log.debug("logo地址为：" + con.getLogo());
+    con.setLocale(locale);
+    con.setResource(resource);
+    con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
     try {
-      if (StrUtil.isEmptyStr(subject)) {
-        return returnBackMap(resource.getMessage("msg.email.subjectNull", null, locale),
-          ConfConstant.RESULT_FAIL);
-      } else if (StrUtil.isEmptyStr(toMail)) {
-        return returnBackMap(resource.getMessage("msg.email.toNull", null, locale),
-          ConfConstant.RESULT_FAIL);
-      } else if (StrUtil.isEmptyStr(tempName)) {
-        return returnBackMap(resource.getMessage("msg.email.temNull", null, locale),
-          ConfConstant.RESULT_FAIL);
-      }
-      if (StrUtil.isNullObject(con)) {
-        con = new TemContentVal();
-      }
-      con.setLogo(
-        StrUtil.isEmptyStr(con.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : con.getLogo());
-      log.debug("logo地址为：" + con.getLogo());
-      con.setLocale(locale);
-      con.setResource(resource);
-      con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
       taskExecutor.execute(new MailTask(mailNoticeService, StrUtil.regStr(subject), toMail, copyTo,
         tempName, con, lang));
-      return returnBackMap(null, ConfConstant.RESULT_SUCCESS);
+      return R.ok();
     } catch (Exception ex) {
       log.error("发送邮件失败：", ex);
-      return returnBackMap(resource.getMessage("msg.email.sendError", null, locale),
-        ConfConstant.RESULT_FAIL);
+      return R.fail(resource.getMessage("msg.email.sendError", null, locale));
     }
   }
 
@@ -227,7 +217,7 @@ public class MailSendController extends BaseController {
    * @return Object
    */
   @RequestMapping("/testSend")
-  public Object testMailSend(@RequestBody TestSendMailDTO testSendMailDTO) throws Exception {
+  public R testMailSend(@RequestBody TestSendMailDTO testSendMailDTO) throws Exception {
     log.info("发送测试邮件【{}】", testSendMailDTO.getTitle());
 //    con.setValue1(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");// 开始时间
 //    con.setValue2(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");// 结束时间
@@ -246,7 +236,7 @@ public class MailSendController extends BaseController {
 //    // WebEx会议URL
 //    con.setValue15("https://bkdev.virsical.cn:8499/smartmeeting/smart/third/jumpToReceipt?meetingId=32&userId" +
 //      "=zhangyi&type=0");// 回执URL
-    sendMail(testSendMailDTO.getTitle(), testSendMailDTO.getToMail(),null, testSendMailDTO.getTempName(),
+    sendMail(testSendMailDTO.getTitle(), testSendMailDTO.getToMail(), null, testSendMailDTO.getTempName(),
       getTemContentVal(getTestParams(testSendMailDTO.getTempName(), null)), testSendMailDTO.getLang());
     return R.ok();
   }
