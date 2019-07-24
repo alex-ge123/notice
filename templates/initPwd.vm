@@ -85,7 +85,7 @@
                     <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
                         'msg.email.content.maohao')</strong>
 
-                    <p class="firTab">$!{TemVal.value3}<a
+                    <p class="firTab">$!{TemVal.value4}<a
                             href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
 
                     <p class="firTab">#message('msg.email.content.virsical')</p>
