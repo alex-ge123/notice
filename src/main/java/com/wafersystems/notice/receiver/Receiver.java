@@ -50,7 +50,7 @@ public class Receiver {
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
         MailDTO mailDTO = JSON.parseObject(messageDTO.getData().toString(), MailDTO.class);
-        System.out.println(mailDTO.toString());
+        log.info("邮件消息：[{}]", mailDTO.toString());
 
         Locale locale = ParamConstant.getLocaleByStr(mailDTO.getLang());
         if (!ParamConstant.isEMAIL_SWITCH()) {
@@ -103,31 +103,27 @@ public class Receiver {
     log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, message);
     try {
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
-      if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
-        SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
-        System.out.println(smsDTO.toString());
-        if (!ParamConstant.isSMS_SWITCH()) {
-          log.warn("未配置短信服务调用地址！");
-          return;
+      SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
+      log.info("短信消息：[{}]", smsDTO.toString());
+      if (!ParamConstant.isSMS_SWITCH()) {
+        log.warn("未配置短信服务调用地址！");
+        return;
+      }
+      if (smsDTO.getPhoneList().isEmpty()) {
+        log.warn("接收短信的手机号不能为空！");
+        return;
+      }
+      String result;
+      if (smsDTO.getPhoneList().size() > 1) {
+        for (String phone : smsDTO.getPhoneList()) {
+          result = SmsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
+            smsDTO.getSmsSign());
+          log.info("电话号码" + phone + "发送短信的结果为：" + result);
         }
-        if (smsDTO.getPhoneList().isEmpty()) {
-          log.warn("接收短信的手机号不能为空！");
-          return;
-        }
-        String result;
-        if (smsDTO.getPhoneList().size() > 1) {
-          for (String phone : smsDTO.getPhoneList()) {
-            result = SmsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
-              smsDTO.getSmsSign());
-            log.info("电话号码" + phone + "发送短信的结果为：" + result);
-          }
-        } else if (smsDTO.getPhoneList().size() == 1) {
-          result = SmsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
-            smsDTO.getDomain(), smsDTO.getSmsSign());
-          log.info("电话号码" + smsDTO.getPhoneList().get(0) + "发送短信的结果为：" + result);
-        }
-      } else {
-        log.info("消息类型未识别，无法发送短信");
+      } else if (smsDTO.getPhoneList().size() == 1) {
+        result = SmsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
+          smsDTO.getDomain(), smsDTO.getSmsSign());
+        log.info("电话号码" + smsDTO.getPhoneList().get(0) + "发送短信的结果为：" + result);
       }
     } catch (Exception e) {
       log.info("消息监听处理异常", e);
