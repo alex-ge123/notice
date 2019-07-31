@@ -102,29 +102,29 @@
                 <td class="left">套餐名称：</td>
                 <td colspan="2">$!{TemVal.value3}</td>
             </tr>
-            <tr>
-                <td class="left">有效期限：</td>
-                <td colspan="2">$!{TemVal.value4}</td>
-            </tr>
+##            <tr>
+##                <td class="left">有效期限：</td>
+##                <td colspan="2">$!{TemVal.value4}</td>
+##            </tr>
             <tr>
                 <td class="left">登陆账号：</td>
-                <td colspan="2">$!{TemVal.value5}</td>
+                <td colspan="2">$!{TemVal.value4}</td>
             </tr>
-            <tr>
-                <td class="left">默认密码：</td>
-                <td colspan="2">$!{TemVal.value6}</td>
-            </tr>
-            <tr>
-                <td class="left">后台地址：</td>
-                <td colspan="2">$!{TemVal.value7}</td>
-            </tr>
-            <tr>
-                <td class="left">访客地址：</td>
-                <td colspan="2">$!{TemVal.value8}</td>
-            </tr>
+##            <tr>
+##                <td class="left">默认密码：</td>
+##                <td colspan="2">$!{TemVal.value6}</td>
+##            </tr>
+##            <tr>
+##                <td class="left">后台地址：</td>
+##                <td colspan="2">$!{TemVal.value7}</td>
+##            </tr>
+##            <tr>
+##                <td class="left">访客地址：</td>
+##                <td colspan="2">$!{TemVal.value8}</td>
+##            </tr>
             <tr>
                 <td class="left">开通时间：</td>
-                <td colspan="2">$!{TemVal.value9}</td>
+                <td colspan="2">$!{TemVal.value5}</td>
             </tr>
         </table>
     </div>
