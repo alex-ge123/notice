@@ -39,6 +39,7 @@ public class SmsUtil {
     String url = ParamConstant.getURL_SMS_SERVER();
     String clientId = ParamConstant.getURL_SMS_CLIENTID();
     String secret = ParamConstant.getURL_SMS_SECRET();
+    log.info("短信42:{}",url);
     url += '/' + clientId + '/' + secret;
     String prefix = "";
     if (phoneNum.indexOf("+") != -1) {
@@ -82,6 +83,7 @@ public class SmsUtil {
     }
     sign = SecurityUtils.calSignatureMap(hashMap);
     url = url + sign;
+    log.info("短信56:{}",url);
     HttpResponse response = null;
     if (url.startsWith("https")) {
       try {
@@ -95,6 +97,7 @@ public class SmsUtil {
         response = httpsClient.execute(method);
       } catch (Exception ex) {
         ex.printStackTrace();// 异常信息
+        log.info("短信100:{}",ex.getMessage());
       }
     } else {
       try {
@@ -108,8 +111,10 @@ public class SmsUtil {
         response = httpClient.execute(method);
       } catch (Exception ex) {
         ex.printStackTrace();// 异常信息
+        log.info("异常114:{}",ex.getMessage());
       }
     }
+
     if (response != null) {
       if (response.getStatusLine() != null && response.getStatusLine().getStatusCode() == 200) {
         return "0";
@@ -120,8 +125,10 @@ public class SmsUtil {
           log.error(EntityUtils.toString(response.getEntity()));
         } catch (ParseException pe) {
           pe.printStackTrace();// 异常信息
+          log.info("短信128:{}",pe.getMessage());
         } catch (IOException io) {
           io.printStackTrace();// 异常信息
+          log.info("短信131:{}",io.getMessage());
         }
       }
     }
