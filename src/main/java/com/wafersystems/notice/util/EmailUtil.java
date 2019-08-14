@@ -26,6 +26,7 @@ import java.util.UUID;
 
 /**
  * 邮件工具类
+ * @author wafer
  */
 @Slf4j
 @Component
