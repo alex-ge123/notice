@@ -26,6 +26,7 @@ import java.util.UUID;
 
 /**
  * 邮件工具类
+ * @author wafer
  */
 @Slf4j
 @Component
@@ -86,7 +87,7 @@ public class EmailUtil {
       // 添加第一个body内容
       multipart.addBodyPart(bodyPart);
       // 使用多个body体填充邮件内容。
-      if ("meeting.vm".equals(mailBean.getTemplate())
+      if ("smtMeeting.vm".equals(mailBean.getTemplate())
         || "virsical.vm".equals(mailBean.getTemplate())) {
         message.setContent(this.sendEventEmail(mailBean));
       } else {
