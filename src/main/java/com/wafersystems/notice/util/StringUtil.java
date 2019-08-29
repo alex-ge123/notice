@@ -2,10 +2,8 @@ package com.wafersystems.notice.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.oro.text.regex.*;
-import sun.misc.BASE64Decoder;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -555,24 +553,6 @@ public class StringUtil {
       }
     }
     return source;
-  }
-
-  /**
-   * Base64解密.
-   * 
-   * @param content -
-   * @return -
-   */
-  public static String decryBase64(String content) {
-    try {
-      if (content.contains(" ") && !isEmptyStr(content)) {
-        content = content.replaceAll(" ", "\\+");
-      }
-      return new String(new BASE64Decoder().decodeBuffer(content), ENCODING_UTF8);
-    } catch (IOException ioe) {
-      log.error("解密失败：", ioe);
-      return content;
-    }
   }
 
   /**

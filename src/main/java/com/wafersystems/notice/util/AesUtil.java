@@ -1,8 +1,7 @@
 package com.wafersystems.notice.util;
 
+import cn.hutool.core.codec.Base64;
 import lombok.extern.slf4j.Slf4j;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -10,6 +9,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
 /**
@@ -177,7 +177,7 @@ public final class AesUtil {
    */
   public static String encryptBase64(String content) throws Exception {
     try {
-      return new BASE64Encoder().encode(content.getBytes(CHARSET));
+      return Base64.encode(content.getBytes(CHARSET));
     } catch (Exception exception) {
       log.error("加密失败", exception);
       throw exception;
@@ -192,20 +192,10 @@ public final class AesUtil {
    */
   public static String decryptBase64(String content) {
     try {
-      return new String(new BASE64Decoder().decodeBuffer(content), CHARSET);
+      return new String(Base64.decode(content.getBytes(CHARSET)), StandardCharsets.UTF_8);
     } catch (Exception exception) {
       log.error("解密失败", exception);
       return content;
     }
   }
-  
-//  /**
-//   *测试主函数.
-//   */
-//  public static void main(String[] args) {
-//    String test = decryptBase64("5oKo5aW9IFvnpZ0g5bCP5biFXSzmj5DphpLmgqjmnInkuIDku73mnInlhbNb"
-//        + "5b6q546v5Lya6K6u5rWL6K+VMl3nmoTlj5bmtojpgJrnn6XjgILkvJrorq7lnLDngrnvvJpb5rWL6K+V"
-//        + "XeS7peWPiuaXtumXtO+8mlsyMDE3LTAzLTE3IDE1OjAwIH4gMTU6MTVd44CC");
-//    System.out.println(test);
-//  }
 }
