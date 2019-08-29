@@ -87,54 +87,27 @@
     </style>
 </head>
 <body>
-
 <div class="main">
     <div class="header"><img src="$!{TemVal.logo}" alt=""></div>
     <div class="container">
         <div class="page-title">$!{TemVal.value1}</div>
-        <div class="mail-wrap">$!{TemVal.value10}</div>
+        <div class="mail-wrap">$!{TemVal.value2}</div>
         <table class="mail-container">
             <tr>
-                <td class="left">公司名称：</td>
-                <td colspan="2">$!{TemVal.value2}</td>
-            </tr>
-            <tr>
-                <td class="left">套餐名称：</td>
-                <td colspan="2">$!{TemVal.value3}</td>
-            </tr>
-        ##            <tr>
-        ##                <td class="left">有效期限：</td>
-        ##                <td colspan="2">$!{TemVal.value4}</td>
-        ##            </tr>
-            <tr>
-                <td class="left">登陆账号：</td>
-                <td colspan="2">$!{TemVal.value4}</td>
-            </tr>
-        ##            <tr>
-        ##                <td class="left">默认密码：</td>
-        ##                <td colspan="2">$!{TemVal.value6}</td>
-        ##            </tr>
-        ##            <tr>
-        ##                <td class="left">后台地址：</td>
-        ##                <td colspan="2">$!{TemVal.value7}</td>
-        ##            </tr>
-        ##            <tr>
-        ##                <td class="left">访客地址：</td>
-        ##                <td colspan="2">$!{TemVal.value8}</td>
-        ##            </tr>
-            <tr>
-                <td class="left">开通时间：</td>
-                <td colspan="2">$!{TemVal.value5}</td>
+                <td class="left">$!{TemVal.value3}</td>
             </tr>
         </table>
+        <div class="mail-wrap">$!{TemVal.value4}</div>
     </div>
     <div class="footer">
         <table class="w100">
             <tr>
-                <td class="lh150">#message('msg.email.content.common.companyName')<br/>#message('msg.email.content.common.askBeforeSale')400-685-3160<br/>#message('msg.email.content.common.webSite')<a href="http://www.virsical.com" class="link"
-                                                                                                                                                                                                         target="_blank">www.virsical.com</a>
+                <td class="lh150">#message('msg.email.content.common.companyName')<br/>#message(
+                    'msg.email.content.common.askBeforeSale')400-685-3160<br/>#message(
+                    'msg.email.content.common.webSite')<a href="http://www.virsical.com" class="link"
+                                                          target="_blank">www.virsical.com</a>
                 </td>
-                <td align="right"><img src="$!{TemVal.imageDirectory}/virsical_dimcode.jpg" width="60" height="60" alt=""></td>
+                <td align="right"><img src="$!{TemVal.imageDirectory}/virsical_dimcode.jpg" alt=""></td>
             </tr>
         </table>
     </div>
