@@ -65,12 +65,43 @@
 </head>
 
 <body>
-<table width="80%" cellspacing="0" cellpadding="0" border="0"
+<div class="main">
+    <div class="header"><img src="$!{TemVal.logo}" alt=""></div>
+    <div class="container">
+        <table class="mail-container">
+            <tr>
+                <td class="left">
+                    <div>
+                        <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
+                            'msg.email.content.maohao')</strong>
+
+                        <p class="firTab">$!{TemVal.value4}<a
+                                href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
+
+                        <p class="firTab">#message('msg.email.content.virsical')</p>
+
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="footer">
+        <table class="w100">
+            <tr>
+                <td class="lh150">#message('msg.email.content.common.companyName')<br/>#message('msg.email.content.common.askBeforeSale')400-685-3160<br/>#message('msg.email.content.common.webSite')<a href="http://www.virsical.com" class="link"
+                                                                                                                                                                                                         target="_blank">www.virsical.com</a>
+                </td>
+                <td align="right"><img src="$!{TemVal.imageDirectory}/virsical_dimcode.jpg" width="60" height="60" alt=""></td>
+            </tr>
+        </table>
+    </div>
+</div>
+#*<table width="80%" cellspacing="0" cellpadding="0" border="0"
        align="center"
        style="-webkit-font-smoothing: antialiased; font-family: '微软雅黑', 'Helvetica Neue', sans-serif, SimHei; padding: 35px 40px; margin: 25px auto; background: rgb(247, 246, 242); border-radius: 5px">
     <tbody>
     <tr>
-        <td style="color: #000;"><img width="200px" height="35px" alt="$!{TemVal.value3}" src="$!{TemVal.logo}"/></td>
+        <td style="color: #000;"><img width="auto" height="40px" alt="$!{TemVal.value3}" src="$!{TemVal.logo}"/></td>
     </tr>
     <tr>
         <td style="padding: 0 20px">
@@ -99,7 +130,7 @@
             'msg.email.content.virsicalSuj')</td>
     </tr>
     </tbody>
-</table>
+</table>*#
 <br>
 <br>
 </body>
