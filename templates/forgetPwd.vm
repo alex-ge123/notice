@@ -2,104 +2,122 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base target="_blank">
-    <style type="text/css">
-        ::-webkit-scrollbar {
-            display: none;
-        }
-    </style>
-    <style type="text/css" id="cloudAttachStyle">
-        #divNeteaseBigAttach, #divNeteaseBigAttach_bak {
-            display: none;
-        }
-    </style>
-    <style type="text/css">
-        body {
-            font-size: 10.5pt;
-            font-family: arial, verdana, sans-serif;
-            line-height: 1.666;
-            padding: 0;
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <style>
+        * {
             margin: 0;
-            overflow: auto;
-            white-space: normal;
-            word-wrap: break-word;
-            min-height: 100px
-        }
-
-        td, input, button, select, body {
-            font-family: Helvetica, 'Microsoft Yahei', verdana
-        }
-
-        pre {
-            white-space: pre-wrap;
-            white-space: -moz-pre-wrap;
-            white-space: -pre-wrap;
-            white-space: -o-pre-wrap;
-            word-wrap: break-word;
-            width: 95%
-        }
-
-        th, td {
-            font-family: arial, verdana, sans-serif;
-            line-height: 1.666
+            padding: 0;
         }
 
         img {
-            border: 0
+            border: 0;
         }
 
-        header, footer, section, aside, article, nav, hgroup, figure, figcaption {
-            display: block
+        .main {
+            width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #dedede;
+            font-family: 微软雅黑;
         }
 
-        .firTab {
-            text-indent: 2em
+        .container {
+            margin: 20px;
         }
-    </style>
 
-    <style type="text/css" id="ntes_link_color">
-        a, td a {
-            color: #003399
+        .page-title {
+            border-bottom: #d4d6d5 solid 2px;
+            font-size: 20px;
+            line-height: 3;
+            font-weight: bold
+        }
+
+        .mail-wrap {
+            font-size: 16px;
+            margin: 25px 0;
+        }
+
+        .mail-container {
+            line-height: 2.5;
+            width: 100%;
+        }
+
+        .mail-container td {
+            padding: 5px 10px;
+            color: #57585a;
+        }
+
+        .mail-container td.left {
+            width: 120px;
+            text-align: right;
+            color: #888888;
+        }
+
+        .code {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.5;
+            color: #55595a;
+        }
+
+        .footer {
+            background: #d8d8d8;
+            padding: 10px 20px;
+        }
+
+        .link {
+            text-decoration: none;
+            color: #1212ee;
+        }
+
+        .lh150 {
+            line-height: 1.5;
+        }
+
+        .w100 {
+            width: 100%;
+        }
+
+        .fb {
+            font-weight: bold;
         }
     </style>
 </head>
-
 <body>
-<table width="80%" cellspacing="0" cellpadding="0" border="0"
-       align="center"
-       style="-webkit-font-smoothing: antialiased; font-family: '微软雅黑', 'Helvetica Neue', sans-serif, SimHei; padding: 35px 40px; margin: 25px auto; background: rgb(247, 246, 242); border-radius: 5px">
-    <tbody>
-    <tr>
-        <td style="color: #000;"><img width="200px" height="35px" alt="$!{TemVal.value3}" src="$!{TemVal.logo}"/></td>
-    </tr>
-    <tr>
-        <td style="padding: 0 20px">
-            <hr style="border: none; border-top: 1px solid #ccc;">
-        </td>
-    </tr>
-    <tr>
-        <td valign="middle"
-            style="line-height: 24px; padding: 15px 20px; font-size: 14px;">
-            <div style="font-size: 14px; color: #333333; line-height: 1.6;">
-                <div>
-                    <strong>#message('msg.email.content.hi')$!{TemVal.value1}</strong>
 
-                    <p class="firTab">#message('msg.email.content.forgetPwd.welcome')<a
+<div class="main">
+    <div class="header"><img src="$!{TemVal.logo}" alt=""></div>
+    <div class="container">
+        <div class="page-title">$!{TemVal.value1}</div>
+        <div class="mail-wrap">$!{TemVal.value10}</div>
+        <table class="mail-container">
+            <tr>
+                <div>
+                    <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
+                        'msg.email.content.maohao')</strong>
+
+                    <p class="firTab">#message('msg.email.content.resetPwd.welcome')<a
                             href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
 
                     <p class="firTab">#message('msg.email.content.virsical')</p>
 
                 </div>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding: 20px 20px 20px 20px; font-size: 12px; color: #999;">#message(
-            'msg.email.content.virsicalSuj')</td>
-    </tr>
-    </tbody>
-</table>
-<br>
-<br>
+            </tr>
+        </table>
+    </div>
+    <div class="footer">
+        <table class="w100">
+            <tr>
+                <td class="lh150">#message('msg.email.content.common.companyName')<br/>#message('msg.email.content.common.askBeforeSale')400-685-3160<br/>#message('msg.email.content.common.webSite')<a href="http://www.virsical.com" class="link"
+                                                                                                                                                                                                         target="_blank">www.virsical.com</a>
+                </td>
+                <td align="right"><img src="$!{TemVal.imageDirectory}/virsical_dimcode.jpg" width="60" height="60" alt=""></td>
+            </tr>
+        </table>
+    </div>
+</div>
 </body>
 </html>
