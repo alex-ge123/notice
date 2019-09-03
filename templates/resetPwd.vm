@@ -2,7 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base target="_blank">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
     <style>
         * {
             margin: 0;
@@ -84,27 +86,25 @@
         }
     </style>
 </head>
-
 <body>
+
 <div class="main">
     <div class="header"><img src="$!{TemVal.logo}" alt=""></div>
     <div class="container">
+        <div class="page-title">$!{TemVal.value1}</div>
+        <div class="mail-wrap">$!{TemVal.value10}</div>
         <table class="mail-container">
             <tr>
-                <td class="left">
-                    <div style="font-size: 14px; color: #333333; line-height: 1.6;">
-                        <div>
-                            <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
-                                'msg.email.content.maohao')</strong>
+                <div>
+                    <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
+                        'msg.email.content.maohao')</strong>
 
-                            <p class="firTab">#message('msg.email.content.resetPwd.welcome')<a
-                                    href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
+                    <p class="firTab">#message('msg.email.content.resetPwd.welcome')<a
+                            href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
 
-                            <p class="firTab">#message('msg.email.content.virsical')</p>
+                    <p class="firTab">#message('msg.email.content.virsical')</p>
 
-                        </div>
-                    </div>
-                </td>
+                </div>
             </tr>
         </table>
     </div>
@@ -119,42 +119,5 @@
         </table>
     </div>
 </div>
-#*<table width="80%" cellspacing="0" cellpadding="0" border="0"
-       align="center"
-       style="-webkit-font-smoothing: antialiased; font-family: '微软雅黑', 'Helvetica Neue', sans-serif, SimHei; padding: 35px 40px; margin: 25px auto; background: rgb(247, 246, 242); border-radius: 5px">
-    <tbody>
-    <tr>
-        <td style="color: #000;"><img width="200px" height="35px" alt="$!{TemVal.value3}" src="$!{TemVal.logo}"/></td>
-    </tr>
-    <tr>
-        <td style="padding: 0 20px">
-            <hr style="border: none; border-top: 1px solid #ccc;">
-        </td>
-    </tr>
-    <tr>
-        <td valign="middle"
-            style="line-height: 24px; padding: 15px 20px; font-size: 14px;">
-            <div style="font-size: 14px; color: #333333; line-height: 1.6;">
-                <div>
-                    <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
-                        'msg.email.content.maohao')</strong>
-
-                    <p class="firTab">#message('msg.email.content.resetPwd.welcome')<a
-                            href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
-
-                    <p class="firTab">#message('msg.email.content.virsical')</p>
-
-                </div>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding: 20px 20px 20px 20px; font-size: 12px; color: #999;">#message(
-            'msg.email.content.virsicalSuj')</td>
-    </tr>
-    </tbody>
-</table>
-<br>
-<br>*#
 </body>
 </html>

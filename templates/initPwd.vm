@@ -2,7 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base target="_blank">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
     <style>
         * {
             margin: 0;
@@ -84,25 +86,25 @@
         }
     </style>
 </head>
-
 <body>
+
 <div class="main">
     <div class="header"><img src="$!{TemVal.logo}" alt=""></div>
     <div class="container">
+        <div class="page-title">$!{TemVal.value1}</div>
+        <div class="mail-wrap">$!{TemVal.value10}</div>
         <table class="mail-container">
             <tr>
-                <td class="left">
-                    <div>
-                        <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
-                            'msg.email.content.maohao')</strong>
+                <div>
+                    <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
+                        'msg.email.content.maohao')</strong>
 
-                        <p class="firTab">$!{TemVal.value4}<a
-                                href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
+                    <p class="firTab">$!{TemVal.value4}<a
+                            href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
 
-                        <p class="firTab">#message('msg.email.content.virsical')</p>
+                    <p class="firTab">#message('msg.email.content.virsical')</p>
 
-                    </div>
-                </td>
+                </div>
             </tr>
         </table>
     </div>
