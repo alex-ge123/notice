@@ -307,7 +307,12 @@ public class MailSendController extends BaseController {
         for (File fileIndex : files) {
           if (!fileIndex.isDirectory()) {
             //如果文件是普通文件，则将文件地址放入集合中
-            fileList.add(fileIndex.getPath());
+            String fileIndexPath = fileIndex.getPath();
+            int index = fileIndexPath.lastIndexOf(File.separator);
+            if (index != -1) {
+              fileIndexPath = fileIndexPath.substring(index + 1);
+            }
+            fileList.add(fileIndexPath);
           }
         }
       }
