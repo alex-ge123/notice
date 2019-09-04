@@ -91,20 +91,23 @@
 <div class="main">
     <div class="header"><img src="$!{TemVal.logo}" alt=""></div>
     <div class="container">
-        <div class="page-title">$!{TemVal.value1}</div>
+        <div class="page-title">$!{TemVal.value5}</div>
         <div class="mail-wrap">$!{TemVal.value10}</div>
         <table class="mail-container">
             <tr>
-                <div>
-                    <strong>#message('msg.email.content.hi')$!{TemVal.value1}#message(
-                        'msg.email.content.maohao')</strong>
+                <td class="left">公司名称：</td>
+                <td colspan="2">$!{TemVal.value2}</td>
+            </tr>
+            <tr>
+                <td class="left">套餐名称：</td>
+                <td colspan="2">$!{TemVal.value3}</td>
+            </tr>
+            <tr>
 
-                    <p class="firTab">$!{TemVal.value4}<a
-                            href="$!{TemVal.value2}">#message('msg.email.content.clickHere')</a></p>
-
-                    <p class="firTab">#message('msg.email.content.virsical')</p>
-
-                </div>
+            </tr>
+            <tr>
+                <td class="left">变更时间：</td>
+                <td colspan="2">$!{TemVal.value4}</td>
             </tr>
         </table>
     </div>
