@@ -91,7 +91,7 @@ pipeline {
                 sh "sed -i s@__ARTIFACT_ID__@${readMavenPom().getArtifactId()}@g k8s.yml"
 
                 sh "cp sql/init.sql tmp_sql/${JOB_NAME}"
-                sh "sed -i s@\\`virsical_notice\\`@${GROUP_NAME}_base@g tmp_sql/${JOB_NAME}/*"
+                sh "sed -i s@\\`virsical_notice\\`@${GROUP_NAME}_notice@g tmp_sql/${JOB_NAME}/*"
 
                 script {
                     withKubeConfig(clusterName: "${K8S_CLUSTER_NAME}",
