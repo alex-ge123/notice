@@ -3,6 +3,7 @@ pipeline {
 
     parameters {
         booleanParam(name: 'checkcode', defaultValue: false, description: '是否执行代码检查？')
+        choice(name: 'reserveDBData', choices: 'Yes\nNo', description: '是否需要保留之前部署的数据库数据？')
     }
 
     environment {
@@ -75,6 +76,9 @@ pipeline {
                 sh "mkdir -p tmp/config"
                 sh "mkdir -p tmp/vms"
 
+                sh "rm -rf tmp_sql"
+                sh "mkdir -p  tmp_sql/${JOB_NAME}"
+
                 sh "cp target/*.jar tmp"
                 sh "cp templates/*.vm tmp/vms"
 
@@ -86,17 +90,47 @@ pipeline {
                 sh "sed -i s@__GROUP_NAME__@${GROUP_NAME}@g k8s.yml"
                 sh "sed -i s@__ARTIFACT_ID__@${readMavenPom().getArtifactId()}@g k8s.yml"
 
+                sh "cp sql/init.sql tmp_sql/${JOB_NAME}"
+                sh "sed -i s@\\`virsical_notice\\`@${GROUP_NAME}_notice@g tmp_sql/${JOB_NAME}/*"
+
                 script {
-                    datas = readYaml file: 'src/main/resources/bootstrap.yml'
-                    datas.eureka.client['service-url'].defaultZone = "http://wafer:wafer@${GROUP_NAME}-eureka:8080/eureka/"
-                    datas.spring.cloud.config.uri = "http://wafer:wafer@${GROUP_NAME}-config:8080"
-                    datas.server.port = 8080
-
-                    writeYaml file: "tmp/config/bootstrap.yml", data: datas
-
                     withKubeConfig(clusterName: "${K8S_CLUSTER_NAME}",
                             credentialsId: "k8s-${RD_ENV}",
                             serverUrl: "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}") {
+                        if (params.reserveDBData == 'No') {
+                            MYSQL_POD = sh(
+                                    script: "kubectl get pod -l app=${RD_ENV},tier=mysql -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | head -1",
+                                    returnStdout: true
+                            ).trim()
+
+                            RET = sh(
+                                    script: "kubectl get pvc sql --no-headers=true -o custom-columns=pv:.spec.volumeName -n ${RD_ENV}",
+                                    returnStdout: true
+                            ).trim()
+
+                            SQL_PATH = "${RD_ENV}-sql-" + RET
+
+                            ftpPublisher failOnError: true,
+                                    publishers: [
+                                            [configName: 'ftp_ds1819_dev', transfers: [
+                                                    [cleanRemote: true,
+                                                     remoteDirectory: "${SQL_PATH}",
+                                                     sourceFiles    : "tmp_sql/",
+                                                     removePrefix   : "tmp_sql"]
+                                            ]]
+                                    ]
+
+                            sh "kubectl exec ${MYSQL_POD} -n ${RD_ENV} -- mysql -uwafer -pwafer -e 'source /sql/${JOB_NAME}/init.sql'"
+                        }
+
+
+                        datas = readYaml file: 'src/main/resources/bootstrap.yml'
+                        datas.eureka.client['service-url'].defaultZone = "http://wafer:wafer@${GROUP_NAME}-eureka:8080/eureka/"
+                        datas.spring.cloud.config.uri = "http://wafer:wafer@${GROUP_NAME}-config:8080"
+                        datas.server.port = 8080
+
+                        writeYaml file: "tmp/config/bootstrap.yml", data: datas
+
                         RET = sh(
                                 script: "kubectl get pvc ${SERVICE_NAME}-work --no-headers=true -o custom-columns=pv:.spec.volumeName -n ${RD_ENV}",
                                 returnStdout: true
