@@ -1,457 +1,806 @@
 #macro( message $key )$TemVal.resource.getMessage($key, null, $TemVal.locale)#end
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>meeting reminder</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>meeting reminder</title>
 </head>
 <body style="margin:0 auto; width:100%; font-size:10pt; color:#666666; font-family:'Microsoft YaHei',微软雅黑,Arial; "
       bgcolor="#FFFFFF">
 <table align="center" cellpadding="0" cellspacing="0" border="0" width="600" bgcolor="#FFFFFF">
-    <tbody>
-    <tr>
-        <td colspan="2">
-            <table align="center" class="banner" cellspacing="0" cellpadding="0" width="600"
-                   height="100">
-                <tbody>
-                <tr>
-                    <td colspan="2" bgcolor="#f7f7f7" width="100%"><img
-                            style="width:600px;height:100px" src="$!{TemVal.logo}"/></td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <table align="center" class="banner" cellspacing="0" cellpadding="0" width="600"
-                   height="100">
-                <tbody>
-                <tr>
-                    <td colspan="2" bgcolor="#EFEFEF">
-                        <table cellpadding="0" cellspacing="0" style="margin:10px;" width="580"
-                               bgcolor="#FFFFFF">
-                            <tr>
-                                <td align="left" colspan="2"
-                                    style="font-size:14pt; line-height:30px;">
-		                                <span style="margin-left:10px;">
+  <tbody>
+  <tr>
+    <td colspan="2">
+      <table align="center" class="banner" cellspacing="0" cellpadding="0" width="600"
+             height="100">
+        <tbody>
+        <tr>
+          <td colspan="2" bgcolor="#f7f7f7" width="100%"><img
+            style="width:600px;height:100px" src="$!{TemVal.imageDirectory}/knk_logo.png"/></td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table align="center" class="banner" cellspacing="0" cellpadding="0" width="600"
+             height="100">
+        <tbody>
+        <tr>
+          <td colspan="2" bgcolor="#EFEFEF">
+            <table cellpadding="0" cellspacing="0" style="margin:10px;" width="580"
+                   bgcolor="#FFFFFF">
+              <tr>
+                <td align="left" colspan="2"
+                    style="font-size:20px; line-height:30px;">
+		                                <span style="margin-left:10px;display: block;font-family: PingFang SC;font-weight: 500;color: rgba(51,51,51,1);">
                                             #if($!{TemVal.value5}==1)
-		                                        #message(
-                                                'meeting.remind.message.mail.meeting_invite')
-		                                    #elseif($!{TemVal.value5}==2)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_update_invite')
-                                            #elseif($!{TemVal.value5}==3)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_cancel_appoint')
+                                                <span style="display: block;">
+                                                    Invited of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                       #message('meeting.remind.message.mail.meeting_invite_zh')
+                                                   #else
+                                                        #message('meeting.remind.message.mail.meeting_invite')
+                                                    #end
+                                                </span>
+                                            #elseif($!{TemVal.value5}==2)
+                                                <span style="display: block">
+                                                    Updated of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.meeting_update_invite_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_update_invite')
+                                                    #end
+                                                </span>
+                                            #elseif($!{TemVal.value5}==3 || $!{TemVal.value5}==10)
+                                                <span style="display: block">
+                                                    Canceled of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                         #message('meeting.remind.message.mail.meeting_cancel_appoint_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_cancel_appoint')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==4)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_reminder_appoint')
+                                                <span style="display: block">
+                                                    Reminder of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                       #message('meeting.remind.message.mail.meeting_reminder_appoint_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_reminder_appoint')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==6 || $!{TemVal.value5}==7)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_ack_appoint')
+                                                <span style="display: block">
+                                                    ACK of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.meeting_ack_appoint_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_ack_appoint')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==8)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_create_appoint')
+                                                <span style="display: block">
+                                                    Created of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.meeting_create_appoint_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_create_appoint')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==9)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_update_appoint')
-                                            #elseif($!{TemVal.value5}==10)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_cancel_appoint')
-                                            #elseif($!{TemVal.value5}==15)
-                                                #message('meeting.remind.message.mail.alarm.tile')
-                                            #elseif($!{TemVal.value5}==17)
-                                                #message('meeting.remind.message.mail.alarm.tile')
+                                                <span style="display: block">
+                                                    Updated of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.meeting_update_appoint_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_update_appoint')
+                                                    #end
+                                                </span>
+                                            #elseif($!{TemVal.value5}==15 || $!{TemVal.value5}==17)
+                                                <span style="display: block">
+                                                    Infrared Device Reminding
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.alarm.tile_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.alarm.tile')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==18)
-                                                #message('meeting.remind.message.mail.willend.tile')
+                                                <span style="display: block">
+                                                    Reminder of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.willend.tile_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.willend.tile')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==5 || $!{TemVal.value5}==11 || $!{TemVal.value5}==12 || $!{TemVal.value5}==13)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_appoint')
+                                                <span style="display: block">
+                                                    Notice of Meeting
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.meeting_appoint_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_appoint')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==66)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_audit_title')
+                                                <span style="display: block">
+                                                    Review Message
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.meeting_audit_title_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_audit_title')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==99)
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_svc_notice')
+                                                <span style="display: block">
+                                                    Meeting service notice
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.meeting_svc_notice_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.meeting_svc_notice')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==101 || $!{TemVal.value5}==102)
-                                                #message(
-                                                    'meeting.remind.message.mail.maintain_notice')
+                                                <span style="display: block">
+                                                    Room maintain notice
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.maintain_notice_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.maintain_notice')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==103 || $!{TemVal.value5}==104)
-                                                #message(
-                                                    'meeting.remind.message.mail.visible_notice')
+                                                <span style="display: block">
+                                                    Room status notice
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                       #message('meeting.remind.message.mail.visible_notice_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.visible_notice')
+                                                    #end
+                                                </span>
                                             #elseif($!{TemVal.value5}==20 || $!{TemVal.value5}==21 || $!{TemVal.value5}==22 || $!{TemVal.value5}==23)
-                                                #message(
-                                                    'meeting.remind.message.mail.emailCancel.alarm.tile')
+                                                <span style="display: block">
+                                                    Meeting Room Automatic Release
+                                                </span>
+                                                <span style="display: block">
+                                                    #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                        #message('meeting.remind.message.mail.emailCancel.alarm.tile_zh')
+                                                    #else
+                                                        #message('meeting.remind.message.mail.emailCancel.alarm.tile')
+                                                    #end
+                                                </span>
                                             #end
                                         </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" align="left"
-                                    style="font-size:12pt; line-height:30px;">
-                                    #if($!{TemVal.value5}!=15 && $!{TemVal.value5}!=17 && $!{TemVal.value5}!=20 && $!{TemVal.value5}!=21)
-				                        	<span style="margin-left:10px;">#message('msg.email.content.invitUseSys.title.prefix')$!{TemVal.value4}#message('msg.email.content.invitUseSys.title.suffix')</span>
-                                    #end
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" style="font-size:12pt; line-height:30px;">
-                                    <p class="k2"
-                                       style="margin-left:10px; text-indent: 35px; margin-top: 0px; margin-bottom: 10px;">
-                                        #if($!{TemVal.value5}==1)
-                                            $!{TemVal.value6}#message(
-                                            'meeting.remind.message.mail.meeting.create.normal')$!{TemVal.value27}
-                                            ，#message(
-                                            'meeting.remind.message.mail.meeting.create.succ.in')$!{TemVal.value7}#message(
-                                            'meeting.remind.message.mail.meeting.create.succ.open')#if($!{TemVal.value29}==0)
-                                            <a style="text-decoration: none;"
-                                               href="$!{TemVal.value15}">#message(
-                                                'meeting.remind.message.mail.common.click.confirm')</a>#message(
-                                                'meeting.remind.message.mail.common.click.confirm.comma')#end
-                                        #elseif($!{TemVal.value5}==2)
-                                            #message(
-                                                'meeting.remind.message.mail.common.your')[$!{TemVal.value8}]#message(
-                                            'meeting.remind.message.mail.meeting.update.succ.notice')
-                                        #elseif($!{TemVal.value5}==3)
-                                            #if($!{TemVal.value28}==0)
-                                                #message(
-                                                    'meeting.remind.message.mail.common.your')[$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.cancel.succ.notice')
-                                            #elseif($!{TemVal.value28}==1)
-                                                #message(
-                                                    'meeting.remind.message.mail.common.your')[$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.has.not.sign')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.release.succ.notice')
-                                            #elseif($!{TemVal.value28}==2)
-                                                #message(
-                                                    'meeting.remind.message.mail.common.your')[$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.has.not.accept')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.release.succ.notice')
-                                            #elseif($!{TemVal.value28}==3)
-                                                #message(
-                                                    'meeting.remind.message.mail.common.your')[$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.has.maintain')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.release.succ.notice')
-                                            #elseif($!{TemVal.value28}==4)
-                                                #message(
-                                                    'meeting.remind.message.mail.common.your')[$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.has.unvisible')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.release.succ.notice')
-                                            #end
-                                        #elseif($!{TemVal.value5}==4)
-                                            #message(
-                                                'meeting.remind.message.mail.common.your')[$!{TemVal.value8}]#message(
-                                            'meeting.remind.message.mail.meeting.will.open.notice')$!{TemVal.value27}#message(
-                                            'meeting.remind.message.mail.meeting.will.open.prepare')
-                                        #elseif($!{TemVal.value5}==5)
-                                            #message(
-                                                'meeting.remind.message.mail.meeting_remove_appoint')
-                                        #elseif($!{TemVal.value5}==6)#message(
-                                            'meeting.remind.message.mail.meeting_attendee')$!{TemVal.value13} #message(
-                                            'meeting.remind.message.mail.meeting_confirm_atten_appoint')
-                                        #elseif($!{TemVal.value5}==7)#message(
-                                            'meeting.remind.message.mail.meeting_attendee')$!{TemVal.value13} #message(
-                                            'meeting.remind.message.mail.meeting_confirm_refus_appoint')
-                                        #elseif($!{TemVal.value5}==8)
-                                            #if($!{TemVal.value32}!="")
-                                                #message(
-                                                    'meeting.remind.message.mail.recurring.meeting.create.succ')$!{TemVal.value27}
-                                                ，#message(
-                                                'meeting.remind.message.mail.meeting.create.succ.in')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.create.succ.open')
-                                            #else
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting.create.succ')$!{TemVal.value27}
-                                                ，#message(
-                                                'meeting.remind.message.mail.meeting.create.succ.in')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.create.succ.open')
-                                            #end
-                                        #elseif($!{TemVal.value5}==9)
-                                            #if($!{TemVal.value32}!="")
-                                                #message(
-                                                    'meeting.remind.message.mail.common.recurringmeeting')
-                                            #else
-                                                #message('meeting.remind.message.mail.common.your')
-                                            #end
-                                            [$!{TemVal.value8}]#message(
-                                            'meeting.remind.message.mail.meeting.update.succ.notice')
-                                        #elseif($!{TemVal.value5}==10)
-                                            #if($!{TemVal.value32}!="")
-                                                #message(
-                                                    'meeting.remind.message.mail.common.recurringmeeting')
-                                            #else
-                                                #message('meeting.remind.message.mail.common.your')
-                                            #end
-                                            #if($!{TemVal.value28}==0)
-                                                [$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.cancel.succ.notice')
-                                            #elseif($!{TemVal.value28}==1)
-                                                [$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.has.not.sign')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.release.succ.notice')
-                                            #elseif($!{TemVal.value28}==2)
-                                                [$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.has.not.accept')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.release.succ.notice')
-                                            #elseif($!{TemVal.value28}==3)
-                                                [$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.has.maintain')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.release.succ.notice')
-                                            #elseif($!{TemVal.value28}==4)
-                                                [$!{TemVal.value8}]#message(
-                                                'meeting.remind.message.mail.meeting.has.unvisible')$!{TemVal.value7}#message(
-                                                'meeting.remind.message.mail.meeting.release.succ.notice')
-                                            #end
-                                        #elseif($!{TemVal.value5}==11)
-                                            #message(
-                                                'meeting.remind.message.mail.meeting_audit_pass')
-                                        #elseif($!{TemVal.value5}==12)
-                                            #message(
-                                                'meeting.remind.message.mail.meeting_audit_refuse')
-                                            #if($!{TemVal.value30}!="")
-                                                #message(
-                                                    'meeting.remind.message.mail.meeting_audit_reason')$!{TemVal.value30}#message(
-                                                'meeting.remind.message.mail.meeting_audit_comma')
-                                            #end
-                                        #elseif($!{TemVal.value5}==13)
-                                            #message(
-                                                'meeting.remind.message.mail.meeting_audit_not')
-                                        #elseif($!{TemVal.value5}==15)
-                                            #message('meeting.remind.message.mail.alarm.content')<a
-                                                href="$!{TemVal.value23}">#message(
-                                            'meeting.remind.message.mail.alarm.content.stop')</a>#message(
-                                            'meeting.remind.message.mail.alarm.content.or')<a
-                                                href="$!{TemVal.value24}">#message(
-                                            'meeting.remind.message.mail.alarm.content.goon')</a>#message(
-                                            'meeting.remind.message.mail.alarm.content.end')
-                                        #elseif($!{TemVal.value5}==16)
-                                            #message(
-                                                'meeting.remind.message.mail.meeting.need.confirm')
-                                        #elseif($!{TemVal.value5}==17)
-                                            #message('meeting.remind.message.mail.alarm.content')<a
-                                                href="$!{TemVal.value23}"
-                                                style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff;margin-left: 5px; ">#message(
-                                            'meeting.remind.message.mail.alarm.content.stop')</a>
-                                        #elseif($!{TemVal.value5}==18)
-                                            #message('meeting.remind.message.mail.willend.content1')
-                                        #elseif($!{TemVal.value5}==20)
-                                            #message(
-                                                'meeting.remind.message.mail.emailCancel.alarm.content')
-                                        #elseif($!{TemVal.value5}==21)
-                                            #message(
-                                                'meeting.remind.message.mail.autoCancel.alarm.content')
-                                        #elseif($!{TemVal.value5}==22)
-                                            #message(
-                                                'meeting.message.smsAndreserve.knd.startKeep1')$!{TemVal.value7}#message(
-                                            'meeting.message.smsAndreserve.knd.startKeep2')$!{TemVal.value31}#message(
-                                            'meeting.message.smsAndreserve.knd.startKeep3')
-                                        #elseif($!{TemVal.value5}==23)
-                                            #message(
-                                                'meeting.message.smsAndreserve.knd.rlsKeep1')$!{TemVal.value7}#message(
-                                            'meeting.message.smsAndreserve.knd.rlsKeep2')$!{TemVal.value31}#message(
-                                            'meeting.message.smsAndreserve.knd.rlsKeep3')
-                                        #elseif($!{TemVal.value5}==66)
-                                            #message(
-                                                'meeting.remind.message.mail.meeting_audit_need')
-                                        #elseif($!{TemVal.value5}==99)
-                                            [$!{TemVal.value7}]#message(
-                                            'meeting.remind.message.mail.clean.room_content')
-                                        #elseif($!{TemVal.value5}==101)
-                                            #message('meeting.remind.message.mail.maintain.content')
-                                        #elseif($!{TemVal.value5}==102)
-                                            #message(
-                                                'meeting.remind.message.mail.maintain.end.content')
-                                        #elseif($!{TemVal.value5}==103)
-                                            #message('meeting.remind.message.mail.visible.on.content')
-                                        #elseif($!{TemVal.value5}==104)
-                                                #message(
-                                                    'meeting.remind.message.mail.visible.off.nocontent')$!{TemVal.value30}
-                                            #else
-                                                #message('meeting.remind.message.mail.visible.off.content')
-                                        #end
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" align="left"
+                    style="font-size:16px; line-height:30px;color: rgba(51,51,51,1);">
+                  #if($!{TemVal.value5}!=15 && $!{TemVal.value5}!=17 && $!{TemVal.value5}!=20 && $!{TemVal.value5}!=21)
+                  <span style="margin-left:10px;">#message('msg.email.content.invitUseSys.title.prefix.en')$!{TemVal.value4}#message('msg.email.content.invitUseSys.title.suffix')</span>
+                  #end
+                </td>
+              </tr>
+              <tr>
+                <td align="left" style="font-size:16px; line-height:30px;color: rgba(51,51,51,1);">
+                  <p class="k2"
+                     style="margin-left:10px; text-indent: 35px; margin-top: 0px; margin-bottom: 10px;width: 90%;">
+                    #if($!{TemVal.value5}==1)
+                    $!{TemVal.value6}#message(
+                    'meeting.remind.message.mail.meeting.create.normal.en')$!{TemVal.value27}
+                    ，#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.en')
+                    $!{TemVal.value35.split(",")[0]}
+                    #message(
+                    'meeting.remind.message.mail.meeting.create.succ.open.en')
+                    #elseif($!{TemVal.value5}==2)
+                    #message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.update.succ.notice.en')
+                    #elseif($!{TemVal.value5}==3)
+                    #if($!{TemVal.value28}==0)
+                    #message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.cancel.succ.notice.en')
+                    #elseif($!{TemVal.value28}==1)
+                    #message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.not.sign.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.en')
+                    #elseif($!{TemVal.value28}==2)
+                    #message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.not.accept.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.en')
+                    #elseif($!{TemVal.value28}==3)
+                    #message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.maintain.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice')
+                    #elseif($!{TemVal.value28}==4)
+                    #message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.unvisible.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.en')
+                    #end
+                    #elseif($!{TemVal.value5}==4)
+                    #message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.will.open.notice.en')$!{TemVal.value27}#message(
+                    'meeting.remind.message.mail.meeting.will.open.prepare.en')
+                    #elseif($!{TemVal.value5}==5)
+                    #message(
+                    'meeting.remind.message.mail.meeting_remove_appoint.en')
+                    #elseif($!{TemVal.value5}==6)#message(
+                    'meeting.remind.message.mail.meeting_attendee.en')$!{TemVal.value13} #message(
+                    'meeting.remind.message.mail.meeting_confirm_atten_appoint.en')
+                    #elseif($!{TemVal.value5}==7)#message(
+                    'meeting.remind.message.mail.meeting_attendee.en')$!{TemVal.value13} #message(
+                    'meeting.remind.message.mail.meeting_confirm_refus_appoint.en')
+                    #elseif($!{TemVal.value5}==8)
+                    #if($!{TemVal.value32}!="")
+                    #message(
+                    'meeting.remind.message.mail.recurring.meeting.create.succ.en')$!{TemVal.value27}
+                    ，#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.open.en')
+                    #else
+                    #message(
+                    'meeting.remind.message.mail.meeting.create.succ.en')$!{TemVal.value27}
+                    ，#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.open.en')
+                    #end
+                    #elseif($!{TemVal.value5}==9)
+                    #if($!{TemVal.value32}!="")
+                    #message(
+                    'meeting.remind.message.mail.common.recurringmeeting.en')
+                    #else
+                    #message('meeting.remind.message.mail.common.your.en')
+                    #end
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.update.succ.notice.en')
+                    #elseif($!{TemVal.value5}==10)
+                    #if($!{TemVal.value32}!="")
+                    #message(
+                    'meeting.remind.message.mail.common.recurringmeeting.en')
+                    #else
+                    #message('meeting.remind.message.mail.common.your.en')
+                    #end
+                    #if($!{TemVal.value28}==0)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.cancel.succ.notice.en')
+                    #elseif($!{TemVal.value28}==1)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.not.sign.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.en')
+                    #elseif($!{TemVal.value28}==2)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.not.accept.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.en')
+                    #elseif($!{TemVal.value28}==3)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.maintain.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.en')
+                    #elseif($!{TemVal.value28}==4)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.unvisible.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.en')
+                    #end
+                    #elseif($!{TemVal.value5}==11)
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_pass.en')
+                    #elseif($!{TemVal.value5}==12)
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_refuse.en')
+                    #if($!{TemVal.value30}!="")
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_reason.en')$!{TemVal.value30}#message(
+                    'meeting.remind.message.mail.meeting_audit_comma.en')
+                    #end
+                    #elseif($!{TemVal.value5}==13)
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_not.en')
+                    #elseif($!{TemVal.value5}==15)
+                    #message('meeting.remind.message.mail.alarm.content.en')<a
+                    href="$!{TemVal.value23}">#message(
+                    'meeting.remind.message.mail.alarm.content.stop.en')</a>#message(
+                    'meeting.remind.message.mail.alarm.content.or.en')<a
+                    href="$!{TemVal.value24}">#message(
+                    'meeting.remind.message.mail.alarm.content.goon.en')</a>#message(
+                    'meeting.remind.message.mail.alarm.content.end.en')
+                    #elseif($!{TemVal.value5}==16)
+                    #message(
+                    'meeting.remind.message.mail.meeting.need.confirm.en')
+                    #elseif($!{TemVal.value5}==17)
+                    #message('meeting.remind.message.mail.alarm.content.en')<a
+                    href="$!{TemVal.value23}"
+                    style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff;margin-left: 5px; ">#message(
+                    'meeting.remind.message.mail.alarm.content.stop.en')</a>
+                    #elseif($!{TemVal.value5}==18)
+                    #message('meeting.remind.message.mail.willend.content1.en')
+                    #elseif($!{TemVal.value5}==20)
+                    #message(
+                    'meeting.remind.message.mail.emailCancel.alarm.content.en')
+                    #elseif($!{TemVal.value5}==21)
+                    #message(
+                    'meeting.remind.message.mail.autoCancel.alarm.content.en')
+                    #elseif($!{TemVal.value5}==22)
+                    #message(
+                    'meeting.message.smsAndreserve.knd.startKeep1.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.message.smsAndreserve.knd.startKeep2.en')$!{TemVal.value31}#message(
+                    'meeting.message.smsAndreserve.knd.startKeep3.en')
+                    #elseif($!{TemVal.value5}==23)
+                    #message(
+                    'meeting.message.smsAndreserve.knd.rlsKeep1.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.message.smsAndreserve.knd.rlsKeep2.en')$!{TemVal.value31}#message(
+                    'meeting.message.smsAndreserve.knd.rlsKeep3.en')
+                    #elseif($!{TemVal.value5}==66)
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_need.en')
+                    #elseif($!{TemVal.value5}==99)
+                    [$!{TemVal.value35.split(",")[0]}]#message(
+                    'meeting.remind.message.mail.clean.room_content.en')
+                    #elseif($!{TemVal.value5}==101)
+                    #message('meeting.remind.message.mail.maintain.content.en')
+                    #elseif($!{TemVal.value5}==102)
+                    #message(
+                    'meeting.remind.message.mail.maintain.end.content.en')
+                    #elseif($!{TemVal.value5}==103)
+                    #message('meeting.remind.message.mail.visible.on.content.en')
+                    #elseif($!{TemVal.value5}==104)
+                    #message(
+                    'meeting.remind.message.mail.visible.off.nocontent.en')$!{TemVal.value30}
+                    #else
+                    #message('meeting.remind.message.mail.visible.off.content.en')
+                    #end
+                    </span>
+                </td>
+                <td align="right" style="padding-right:5px;">
+                  #if($!{TemVal.value5}==18)
+                  <div style="width: 75px;"><a href="$!{TemVal.value15}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.delay')</a></div>
+                  #elseif($!{TemVal.value14}!="")
+                  #if($!{TemVal.value19}==0)
+                  <div style="width: 75px;"><a href="$!{TemVal.value14}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.start')</a></div>
+                  #elseif($!{TemVal.value19}==1)
+                  <div style="width: 75px;"><a href="$!{TemVal.value14}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.join')</a></div>
+                  #end
+                  #end
+                </td>
+              </tr>
+              #*中文显示*#
+              <tr>
+                <td colspan="2" align="left"
+                    style="font-size:16px; line-height:30px;color: rgba(51,51,51,1);">
+                  #if($!{TemVal.value5}!=15 && $!{TemVal.value5}!=17 && $!{TemVal.value5}!=20 && $!{TemVal.value5}!=21)
+                  <span style="margin-left:10px;">#message('msg.email.content.invitUseSys.title.prefix.zhhk')$!{TemVal.value4}#message('msg.email.content.invitUseSys.title.suffix.zhhk')</span>
+                  #end
+                </td>
+              </tr>
+              <tr>
+                <td align="left" style="font-size:16px; line-height:30px;color: rgba(51,51,51,1);">
+                  <p class="k2"
+                     style="margin-left:10px; text-indent: 35px; margin-top: 0px; margin-bottom: 10px;width: 90%;">
+                    #if($!{TemVal.value5}==1)
+                    $!{TemVal.value6}#message(
+                    'meeting.remind.message.mail.meeting.create.normal.zhhk')$!{TemVal.value27}
+                    ，#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.open.zhhk')#if($!{TemVal.value29}==0)
+                    <a style="text-decoration: none;"
+                       href="$!{TemVal.value15}" style="float: right;">#message(
+                      'meeting.remind.message.mail.common.click.confirm')</a>#end
+                    #elseif($!{TemVal.value5}==2)
+                    #message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.update.succ.notice.zhhk')
+                    #elseif($!{TemVal.value5}==3)
+                    #if($!{TemVal.value28}==0)
+                    #message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.cancel.succ.notice.zhhk')
+                    #elseif($!{TemVal.value28}==1)
+                    #message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.not.sign.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
+                    #elseif($!{TemVal.value28}==2)
+                    #message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.not.accept.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
+                    #elseif($!{TemVal.value28}==3)
+                    #message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.maintain.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice')
+                    #elseif($!{TemVal.value28}==4)
+                    #message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.unvisible.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
+                    #end
+                    #elseif($!{TemVal.value5}==4)
+                    #message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.will.open.notice.zhhk')$!{TemVal.value27}#message(
+                    'meeting.remind.message.mail.meeting.will.open.prepare.zhhk')
+                    #elseif($!{TemVal.value5}==5)
+                    #message(
+                    'meeting.remind.message.mail.meeting_remove_appoint.zhhk')
+                    #elseif($!{TemVal.value5}==6)#message(
+                    'meeting.remind.message.mail.meeting_attendee.zhhk')$!{TemVal.value13} #message(
+                    'meeting.remind.message.mail.meeting_confirm_atten_appoint.zhhk')
+                    #elseif($!{TemVal.value5}==7)#message(
+                    'meeting.remind.message.mail.meeting_attendee.zhhk')$!{TemVal.value13} #message(
+                    'meeting.remind.message.mail.meeting_confirm_refus_appoint.zhhk')
+                    #elseif($!{TemVal.value5}==8)
+                    #if($!{TemVal.value32}!="")
+                    #message(
+                    'meeting.remind.message.mail.recurring.meeting.create.succ.zhhk')$!{TemVal.value27}
+                    ，#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.open.zhhk')
+                    #else
+                    #message(
+                    'meeting.remind.message.mail.meeting.create.succ.zhhk')$!{TemVal.value27}
+                    ，#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.open.zhhk')
+                    #end
+                    #elseif($!{TemVal.value5}==9)
+                    #if($!{TemVal.value32}!="")
+                    #message(
+                    'meeting.remind.message.mail.common.recurringmeeting.zhhk')
+                    #else
+                    #message('meeting.remind.message.mail.common.your.zhhk')
+                    #end
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.update.succ.notice.zhhk')
+                    #elseif($!{TemVal.value5}==10)
+                    #if($!{TemVal.value32}!="")
+                    #message(
+                    'meeting.remind.message.mail.common.recurringmeeting.zhhk')
+                    #else
+                    #message('meeting.remind.message.mail.common.your.zhhk')
+                    #end
+                    #if($!{TemVal.value28}==0)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.cancel.succ.notice.zhhk')
+                    #elseif($!{TemVal.value28}==1)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.not.sign.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
+                    #elseif($!{TemVal.value28}==2)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.not.accept.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
+                    #elseif($!{TemVal.value28}==3)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.maintain.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
+                    #elseif($!{TemVal.value28}==4)
+                    [$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.meeting.has.unvisible.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
+                    #end
+                    #elseif($!{TemVal.value5}==11)
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_pass.zhhk')
+                    #elseif($!{TemVal.value5}==12)
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_refuse.zhhk')
+                    #if($!{TemVal.value30}!="")
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_reason.zhhk')$!{TemVal.value30}#message(
+                    'meeting.remind.message.mail.meeting_audit_comma.zhhk')
+                    #end
+                    #elseif($!{TemVal.value5}==13)
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_not.zhhk')
+                    #elseif($!{TemVal.value5}==15)
+                    #message('meeting.remind.message.mail.alarm.content.zhhk')<a
+                    href="$!{TemVal.value23}">#message(
+                    'meeting.remind.message.mail.alarm.content.stop.zhhk')</a>#message(
+                    'meeting.remind.message.mail.alarm.content.or.zhhk')<a
+                    href="$!{TemVal.value24}">#message(
+                    'meeting.remind.message.mail.alarm.content.goon.zhhk')</a>#message(
+                    'meeting.remind.message.mail.alarm.content.end.zhhk')
+                    #elseif($!{TemVal.value5}==16)
+                    #message(
+                    'meeting.remind.message.mail.meeting.need.confirm.zhhk')
+                    #elseif($!{TemVal.value5}==17)
+                    #message('meeting.remind.message.mail.alarm.content.zhhk')<a
+                    href="$!{TemVal.value23}"
+                    style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff;margin-left: 5px; ">#message(
+                    'meeting.remind.message.mail.alarm.content.stop.zhhk')</a>
+                    #elseif($!{TemVal.value5}==18)
+                    #message('meeting.remind.message.mail.willend.content1.zhhk')
+                    #elseif($!{TemVal.value5}==20)
+                    #message(
+                    'meeting.remind.message.mail.emailCancel.alarm.content.zhhk')
+                    #elseif($!{TemVal.value5}==21)
+                    #message(
+                    'meeting.remind.message.mail.autoCancel.alarm.content.zhhk')
+                    #elseif($!{TemVal.value5}==22)
+                    #message(
+                    'meeting.message.smsAndreserve.knd.startKeep1.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.message.smsAndreserve.knd.startKeep2.zhhk')$!{TemVal.value31}#message(
+                    'meeting.message.smsAndreserve.knd.startKeep3.zhhk')
+                    #elseif($!{TemVal.value5}==23)
+                    #message(
+                    'meeting.message.smsAndreserve.knd.rlsKeep1.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.message.smsAndreserve.knd.rlsKeep2.zhhk')$!{TemVal.value31}#message(
+                    'meeting.message.smsAndreserve.knd.rlsKeep3.zhhk')
+                    #elseif($!{TemVal.value5}==66)
+                    #message(
+                    'meeting.remind.message.mail.meeting_audit_need.zhhk')
+                    #elseif($!{TemVal.value5}==99)
+                    [$!{TemVal.value35.split(",")[1]}]#message(
+                    'meeting.remind.message.mail.clean.room_content.zhhk')
+                    #elseif($!{TemVal.value5}==101)
+                    #message('meeting.remind.message.mail.maintain.content.zhhk')
+                    #elseif($!{TemVal.value5}==102)
+                    #message(
+                    'meeting.remind.message.mail.maintain.end.content.zhhk')
+                    #elseif($!{TemVal.value5}==103)
+                    #message('meeting.remind.message.mail.visible.on.content.zhhk')
+                    #elseif($!{TemVal.value5}==104)
+                    #message(
+                    'meeting.remind.message.mail.visible.off.nocontent.zhhk')$!{TemVal.value30}
+                    #else
+                    #message('meeting.remind.message.mail.visible.off.content.zhhk')
+                    #end
+                    </span>
+                </td>
+                <td align="right" style="padding-right:5px;">
+                  #if($!{TemVal.value5}==18)
+                  <div style="width: 75px;"><a href="$!{TemVal.value15}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.delay')</a></div>
+                  #elseif($!{TemVal.value14}!="")
+                  #if($!{TemVal.value19}==0)
+                  <div style="width: 75px;"><a href="$!{TemVal.value14}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.start')</a></div>
+                  #elseif($!{TemVal.value19}==1)
+                  <div style="width: 75px;"><a href="$!{TemVal.value14}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.join')</a></div>
+                  #end
+                  #end
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td colspan="2" bgcolor="#EFEFEF">
+      <table align="center" valign="top" cellspacing="0" cellpadding="0" width="580"
+             border="0" bgcolor="#EFEFEF" style="background-color: rgba(239, 239, 239, 1);">
+        <tbody>
+        <tr valign="top" align="center">
+          <td colspan="2">
+            <table cellpadding="10" cellspacing="0"
+                   style="border-bottom:solid 1px #EFEFEF; border-top:1px solid #EFEFEF; border-collapse:collapse;background: #FFFFFF;"
+                   width="580;margin:0px 10px 10px 10px">
+              <tbody style="font-size: 16px;">
+              #if($!{TemVal.value5} != 99)
+              <tr>
+                <td align="right" style="color:#999999;font-size: 16px !important;" width="25%">
+                                        <span style="display: block">
+                                            #message('msg.email.content.virsical.meeting_subjects')
                                         </span>
-                                </td>
-                                <td align="right" style="padding-right:5px;">
-                                    #if($!{TemVal.value5}==18)
-                                        <div style="width: 75px;"><a href="$!{TemVal.value15}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.delay')</a></div>
-                                    #elseif($!{TemVal.value14}!="")
-                                        #if($!{TemVal.value19}==0)
-                                            <div style="width: 75px;"><a href="$!{TemVal.value14}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.start')</a></div>
-                                        #elseif($!{TemVal.value19}==1)
-                                            <div style="
-                                            width: 75px;"><a href="$!{TemVal.value14}" style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff; ">#message('msg.email.content.virsical.join')</a></div>
+                  <span style="display: block;">
+                                            #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                #message('msg.email.content.virsical.meeting_subject_zh')
+                                            #else
+                                                #message('msg.email.content.virsical.meeting_subject')
+                                            #end
+                                        </span>
+                </td>
+                <td width="75%"
+                    style="word-break:break-all;color: #333333;font-size: 16px;">$!{TemVal.value8}</td>
+              </tr>
+              #end
+              <tr>
+                <td align="right" style="color:#999999;font-size: 16px !important;" width="25%">
+                                    <span style="display: block">
+                                        #message('msg.email.content.virsical.meeting_rooms')
+                                    </span>
+                  <span style="display: block">
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                             #message('msg.email.content.virsical.meeting_room_zh')
+                                        #else
+                                            #message('msg.email.content.virsical.meeting_room')
                                         #end
-                                    #end
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr valign="top">
-        <td colspan="2" bgcolor="#EFEFEF" style="padding: 0 10px 10px 10px;">
-            <table align="center" valign="top" cellspacing="0" cellpadding="0" width="580"
-                   border="0" bgcolor="#EFEFEF">
-                <tbody>
-                <tr valign="top" align="center">
-                    <td colspan="2">
-                        <table cellpadding="10" cellspacing="0"
-                               style="border-bottom:solid 1px #EFEFEF; border-top:1px solid #EFEFEF; border-collapse:collapse;background: #FFFFFF;"
-                               width="580">
-                            <tbody>
-                                #if($!{TemVal.value5} != 99)
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_subject')</td>
-                                    <td width="75%"
-                                        style="word-break:break-all">$!{TemVal.value8}</td>
-                                </tr>
-                                #end
-                            <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_room')</td>
-                                <td width="75%">$!{TemVal.value7}</td>
-                            </tr>
-                            <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_startTime')</td>
-                                <td width="75%">$!{TemVal.value1} #message(
-                                    'msg.email.content.virsical.meeting_timezone')</td>
-                            </tr>
-                                #if($!{TemVal.value32}!="")
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_regular_mode')</td>
-                                    <td width="75%">
-                                        $!{TemVal.value32}
-                                    </td>
-                                </tr>
-                                #end
-                                #if($!{TemVal.value32}!="")
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_regular_range')</td>
-                                    <td width="75%">
-                                        $!{TemVal.value33}
-                                    </td>
-                                </tr>
-                                #end
-                            <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_endTime')</td>
-                                <td width="75%">$!{TemVal.value2} #message(
-                                    'msg.email.content.virsical.meeting_timezone')</td>
-                            </tr>
-                            <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_creator')</td>
-                                <td width="75%">$!{TemVal.value6}</td>
-                            </tr>
-                            <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'meeting.remind.message.mail.meeting_host')</td>
-                                <td width="75%">$!{TemVal.value9}</td>
-                            </tr>
-                                #if($!{TemVal.value5} != 99)
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_attendee')</td>
-                                    <td width="75%">$!{TemVal.value10}</td>
-                                </tr>
-                                #end
-                                #if($!{TemVal.value5} != 99)
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_remark')</td>
-                                    <td width="75%">$!{TemVal.value11}</td>
-                                </tr>
-                                #end
-                                #if($!{TemVal.value26}!="")
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">
-                                        #message('msg.email.content.virsical.meeting_num')
-                                    </td>
-                                    <td width="75%">$!{TemVal.value26}</td>
-                                </tr>
-                                #end
-                                #if($!{TemVal.value25}!="")
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">
-                                        #message('msg.email.content.virsical.meeting_pwd')
-                                    </td>
-                                    <td width="75%">$!{TemVal.value25}</td>
-                                </tr>
-                                #end
-                                #if($!{TemVal.value5} != 99)
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_loop')</td>
-                                    <td width="75%">
-                                        #if($!{TemVal.value12}==1)
-                                            <a style="line-height: 15px; border-radius:5px; padding:5px; text-decoration:none; font-size:9pt; border:1px solid #baddff; ">#message(
-	                          'meeting.remind.message.mail.meeting_label_ordinary')</a>
-                                        #elseif($!{TemVal.value12}==2)
-                                            <a style="line-height: 15px; border-radius:5px; padding:5px; text-decoration:none; font-size:9pt; border:1px solid #baddff; ">#message(
-	                          'meeting.remind.message.mail.meeting_label_loop')</a>
-                                        #elseif($!{TemVal.value12}==3)
-                                            <a style="line-height: 15px; border-radius:5px; padding:5px; text-decoration:none; font-size:9pt; border:1px solid #c0e4c5; ">#message(
-	                          'meeting.remind.message.mail.meeting_label_webex')</a>
-                                        #elseif($!{TemVal.value12}==4)
-                                            <a style="line-height: 15px; border-radius:5px; padding:5px; text-decoration:none; font-size:9pt; border:1px solid #baddff; ">#message(
-	                          'meeting.remind.message.mail.meeting_label_loop')</a>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <a style="line-height: 15px; border-radius:5px; padding:5px; text-decoration:none; font-size:9pt; border:1px solid #c0e4c5; ">#message(
-	                          'meeting.remind.message.mail.meeting_label_webex')</a>
-                                        #elseif($!{TemVal.value12}==5)
-                                            <a style="line-height: 15px; border-radius:5px; padding:5px; text-decoration:none; font-size:9pt; border:1px solid #c0e4c5; ">#message(
-	                          'meeting.remind.message.mail.meeting_label_video')</a>
-                                        #elseif($!{TemVal.value12}==6)
-                                            <a style="line-height: 15px; border-radius:5px; padding:5px; text-decoration:none; font-size:9pt; border:1px solid #baddff; ">#message(
-	                          'meeting.remind.message.mail.meeting_label_loop')</a>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <a style="line-height: 15px; border-radius:5px; padding:5px; text-decoration:none; font-size:9pt; border:1px solid #c0e4c5; ">#message(
-	                          'meeting.remind.message.mail.meeting_label_video')</a>
+                                    </span>
+                </td>
+                <td width="75%" style="color: #333333;font-size: 16px;">
+                  $!{TemVal.value7}
+                </td>
+              </tr>
+              <tr>
+                <td align="right" style="color:#999999;font-size: 16px !important;" width="25%">
+                                    <span style="display: block">
+                                        #message('msg.email.content.virsical.meeting_startTimes')
+                                    </span>
+                  <span style="display: block">
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('msg.email.content.virsical.meeting_startTime_zh')
+                                        #else
+                                            #message('msg.email.content.virsical.meeting_startTime')
                                         #end
-                                    </td>
-                                </tr>
-                                #end
-                                #if($!{TemVal.value21}!="")
-                                <tr>
-                                    <td align="right" style="color:#b4b4b4;" width="25%">
-                                        #message('msg.email.content.virsical.meeting_inviteCode')
-                                    </td>
-                                    <td width="75%">$!{TemVal.value21}</td>
-                                </tr>
-                                #end
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr valign="top" align="center">
-                    <td colspan="2" style="padding-bottom:10px;">
-                        <table cellpadding="10" cellspacing="0"
-                               style="border-collapse:collapse;background: #FFFFFF;" width="580">
-                            <tbody>
-                            <tr>
-                                <td colspan="2">
-                                    <span style="display:inline-block;margin:25px 0px 25px 60px;font-size:12pt;">#message(
-                                        'msg.email.content.virsical.value7')</span>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
+                                    </span>
+                </td>
+                <td width="75%" style="color: #333333;font-size: 16px;">$!{TemVal.value1} #message(
+                  'msg.email.content.virsical.meeting_timezone')</td>
+              </tr>
+              <tr>
+                <td align="right" style="color:#999999;font-size: 16px !important;" width="25%">
+                                    <span style="display: block">
+                                        #message('msg.email.content.virsical.meeting_endTimes')
+                                    </span>
+                  <span style="display: block">
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('msg.email.content.virsical.meeting_endTime_zh')
+                                        #else
+                                            #message('msg.email.content.virsical.meeting_endTime')
+                                        #end
+                                    </span>
+                </td>
+                <td width="75%" style="color: #333333;font-size: 16px;">$!{TemVal.value2} #message(
+                  'msg.email.content.virsical.meeting_timezone')</td>
+              </tr>
+              #if($!{TemVal.value32}!="")
+              <tr>
+                <td align="right" style="color:#b4b4b4;" width="25%">
+                                        <span style="display: block">
+                                            #message('msg.email.content.virsical.meeting_regular_modes')
+                                        </span>
+                  <span style="display: block">
+                                            #message('msg.email.content.virsical.meeting_regular_mode')
+                                        </span>
+                </td>
+                <td width="75%">
+                  $!{TemVal.value32}
+                </td>
+              </tr>
+              #end
+              #if($!{TemVal.value32}!="")
+              <tr>
+                <td align="right" style="color:#b4b4b4;" width="25%">
+                                        <span style="display: block">
+                                            #message('msg.email.content.virsical.meeting_regular_ranges')
+                                        </span>
+                  <span style="display: block">
+                                            #message('msg.email.content.virsical.meeting_regular_range')
+                                        </span>
+                </td>
+                <td width="75%">
+                  $!{TemVal.value33}
+                </td>
+              </tr>
+              #end
+              <tr>
+                <td align="right" style="color:#999999;font-size: 16px !important;" width="25%">
+                                    <span style="display: block">
+                                        #message('meeting.remind.message.mail.meeting_hosts')
+                                    </span>
+                  <span style="display: block">
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('meeting.remind.message.mail.meeting_host_zh')
+                                        #else
+                                            #message('meeting.remind.message.mail.meeting_host')
+                                        #end
+                                    </span>
+                </td>
+                <td width="75%" style="color: #333333;font-size: 16px;">$!{TemVal.value9}</td>
+              </tr>
+              #if($!{TemVal.value5} != 99)
+              <tr>
+                <td align="right" style="color:#999999;font-size: 16px !important;" width="25%">
+                                        <span style="display: block">
+                                            #message('msg.email.content.virsical.meeting_attendees')
+                                        </span>
+                  <span style="display: block">
+                                            #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                #message('msg.email.content.virsical.meeting_attendee_zh')
+                                            #else
+                                                #message('msg.email.content.virsical.meeting_attendee')
+                                            #end
+                                        </span>
+                </td>
+                <td width="75%" style="color: #333333;font-size: 16px;">$!{TemVal.value10}</td>
+              </tr>
+              #end
+              #if($!{TemVal.value5} != 99)
+              <tr>
+                <td align="right" style="color:#999999;font-size: 16px !important;" width="25%">
+                                        <span style="display: block">
+                                            #message('msg.email.content.virsical.meeting_remarks')
+                                        </span>
+                  <span style="display: block">
+                                            #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                 #message('msg.email.content.virsical.meeting_remark_zh')
+                                            #else
+                                                #message('msg.email.content.virsical.meeting_remark')
+                                            #end
+                                        </span>
+                </td>
+                <td width="75%" style="color: #333333;font-size: 16px;">$!{TemVal.value11}</td>
+              </tr>
+              #end
+              #if($!{TemVal.value5} != 99)
+              <tr>
+                <td align="right" style="color:#999999;font-size: 16px !important;" width="25%">
+                                        <span style="display: block">
+                                            #message('msg.email.content.virsical.meeting_loops')
+                                        </span>
+                  <span style="display: block">
+                                            #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                                 #message('msg.email.content.virsical.meeting_loop_zh')
+                                            #else
+                                                #message('msg.email.content.virsical.meeting_loopss')
+                                            #end
+                                        </span>
+                </td>
+                <td width="75%" style="color: #333333;font-size: 16px;">
+                  #if($!{TemVal.value12}==1)
+                  #message('meeting.remind.message.mail.meeting_label_ordinary')
+                  #elseif($!{TemVal.value12}==2)
+                  #message('meeting.remind.message.mail.meeting_label_loop')
+                  #elseif($!{TemVal.value12}==3)
+                  #message('meeting.remind.message.mail.meeting_label_webex')
+                  #elseif($!{TemVal.value12}==4)
+                  #message('meeting.remind.message.mail.meeting_label_loop')
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  #message('meeting.remind.message.mail.meeting_label_webex')
+                  #elseif($!{TemVal.value12}==5)
+                  #message('meeting.remind.message.mail.meeting_label_video')
+                  #elseif($!{TemVal.value12}==6)
+                  #message('meeting.remind.message.mail.meeting_label_loop')
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  #message('meeting.remind.message.mail.meeting_label_video')
+                  #end
+                </td>
+              </tr>
+              #end
+              </tbody>
             </table>
-        </td>
-    </tr>
-    </tbody>
-</table>
+          </td>
+        </tr>
+        </tbody>
+      </table>
 </body>
 </html>
