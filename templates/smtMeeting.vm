@@ -113,7 +113,7 @@
                                                         #message('meeting.remind.message.mail.meeting_update_appoint')
                                                     #end
                                                 </span>
-                                            #elseif($!{TemVal.value5}==15 || $!{TemVal.value5}==17)
+                                            #elseif($!{TemVal.value5}==15 || $!{TemVal.value5}==23)
                                                 <span style="display: block">
                                                     Infrared Device Reminding
                                                 </span>
@@ -190,7 +190,7 @@
                                                         #message('meeting.remind.message.mail.visible_notice')
                                                     #end
                                                 </span>
-                                            #elseif($!{TemVal.value5}==20 || $!{TemVal.value5}==21 || $!{TemVal.value5}==22 || $!{TemVal.value5}==23)
+                                            #elseif($!{TemVal.value5}==20 || $!{TemVal.value5}==21 || $!{TemVal.value5}==22)
                                                 <span style="display: block">
                                                     Meeting Room Automatic Release
                                                 </span>
@@ -344,7 +344,7 @@
                     #elseif($!{TemVal.value5}==16)
                     #message(
                     'meeting.remind.message.mail.meeting.need.confirm.en')
-                    #elseif($!{TemVal.value5}==17)
+                    #elseif($!{TemVal.value5}==23)
                     #message('meeting.remind.message.mail.alarm.content.en')<a
                     href="$!{TemVal.value23}"
                     style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff;margin-left: 5px; ">#message(
@@ -362,11 +362,6 @@
                     'meeting.message.smsAndreserve.knd.startKeep1.en')$!{TemVal.value35.split(",")[0]}#message(
                     'meeting.message.smsAndreserve.knd.startKeep2.en')$!{TemVal.value31}#message(
                     'meeting.message.smsAndreserve.knd.startKeep3.en')
-                    #elseif($!{TemVal.value5}==23)
-                    #message(
-                    'meeting.message.smsAndreserve.knd.rlsKeep1.en')$!{TemVal.value35.split(",")[0]}#message(
-                    'meeting.message.smsAndreserve.knd.rlsKeep2.en')$!{TemVal.value31}#message(
-                    'meeting.message.smsAndreserve.knd.rlsKeep3.en')
                     #elseif($!{TemVal.value5}==66)
                     #message(
                     'meeting.remind.message.mail.meeting_audit_need.en')
@@ -541,7 +536,7 @@
                     #elseif($!{TemVal.value5}==16)
                     #message(
                     'meeting.remind.message.mail.meeting.need.confirm.zhhk')
-                    #elseif($!{TemVal.value5}==17)
+                    #elseif($!{TemVal.value5}==23)
                     #message('meeting.remind.message.mail.alarm.content.zhhk')<a
                     href="$!{TemVal.value23}"
                     style="line-height: 15px; border-radius:5px; padding:5px 10px; text-decoration:none; font-size:10pt; background:#0467BA; color:#ffffff;margin-left: 5px; ">#message(
@@ -559,11 +554,6 @@
                     'meeting.message.smsAndreserve.knd.startKeep1.zhhk')$!{TemVal.value35.split(",")[1]}#message(
                     'meeting.message.smsAndreserve.knd.startKeep2.zhhk')$!{TemVal.value31}#message(
                     'meeting.message.smsAndreserve.knd.startKeep3.zhhk')
-                    #elseif($!{TemVal.value5}==23)
-                    #message(
-                    'meeting.message.smsAndreserve.knd.rlsKeep1.zhhk')$!{TemVal.value35.split(",")[1]}#message(
-                    'meeting.message.smsAndreserve.knd.rlsKeep2.zhhk')$!{TemVal.value31}#message(
-                    'meeting.message.smsAndreserve.knd.rlsKeep3.zhhk')
                     #elseif($!{TemVal.value5}==66)
                     #message(
                     'meeting.remind.message.mail.meeting_audit_need.zhhk')
