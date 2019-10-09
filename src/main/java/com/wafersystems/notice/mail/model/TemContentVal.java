@@ -51,6 +51,17 @@ public class TemContentVal implements Serializable {
   private String value22;
   private String value23;
   private String value24;
+  private String value25;
+  private String value26;
+  private String value27;
+  private String value28;
+  private String value29;
+  private String value30;
+  private String value31;
+  private String value32;
+  private String value33;
+  private String value34;
+
   private Locale locale;
   private transient ApplicationContext resource;
   // 图片目录地址
@@ -147,5 +158,34 @@ public class TemContentVal implements Serializable {
   public String getValue24() {
     return StrUtil.regStr(value24);
   }
-
+  public String getValue25() {
+    return StrUtil.regStr(value25);
+  }
+  public String getValue26() {
+    return StrUtil.regStr(value26);
+  }
+  public String getValue27() {
+    return StrUtil.regStr(value27);
+  }
+  public String getValue28() {
+    return StrUtil.regStr(value28);
+  }
+  public String getValue29() {
+    return StrUtil.regStr(value29);
+  }
+  public String getValue30() {
+    return StrUtil.regStr(value30);
+  }
+  public String getValue31() {
+    return StrUtil.regStr(value31);
+  }
+  public String getValue32() {
+    return StrUtil.regStr(value32);
+  }
+  public String getValue33() {
+    return StrUtil.regStr(value33);
+  }
+  public String getValue34() {
+    return StrUtil.regStr(value34);
+  }
 }
