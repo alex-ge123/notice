@@ -67,9 +67,9 @@ INSERT INTO `ntc_parameter` VALUES (1, '默认logo', 'LOGO_DEFALUT', 'http://www
 INSERT INTO `ntc_parameter` VALUES (2, '短信接口服务地址', 'URL_SMS_SERVER', 'https://work.virsical.cn/sms/ability');
 INSERT INTO `ntc_parameter` VALUES (3, '短信接口CLIENTID', 'URL_SMS_CLIENTID', 'meeting');
 INSERT INTO `ntc_parameter` VALUES (4, '短信接口SECRET', 'URL_SMS_SECRET', '23cbf2b615184418');
-INSERT INTO `ntc_parameter` VALUES (5, '系统邮件发送邮件', 'DEFAULT_MAIL_FROM', 'office_helper1@wafersystems.com');
+INSERT INTO `ntc_parameter` VALUES (5, '系统邮件发送邮件', 'DEFAULT_MAIL_FROM', 'office_helper2@wafersystems.com');
 INSERT INTO `ntc_parameter` VALUES (6, '系统邮件服务', 'DEFAULT_MAIL_HOST', 'smtp.263xmail.com');
-INSERT INTO `ntc_parameter` VALUES (7, '系统邮件密码', 'DEFAULT_MAIL_PASSWORD', 'WAffHe@2019');
+INSERT INTO `ntc_parameter` VALUES (7, '系统邮件密码', 'DEFAULT_MAIL_PASSWORD', 'wAfer@help0606');
 INSERT INTO `ntc_parameter` VALUES (8, '系统邮件认证', 'DEFAULT_MAIL_AUTH', 'true');
 INSERT INTO `ntc_parameter` VALUES (9, '系统邮件超时时间', 'DEFAULT_MAIL_TIMEOUT', '25000');
 INSERT INTO `ntc_parameter` VALUES (10, '系统邮件编码', 'DEFAULT_MAIL_CHARSET', 'GBK');
