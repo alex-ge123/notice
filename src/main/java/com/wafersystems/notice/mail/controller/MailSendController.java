@@ -3,6 +3,8 @@ package com.wafersystems.notice.mail.controller;
 import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.base.model.TestSendMailDTO;
 import com.wafersystems.notice.mail.model.MailBean;
+import com.wafersystems.notice.mail.model.MailTemplateDto;
+import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.*;
@@ -20,9 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,14 +57,17 @@ public class MailSendController extends BaseController {
    * @return R
    */
   @GetMapping("/template/list")
-  public R templateList() {
-    ArrayList<String> files;
-    try {
-      files = getFiles(mailTemplatePath);
-    } catch (Exception e) {
-      return R.fail(e.getMessage());
-    }
-    return R.ok(files);
+  public R templateList(Long id, String category ,String name) {
+    List<MailTemplateSearchListDto> list = mailNoticeService.getTemp(id, category, name);
+    return R.ok(list);
+
+//    ArrayList<String> files;
+//    try {
+//      files = getFiles(mailTemplatePath);
+//    } catch (Exception e) {
+//      return R.fail(e.getMessage());
+//    }
+//    return R.ok(files);
   }
 
   /**
@@ -74,21 +77,39 @@ public class MailSendController extends BaseController {
    * @return R
    */
   @PostMapping("/template/upload")
-  public R templateUpload(@RequestParam MultipartFile file) {
-    // 获取文件名
-    String fileName = file.getOriginalFilename();
-    log.info("上传的文件名为：" + fileName);
-    File dir = new File(mailTemplatePath + "/" + fileName);
-    // 检测是否存在目录
-    if (!dir.getParentFile().exists()) {
-      dir.getParentFile().mkdirs();
-    }
+  public R templateUpload(@RequestParam MultipartFile file ,@RequestParam String category,
+                          @RequestParam String description,Long id) {
     try {
-      file.transferTo(dir);
-    } catch (IOException e) {
+      String fileName = StrUtil.getFileNameNoEx(file.getOriginalFilename());
+      log.info("上传的文件名为：" + fileName);
+      byte[] bytes = file.getBytes();
+      String content = new String(bytes);
+      MailTemplateDto mailTemplateDto = new MailTemplateDto();
+      mailTemplateDto.setId(id);
+      mailTemplateDto.setName(fileName);
+      mailTemplateDto.setContent(content);
+      mailTemplateDto.setCategory(category);
+      mailTemplateDto.setDescription(description);
+      mailNoticeService.saveTemp(mailTemplateDto);
+    }catch (Exception e){
       log.error("上传邮件模板失败", e);
       return R.fail(e.getMessage());
     }
+
+    // 获取文件名
+//    String fileName = file.getOriginalFilename();
+//    log.info("上传的文件名为：" + fileName);
+//    File dir = new File(mailTemplatePath + "/" + fileName);
+//    // 检测是否存在目录
+//    if (!dir.getParentFile().exists()) {
+//      dir.getParentFile().mkdirs();
+//    }
+//    try {
+//      file.transferTo(dir);
+//    } catch (IOException e) {
+//      log.error("上传邮件模板失败", e);
+//      return R.fail(e.getMessage());
+//    }
     return R.ok();
   }
 
@@ -112,8 +133,10 @@ public class MailSendController extends BaseController {
     mailBean.setSubject("这是一个邮件标题");
     mailBean.setToEmails("收件人");
     mailBean.setCopyTo("抄送人");
-    mailBean.setType(ConfConstant.TypeEnum.VM);
-    mailBean.setTemplate(tempName.contains(".vm") ? tempName : tempName + ".vm");
+    mailBean.setType(ConfConstant.TypeEnum.FM);
+//    mailBean.setType(ConfConstant.TypeEnum.VM);
+//    mailBean.setTemplate(tempName.contains(".vm") ? tempName : tempName + ".vm");
+    mailBean.setTemplate(tempName);
     params = getTestParams(tempName, params);
     TemContentVal con = getTemContentVal(params);
     con.setLocale(locale);
@@ -201,8 +224,11 @@ public class MailSendController extends BaseController {
     @Override
     public void run() {
       try {
-        mailNoticeService.sendMail(subject, toMail, copyTo, ConfConstant.TypeEnum.VM,
-          tempName.contains(".vm") ? tempName : tempName + ".vm", con, 0);
+//        mailNoticeService.sendMail(subject, toMail, copyTo, ConfConstant.TypeEnum.VM,
+//          tempName.contains(".vm") ? tempName : tempName + ".vm", con, 0);
+
+        mailNoticeService.sendMail(subject, toMail, copyTo, ConfConstant.TypeEnum.FM,
+          tempName, con, 0);
       } catch (Exception ex) {
         throw new RuntimeException();
       }
@@ -319,4 +345,6 @@ public class MailSendController extends BaseController {
     }
     return fileList;
   }
+
+
 }

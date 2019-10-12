@@ -1,13 +1,18 @@
 package com.wafersystems.notice.util;
 
+import com.wafersystems.notice.config.FreemarkerMacroMessage;
+import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
 import com.wafersystems.notice.mail.model.MailBean;
+import freemarker.template.Configuration;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.activation.DataHandler;
 import javax.mail.*;
@@ -21,6 +26,7 @@ import java.io.StringWriter;
 import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -35,6 +41,14 @@ public class EmailUtil {
   @Setter
   private VelocityEngine velocityEngine;
 
+  @Autowired
+  private Configuration configuration;
+
+  @Autowired
+  private MysqlMailTemplateLoader mysqlMailTemplateLoader;
+
+  @Autowired
+  private FreemarkerMacroMessage messageService;
 
   /**
    * 发送邮件
@@ -82,13 +96,17 @@ public class EmailUtil {
       // 第一个为文本内容。
       BodyPart bodyPart = new MimeBodyPart();
       if (checkMailBean(mailBean)) {
-        bodyPart.setContent(this.getMessage(mailBean), "text/html;charset=UTF-8");
+        String message1 = this.getMessage(mailBean);
+        bodyPart.setContent(message1, "text/html;charset=UTF-8");
       }
       // 添加第一个body内容
       multipart.addBodyPart(bodyPart);
       // 使用多个body体填充邮件内容。
-      if ("smtMeeting.vm".equals(mailBean.getTemplate())
-        || "virsical.vm".equals(mailBean.getTemplate())) {
+//      if ("smtMeeting.vm".equals(mailBean.getTemplate())
+//        || "virsical.vm".equals(mailBean.getTemplate())) {
+
+      if ("smtMeeting".equals(mailBean.getTemplate())
+        || "virsical".equals(mailBean.getTemplate())) {
         message.setContent(this.sendEventEmail(mailBean));
       } else {
         message.setContent(multipart);
@@ -258,6 +276,18 @@ public class EmailUtil {
         Template temple = velocityEngine.getTemplate(mailBean.getTemplate(), "UTF-8");
         temple.merge(context, writer);
         return writer.toString();
+      }else if(ConfConstant.TypeEnum.FM.equals(mailBean.getType())){
+        //freemarker
+        log.debug("使用模版" + mailBean.getTemplate());
+        //freemarker 配置模板加载器
+        configuration.setTemplateLoader(mysqlMailTemplateLoader);
+        //配置共享变量
+        configuration.setSharedVariable("loccalMessage",messageService);
+        //加载模板
+        freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate());
+        //模板渲染
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template,mailBean.getTemVal());
+        return html;
       } else {
         log.debug("使用html模版" + mailBean.getTemplate());
         context = new VelocityContext(mailBean.getData());

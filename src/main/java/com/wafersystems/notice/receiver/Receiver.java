@@ -78,10 +78,15 @@ public class Receiver {
         con.setResource(resource);
         con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
         try {
+//          mailNoticeService.sendMail(StrUtil.regStr(mailDTO.getSubject()),
+//            mailDTO.getToMail(), mailDTO.getCopyTo(),
+//            ConfConstant.TypeEnum.VM,
+//            mailDTO.getTempName().contains(".vm") ? mailDTO.getTempName() : mailDTO.getTempName() + ".vm", con, 0);
+
           mailNoticeService.sendMail(StrUtil.regStr(mailDTO.getSubject()),
             mailDTO.getToMail(), mailDTO.getCopyTo(),
-            ConfConstant.TypeEnum.VM,
-            mailDTO.getTempName().contains(".vm") ? mailDTO.getTempName() : mailDTO.getTempName() + ".vm", con, 0);
+            ConfConstant.TypeEnum.FM,
+            mailDTO.getTempName(), con, 0);
         } catch (Exception e) {
           log.error("发送邮件失败：", e);
         }

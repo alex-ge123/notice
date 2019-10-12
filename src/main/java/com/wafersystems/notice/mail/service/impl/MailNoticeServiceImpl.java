@@ -1,14 +1,23 @@
 package com.wafersystems.notice.mail.service.impl;
 
+import com.wafersystems.notice.base.dao.BaseDao;
+import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.mail.model.MailBean;
+import com.wafersystems.notice.mail.model.MailTemplateDto;
+import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.ParamConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 邮件接口实现
@@ -18,6 +27,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class MailNoticeServiceImpl implements MailNoticeService {
+
+  @Autowired
+  private BaseDao baseDao;
 
   @Autowired
   private EmailUtil mailUtil;
@@ -58,5 +70,49 @@ public class MailNoticeServiceImpl implements MailNoticeService {
         throw exception;
       }
     }
+  }
+
+  @Override
+  public void saveTemp(MailTemplateDto mailTemplateDto) {
+    baseDao.saveOrUpdate(mailTemplateDto);
+    log.debug("新增/修改{}模板成功！",mailTemplateDto.getName());
+  }
+
+  @Override
+  public List<MailTemplateSearchListDto> getTemp(Long id, String category , String name) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateSearchListDto.class);
+    if (null != id){
+      criteria.add(Restrictions.eq("id", id));
+    }
+    if (null != name){
+      criteria.add(Restrictions.eq("name", name));
+    }
+    if (null != category){
+      criteria.add(Restrictions.eq("category", category));
+    }
+    List<MailTemplateSearchListDto> list = baseDao.findByCriteria(criteria);
+    return list;
+  }
+
+  @Override
+  public MailTemplateDto getTempById(Long id) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDto.class);
+    criteria.add(Restrictions.eq("id", id));
+    List<MailTemplateDto> list = baseDao.findByCriteria(criteria);
+    if (list.size()>0){
+      return list.get(0);
+    }
+    return null;
+  }
+
+  @Override
+  public MailTemplateDto getTempByName(String name) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDto.class);
+    criteria.add(Restrictions.eq("name", name));
+    List<MailTemplateDto> list = baseDao.findByCriteria(criteria);
+    if (list.size()>0){
+      return list.get(0);
+    }
+    return null;
   }
 }
