@@ -283,11 +283,11 @@ public class MailSendController extends BaseController {
         list.add(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");
         list.add(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");
         list.add("-1");
-        for (int i = 4; i < 20; i++) {
+        for (int i = 4; i < 30; i++) {
           list.add("参数" + i);
         }
       } else {
-        for (int i = 1; i < 25; i++) {
+        for (int i = 1; i < 35; i++) {
           list.add("参数" + i);
         }
       }
