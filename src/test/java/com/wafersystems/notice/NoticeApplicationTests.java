@@ -1,16 +1,25 @@
 package com.wafersystems.notice;
+import java.util.Locale;
+import org.springframework.context.ApplicationContext;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wafersystems.notice.config.RabbitMqConfig;
 import com.wafersystems.notice.util.DateUtil;
 import com.wafersystems.notice.util.HttpClientUtil;
 import com.wafersystems.notice.util.HttpsPostClientUtil;
 import com.wafersystems.notice.util.StringUtil;
+import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
+import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
+import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
+import com.wafersystems.virsical.common.core.dto.MailDTO;
+import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.NameValuePair;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -36,13 +45,70 @@ public class NoticeApplicationTests {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     // 模拟http请求
     private MockMvc mockMvc;
+
 
     @Before
     public void init() {
         //集成Web环境测试（此种方式并不会集成真正的web环境，而是通过相应的Mock API进行模拟测试，无须启动服务器）
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+    }
+
+  /**
+   * 测试通过mq发送邮件
+   */
+  @Test
+   public void mqSendMailTest(){
+    MailDTO mailDTO = new MailDTO();
+    mailDTO.setSubject("mq测试");
+    mailDTO.setToMail("snanb@outlook.com");
+    mailDTO.setCopyTo("shennan@wafersystems.com");
+    mailDTO.setTempName("forgetPwd");
+    mailDTO.setLang("en_US");
+    mailDTO.setValue1("setValue1");
+    mailDTO.setValue2("setValue2");
+    mailDTO.setValue3("setValue3");
+    mailDTO.setValue4("setValue4");
+    mailDTO.setValue5("setValue5");
+    mailDTO.setValue6("setValue6");
+    mailDTO.setValue7("setValue7");
+    mailDTO.setValue8("setValue8");
+    mailDTO.setValue9("setValue9");
+    mailDTO.setValue10("setValue10");
+    mailDTO.setValue11("setValue11");
+    mailDTO.setValue12("setValue12");
+    mailDTO.setValue13("setValue13");
+    mailDTO.setValue14("setValue14");
+    mailDTO.setValue15("setValue15");
+    mailDTO.setValue16("setValue16");
+    mailDTO.setValue17("setValue17");
+    mailDTO.setValue18("setValue18");
+    mailDTO.setValue19("setValue19");
+    mailDTO.setValue20("setValue20");
+    mailDTO.setValue21("setValue21");
+    mailDTO.setValue22("setValue22");
+    mailDTO.setValue23("setValue23");
+    mailDTO.setValue24("setValue24");
+    mailDTO.setValue25("setValue25");
+    mailDTO.setValue26("setValue26");
+    mailDTO.setValue27("setValue27");
+    mailDTO.setValue28("setValue28");
+    mailDTO.setValue29("setValue29");
+    mailDTO.setValue30("setValue30");
+    mailDTO.setValue31("setValue31");
+    mailDTO.setValue32("setValue32");
+    mailDTO.setValue33("setValue33");
+    mailDTO.setValue34("setValue34");
+    mailDTO.setImageDirectory("setValue34");
+
+    MessageDTO messageDTO = new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.ADD.name(), mailDTO);
+    String jsonStr = JSON.toJSONString(messageDTO);
+    rabbitTemplate.convertAndSend(RabbitMqConfig.QUEUE_NOTICE_MAIL, jsonStr);
+    log.debug("发送测试邮件成功{}",jsonStr);
     }
 
     /**
