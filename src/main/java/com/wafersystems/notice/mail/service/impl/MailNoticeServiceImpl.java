@@ -89,8 +89,18 @@ public class MailNoticeServiceImpl implements MailNoticeService {
 
   @Override
   public void saveTemp(MailTemplateDto mailTemplateDto) {
-    baseDao.saveOrUpdate(mailTemplateDto);
-    sendLog(mailTemplateDto);
+    MailTemplateDto dto = getTempByName(mailTemplateDto.getName());
+    if (null == dto){
+      baseDao.save(mailTemplateDto);
+      sendLog(mailTemplateDto,"模板:[" + mailTemplateDto.getName() + "]新增。");
+    }else{
+      dto.setDescription(mailTemplateDto.getDescription());
+      dto.setCategory(mailTemplateDto.getCategory());
+      dto.setContent(mailTemplateDto.getContent());
+      dto.setModtime(null);
+      baseDao.update(dto);
+      sendLog(mailTemplateDto,"模板:[" + mailTemplateDto.getName() + "]更新。");
+    }
     log.debug("新增/修改{}模板成功！",mailTemplateDto.getName());
   }
 
@@ -137,11 +147,11 @@ public class MailNoticeServiceImpl implements MailNoticeService {
    * @param mailTemplateDto
    */
   @Async("mqAsync")
-  public void sendLog(MailTemplateDto mailTemplateDto) {
+  public void sendLog(MailTemplateDto mailTemplateDto,String content) {
     LogDTO logDTO = new LogDTO();
     logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
     logDTO.setTitle("邮件模板更新");
-    logDTO.setContent("模板:[" + mailTemplateDto.getName() + "],新增/更新。");
+    logDTO.setContent(content);
     logDTO.setType("template-update");
     logDTO.setResult(CommonConstants.SUCCESS);
     logDTO.setUserId(TenantContextHolder.getUserId());

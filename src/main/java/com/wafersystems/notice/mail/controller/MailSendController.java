@@ -60,14 +60,6 @@ public class MailSendController extends BaseController {
   public R templateList(Long id, String category ,String name) {
     List<MailTemplateSearchListDto> list = mailNoticeService.getTemp(id, category, name);
     return R.ok(list);
-
-//    ArrayList<String> files;
-//    try {
-//      files = getFiles(mailTemplatePath);
-//    } catch (Exception e) {
-//      return R.fail(e.getMessage());
-//    }
-//    return R.ok(files);
   }
 
   /**
@@ -78,14 +70,13 @@ public class MailSendController extends BaseController {
    */
   @PostMapping("/template/upload")
   public R templateUpload(@RequestParam MultipartFile file ,@RequestParam String category,
-                          @RequestParam String description,Long id) {
+                          @RequestParam String description) {
     try {
       String fileName = StrUtil.getFileNameNoEx(file.getOriginalFilename());
       log.info("上传的文件名为：" + fileName);
       byte[] bytes = file.getBytes();
       String content = new String(bytes);
       MailTemplateDto mailTemplateDto = new MailTemplateDto();
-      mailTemplateDto.setId(id);
       mailTemplateDto.setName(fileName);
       mailTemplateDto.setContent(content);
       mailTemplateDto.setCategory(category);
@@ -95,21 +86,6 @@ public class MailSendController extends BaseController {
       log.error("上传邮件模板失败", e);
       return R.fail(e.getMessage());
     }
-
-    // 获取文件名
-//    String fileName = file.getOriginalFilename();
-//    log.info("上传的文件名为：" + fileName);
-//    File dir = new File(mailTemplatePath + "/" + fileName);
-//    // 检测是否存在目录
-//    if (!dir.getParentFile().exists()) {
-//      dir.getParentFile().mkdirs();
-//    }
-//    try {
-//      file.transferTo(dir);
-//    } catch (IOException e) {
-//      log.error("上传邮件模板失败", e);
-//      return R.fail(e.getMessage());
-//    }
     return R.ok();
   }
 
@@ -134,8 +110,6 @@ public class MailSendController extends BaseController {
     mailBean.setToEmails("收件人");
     mailBean.setCopyTo("抄送人");
     mailBean.setType(ConfConstant.TypeEnum.FM);
-//    mailBean.setType(ConfConstant.TypeEnum.VM);
-//    mailBean.setTemplate(tempName.contains(".vm") ? tempName : tempName + ".vm");
     mailBean.setTemplate(tempName);
     params = getTestParams(tempName, params);
     TemContentVal con = getTemContentVal(params);
