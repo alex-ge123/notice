@@ -1,14 +1,16 @@
 package com.wafersystems.notice;
+import java.io.File;
 import java.util.Locale;
+
+import cn.hutool.core.io.FileUtil;
+import com.wafersystems.notice.mail.model.MailTemplateDto;
+import com.wafersystems.notice.mail.service.MailNoticeService;
+import com.wafersystems.notice.util.*;
 import org.springframework.context.ApplicationContext;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.config.RabbitMqConfig;
-import com.wafersystems.notice.util.DateUtil;
-import com.wafersystems.notice.util.HttpClientUtil;
-import com.wafersystems.notice.util.HttpsPostClientUtil;
-import com.wafersystems.notice.util.StringUtil;
 import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
@@ -48,8 +50,12 @@ public class NoticeApplicationTests {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private MailNoticeService mailNoticeService;
+
     // 模拟http请求
     private MockMvc mockMvc;
+
 
 
     @Before
@@ -208,5 +214,25 @@ public class NoticeApplicationTests {
                 .getContentAsString();
         log.info("[/sms/sendSms]发送短信测试结果：[{}]", mvcResult);
     }
+
+  /**
+   * 批量上传本地邮件模板文件
+   */
+  @Test
+  public void batchUploadTemplateFile(){
+    String filePath = "C:\\Users\\wafer\\Desktop\\templates-out";
+    File files = new File(filePath);
+    File temFiles [] = files.listFiles();
+    for (File file: temFiles) {
+      String fileName = StrUtil.getFileNameNoEx(file.getName());
+      String content = FileUtil.readString(file, "utf-8");
+      MailTemplateDto mailTemplateDto = new MailTemplateDto();
+      mailTemplateDto.setName(fileName);
+      mailTemplateDto.setContent(content);
+      mailTemplateDto.setCategory("分类");
+      mailTemplateDto.setDescription("描述");
+      mailNoticeService.saveTemp(mailTemplateDto);
+    }
+  }
 
 }
