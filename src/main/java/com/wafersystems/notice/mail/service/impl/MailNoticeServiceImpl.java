@@ -155,7 +155,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setType("template-update");
     logDTO.setResult(CommonConstants.SUCCESS);
     logDTO.setUserId(TenantContextHolder.getUserId());
-    logDTO.setObjectId(TenantContextHolder.getUserId().toString());
+    logDTO.setObjectId(mailTemplateDto.getName());
     logDTO.setTenantId(TenantContextHolder.getTenantId());
     rabbitTemplate.convertAndSend(UpmsMqConstants.EXCHANGE_DIRECT_UPMS_LOG, UpmsMqConstants.ROUTINT_KEY_LOG,
       JSON.toJSONString(new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.ADD.name(), logDTO)));
