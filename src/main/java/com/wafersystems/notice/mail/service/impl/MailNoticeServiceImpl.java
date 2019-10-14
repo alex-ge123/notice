@@ -1,5 +1,6 @@
 package com.wafersystems.notice.mail.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.mail.model.MailBean;
@@ -10,10 +11,21 @@ import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.ParamConstant;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
+import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
+import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
+import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
+import com.wafersystems.virsical.common.core.dto.LogDTO;
+import com.wafersystems.virsical.common.core.dto.MessageDTO;
+import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
+import com.wafersystems.virsical.common.entity.SysTenant;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -33,6 +45,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
 
   @Autowired
   private EmailUtil mailUtil;
+
+  @Autowired
+  private RabbitTemplate rabbitTemplate;
 
   /**
    * Description: 邮件发送 author waferzy DateTime 2016-3-10 下午2:37:55.
@@ -75,6 +90,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   @Override
   public void saveTemp(MailTemplateDto mailTemplateDto) {
     baseDao.saveOrUpdate(mailTemplateDto);
+    sendLog(mailTemplateDto);
     log.debug("新增/修改{}模板成功！",mailTemplateDto.getName());
   }
 
@@ -114,5 +130,24 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       return list.get(0);
     }
     return null;
+  }
+
+  /**
+   * 记录日志
+   * @param mailTemplateDto
+   */
+  @Async("mqAsync")
+  public void sendLog(MailTemplateDto mailTemplateDto) {
+    LogDTO logDTO = new LogDTO();
+    logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
+    logDTO.setTitle("邮件模板更新");
+    logDTO.setContent("模板:[" + mailTemplateDto.getName() + "],新增/更新。");
+    logDTO.setType("template-update");
+    logDTO.setResult(CommonConstants.SUCCESS);
+    logDTO.setUserId(TenantContextHolder.getUserId());
+    logDTO.setObjectId(TenantContextHolder.getUserId().toString());
+    logDTO.setTenantId(TenantContextHolder.getTenantId());
+    rabbitTemplate.convertAndSend(UpmsMqConstants.EXCHANGE_DIRECT_UPMS_LOG, UpmsMqConstants.ROUTINT_KEY_LOG,
+      JSON.toJSONString(new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.ADD.name(), logDTO)));
   }
 }
