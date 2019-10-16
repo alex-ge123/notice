@@ -58,7 +58,7 @@ public class MailSendController extends BaseController {
    * @param id
    * @param category
    * @param name
-   * @param pageSize 分页大小
+   * @param pageSize   分页大小
    * @param startIndex 起始页
    * @return
    */
@@ -328,5 +328,14 @@ public class MailSendController extends BaseController {
     return fileList;
   }
 
+  @RequestMapping("/getMessage")
+  public String testGetMessage(String message,
+                               String lang) throws Exception {
+    Locale locale = ParamConstant.getLocaleByStr(lang != null ? lang : "zh_CN");
+    log.error("message {},lang {},local {}", message, lang, locale);
+    String str = resource.getMessage(message, null, locale);
+    log.error("message {}", str);
+    return str;
+  }
 
 }
