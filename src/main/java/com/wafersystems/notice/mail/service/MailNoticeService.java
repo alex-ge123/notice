@@ -1,5 +1,6 @@
 package com.wafersystems.notice.mail.service;
 
+import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
 import com.wafersystems.notice.mail.model.TemContentVal;
@@ -39,9 +40,14 @@ public interface MailNoticeService {
 
   /**
    * 查询邮件模板列表(不包含content)
+   * @param id
+   * @param category
+   * @param name
+   * @param page
+   * @param row
    * @return
    */
-  List<MailTemplateSearchListDto> getTemp(Long id, String category , String name);
+  PaginationDto<MailTemplateSearchListDto> getTemp(Long id, String category , String name , Integer page, Integer row);
 
   /**
    * 通过id查询邮件模板详细信息

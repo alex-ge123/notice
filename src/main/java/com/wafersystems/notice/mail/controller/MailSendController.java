@@ -1,6 +1,7 @@
 package com.wafersystems.notice.mail.controller;
 
 import com.wafersystems.notice.base.controller.BaseController;
+import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.base.model.TestSendMailDTO;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
@@ -54,11 +55,18 @@ public class MailSendController extends BaseController {
   /**
    * 获取所有邮件模板
    *
-   * @return R
+   * @param id
+   * @param category
+   * @param name
+   * @param pageSize 分页大小
+   * @param startIndex 起始页
+   * @return
    */
   @GetMapping("/template/list")
-  public R templateList(Long id, String category ,String name) {
-    List<MailTemplateSearchListDto> list = mailNoticeService.getTemp(id, category, name);
+  public R templateList(Long id, String category, String name, @RequestParam(
+    defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize, @RequestParam(
+    defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
+    PaginationDto<MailTemplateSearchListDto> list = mailNoticeService.getTemp(id, category, name, pageSize, startIndex);
     return R.ok(list);
   }
 
@@ -69,7 +77,7 @@ public class MailSendController extends BaseController {
    * @return R
    */
   @PostMapping("/template/upload")
-  public R templateUpload(@RequestParam MultipartFile file ,@RequestParam String category,
+  public R templateUpload(@RequestParam MultipartFile file, @RequestParam String category,
                           @RequestParam String description) {
     try {
       String fileName = StrUtil.getFileNameNoEx(file.getOriginalFilename());
@@ -82,7 +90,7 @@ public class MailSendController extends BaseController {
       mailTemplateDto.setCategory(category);
       mailTemplateDto.setDescription(description);
       mailNoticeService.saveTemp(mailTemplateDto);
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error("上传邮件模板失败", e);
       return R.fail(e.getMessage());
     }

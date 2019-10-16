@@ -3,6 +3,7 @@ package com.wafersystems.notice.mail.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.GlobalParameter;
+import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
@@ -22,6 +23,7 @@ import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.entity.SysTenant;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,34 +92,34 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   @Override
   public void saveTemp(MailTemplateDto mailTemplateDto) {
     MailTemplateDto dto = getTempByName(mailTemplateDto.getName());
-    if (null == dto){
+    if (null == dto) {
       baseDao.save(mailTemplateDto);
-      sendLog(mailTemplateDto,"模板:[" + mailTemplateDto.getName() + "]新增。");
-    }else{
+      sendLog(mailTemplateDto, "模板:[" + mailTemplateDto.getName() + "]新增。");
+    } else {
       dto.setDescription(mailTemplateDto.getDescription());
       dto.setCategory(mailTemplateDto.getCategory());
       dto.setContent(mailTemplateDto.getContent());
       dto.setModtime(null);
       baseDao.update(dto);
-      sendLog(mailTemplateDto,"模板:[" + mailTemplateDto.getName() + "]更新。");
+      sendLog(mailTemplateDto, "模板:[" + mailTemplateDto.getName() + "]更新。");
     }
-    log.debug("新增/修改{}模板成功！",mailTemplateDto.getName());
+    log.debug("新增/修改{}模板成功！", mailTemplateDto.getName());
   }
 
   @Override
-  public List<MailTemplateSearchListDto> getTemp(Long id, String category , String name) {
+  public PaginationDto<MailTemplateSearchListDto> getTemp(Long id, String category, String name, Integer pageSize, Integer startIndex) {
     DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateSearchListDto.class);
-    if (null != id){
+    if (null != id) {
       criteria.add(Restrictions.eq("id", id));
     }
-    if (null != name){
-      criteria.add(Restrictions.eq("name", name));
+    if (null != name) {
+      criteria.add(Restrictions.ilike("name", name, MatchMode.ANYWHERE));
     }
-    if (null != category){
+    if (null != category) {
       criteria.add(Restrictions.eq("category", category));
     }
-    List<MailTemplateSearchListDto> list = baseDao.findByCriteria(criteria);
-    return list;
+    PaginationDto<MailTemplateSearchListDto> paginationDto = baseDao.selectPage(criteria, pageSize, startIndex);
+    return paginationDto;
   }
 
   @Override
@@ -125,7 +127,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDto.class);
     criteria.add(Restrictions.eq("id", id));
     List<MailTemplateDto> list = baseDao.findByCriteria(criteria);
-    if (list.size()>0){
+    if (list.size() > 0) {
       return list.get(0);
     }
     return null;
@@ -136,7 +138,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDto.class);
     criteria.add(Restrictions.eq("name", name));
     List<MailTemplateDto> list = baseDao.findByCriteria(criteria);
-    if (list.size()>0){
+    if (list.size() > 0) {
       return list.get(0);
     }
     return null;
@@ -144,10 +146,11 @@ public class MailNoticeServiceImpl implements MailNoticeService {
 
   /**
    * 记录日志
+   *
    * @param mailTemplateDto
    */
   @Async("mqAsync")
-  public void sendLog(MailTemplateDto mailTemplateDto,String content) {
+  public void sendLog(MailTemplateDto mailTemplateDto, String content) {
     LogDTO logDTO = new LogDTO();
     logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
     logDTO.setTitle("邮件模板更新");
