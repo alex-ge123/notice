@@ -3,6 +3,7 @@ package com.wafersystems.notice.mail.controller;
 import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.base.model.TestSendMailDTO;
+import com.wafersystems.notice.config.FreemarkerMacroMessage;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
@@ -45,6 +46,9 @@ public class MailSendController extends BaseController {
   private TaskExecutor taskExecutor;
   @Autowired
   private ApplicationContext resource;
+
+  @Autowired
+  private FreemarkerMacroMessage fMessage;
 
   @Value("${mail.template.path}")
   String mailTemplatePath;
@@ -328,13 +332,18 @@ public class MailSendController extends BaseController {
     return fileList;
   }
 
-  @RequestMapping("/getMessage")
+  @RequestMapping("/getmessage")
   public String testGetMessage(String message,
                                String lang) throws Exception {
     Locale locale = ParamConstant.getLocaleByStr(lang != null ? lang : "zh_CN");
     log.error("message {},lang {},local {}", message, lang, locale);
     String str = resource.getMessage(message, null, locale);
     log.error("message {}", str);
+
+    log.error("message1 {},lang1 {},local1 {}", message, lang, locale);
+    String str1 = fMessage.getMessage(message,lang);
+    log.error("message1 {}", str1);
+
     return str;
   }
 
