@@ -1,0 +1,132 @@
+<#macro message code, locale>${loccalMessage.getMessage(code, locale)}</#macro>
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_blank">
+    <style type="text/css">
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <style type="text/css" id="cloudAttachStyle">
+        #divNeteaseBigAttach, #divNeteaseBigAttach_bak {
+            display: none;
+        }
+    </style>
+    <style type="text/css">
+        body {
+            font-size: 10.5pt;
+            font-family: arial, verdana, sans-serif;
+            line-height: 1.666;
+            padding: 0;
+            margin: 0;
+            overflow: auto;
+            white-space: normal;
+            word-wrap: break-word;
+            min-height: 100px
+        }
+
+        td, input, button, select, body {
+            font-family: Helvetica, 'Microsoft Yahei', verdana
+        }
+
+        pre {
+            white-space: pre-wrap;
+            white-space: -moz-pre-wrap;
+            white-space: -pre-wrap;
+            white-space: -o-pre-wrap;
+            word-wrap: break-word;
+            width: 95%
+        }
+
+        th, td {
+            font-family: arial, verdana, sans-serif;
+            line-height: 1.666
+        }
+
+        img {
+            border: 0
+        }
+
+        header, footer, section, aside, article, nav, hgroup, figure, figcaption {
+            display: block
+        }
+
+        .firTab {
+            text-indent: 2em
+        }
+    </style>
+
+    <style type="text/css" id="ntes_link_color">
+        a, td a {
+            color: #003399
+        }
+    </style>
+</head>
+
+
+ <body>
+  <table width="80%" cellspacing="0" cellpadding="0" border="0"align="center"style="-webkit-font-smoothing: antialiased; font-family: '微软雅黑', 'Helvetica Neue', sans-serif, SimHei; padding: 35px 40px; margin: 25px auto; background: rgb(247, 246, 242); border-radius: 5px">
+   <tbody>
+    <tr>
+     <td style="color: #000;">
+      <img width="200px" height="35px" alt="${value1!''}" src="${logo!''}"/>
+     </td>
+    </tr>
+   <tr>
+    <td style="padding: 0 20px">
+     <hr style="border: none; border-top: 1px solid #ccc;">
+      </td>
+     </tr>
+    <tr>
+     <td valign="middle"style="line-height: 24px; padding: 15px 20px; font-size: 14px;">
+      <div style="font-size: 14px; color: #333333; line-height: 1.6;">
+       <div>
+        <p style="text-align: center">
+         <strong>
+          <@message code="msg.email.content.invitUseSys.title1" locale="${locale}"/>${value1!''}
+         <@message code="msg.email.content.invitUseSys.title2" locale="${locale}"/>
+        </strong>
+       </p>
+      <strong>
+       <@message code="msg.email.content.invitUseSys.welcome" locale="${locale}"/>${value3!''}
+      <@message code="msg.email.content.maohao" locale="${locale}"/>
+     </strong>
+    <p class="firTab">${value1!''}
+     <@message code="msg.email.content.invitUseSys.content1" locale="${locale}"/>
+    </p>
+   <p class="firTab">
+    <@message code="msg.email.content.invitUseSys.content2" locale="${locale}"/>
+   <ahref="${value2!''}">
+    <@message code="msg.email.content.clickHere" locale="${locale}"/>
+   </a>
+  <@message code="msg.email.content.invitUseSys.content3" locale="${locale}"/>
+ </p>
+<#if value5!='ldap'>
+ <p class="firTab">
+  <@message code="msg.email.content.invitUseSys.content4" locale="${locale}"/>${value4!''}、
+ <@message code="msg.email.content.invitUseSys.content5" locale="${locale}"/>${value5!''}
+<@message code="msg.email.content.invitUseSys.content6" locale="${locale}"/>
+</p>
+</#if>
+<p style="margin-top: 20px;">
+<@message code="msg.email.content.invitUseSys.content7" locale="${locale}"/>
+</p>
+<p>
+<@message code="msg.email.content.invitUseSys.content8" locale="${locale}"/>
+</p>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td style="padding: 20px 20px 20px 20px; font-size: 12px; color: #999;">
+<@message code="msg.email.content.virsicalSuj" locale="${locale}"/>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<br>
+</body>
+</html>

@@ -22,7 +22,7 @@ public class ParamConstant {
   @Getter
   @Setter
   private static String LOGO_DEFALUT;
-  
+
   /**
    * 静态图片资源外网访问路径如http://www.virsical.cn/images
    */
@@ -63,14 +63,14 @@ public class ParamConstant {
   @Getter
   @Setter
   private static String DEFAULT_MAIL_HOST;
-  
-  
+
+
   /**
    * 系统邮件服务.
    */
   @Getter
   @Setter
-  private static Integer DEFAULT_MAIL_PORT;  
+  private static Integer DEFAULT_MAIL_PORT;
 
   /**
    * 系统邮件密码.
@@ -200,23 +200,26 @@ public class ParamConstant {
 
   /**
    * Title: getLocaleByStr Description: 获取本地语言资源.
-   * 
+   *
    * @param lang - 语言
    * @return Locale
    */
   public static Locale getLocaleByStr(String lang) {
     Locale locale;
-    switch (lang) {
-      case "en_US":
+    switch (lang.toLowerCase()) {
+      case "en_us":
         locale = Locale.ENGLISH;
         break;
-      case "zh_CN":
+      case "en":
+        locale = Locale.ENGLISH;
+        break;
+      case "zh_cn":
         locale = Locale.CHINA;
         break;
-      case "zh_HK":
+      case "zh_hk":
         locale = Locale.TRADITIONAL_CHINESE;
         break;
-      case "zh_TW":
+      case "zh_tw":
         locale = Locale.TRADITIONAL_CHINESE;
         break;
       default:
@@ -228,7 +231,7 @@ public class ParamConstant {
 
   /**
    * Title: sepDomainUser Description: 将带域的用户ID分解为用户Id和域.
-   * 
+   *
    * @param fullUserId - 带域的用户Id
    * @return String[] String[0] = userId, String[1] = domain
    */
@@ -236,7 +239,7 @@ public class ParamConstant {
     if (fullUserId.contains("@")) {
       return fullUserId.split("@");
     } else {
-      return new String[] {fullUserId, ParamConstant.getDEFAULT_DOMAIN()};
+      return new String[]{fullUserId, ParamConstant.getDEFAULT_DOMAIN()};
     }
   }
 
