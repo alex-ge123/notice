@@ -91,8 +91,8 @@ public class MailSendController extends BaseController {
       MailTemplateDto mailTemplateDto = new MailTemplateDto();
       mailTemplateDto.setName(fileName);
       mailTemplateDto.setContent(content);
-      mailTemplateDto.setCategory(category);
-      mailTemplateDto.setDescription(description);
+      mailTemplateDto.setCategory(new String(category.getBytes("ISO8859-1"),"UTF-8"));
+      mailTemplateDto.setDescription(new String(description.getBytes("ISO8859-1"),"UTF-8"));
       mailNoticeService.saveTemp(mailTemplateDto);
     } catch (Exception e) {
       log.error("上传邮件模板失败", e);
