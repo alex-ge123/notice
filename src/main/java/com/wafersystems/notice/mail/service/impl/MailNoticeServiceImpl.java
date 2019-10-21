@@ -12,6 +12,7 @@ import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.ParamConstant;
+import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
@@ -104,6 +105,32 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       sendLog(mailTemplateDto, "模板:[" + mailTemplateDto.getName() + "]更新。");
     }
     log.debug("新增/修改{}模板成功！", mailTemplateDto.getName());
+  }
+
+  @Override
+  public void updateTemp(MailTemplateDto mailTemplateDto) {
+    MailTemplateDto dto = getTempById(mailTemplateDto.getId());
+    if (null != dto) {
+      if (!StrUtil.isEmptyStr(mailTemplateDto.getName())) {
+        dto.setName(mailTemplateDto.getName());
+      }
+      if (!StrUtil.isEmptyStr(mailTemplateDto.getDescription())) {
+        dto.setDescription(mailTemplateDto.getDescription());
+      }
+      if (!StrUtil.isEmptyStr(mailTemplateDto.getCategory())) {
+        dto.setCategory(mailTemplateDto.getCategory());
+      }
+      if (!StrUtil.isEmptyStr(mailTemplateDto.getContent())) {
+        dto.setContent(mailTemplateDto.getContent());
+      }
+      dto.setModtime(null);
+      baseDao.update(dto);
+      sendLog(mailTemplateDto, "模板:[" + mailTemplateDto.getName() + "]更新。");
+      log.debug("修改{}模板成功！", mailTemplateDto.getName());
+    } else {
+      throw new RuntimeException("未查询到id为["+mailTemplateDto.getId()+"]的邮件模板");
+
+    }
   }
 
   @Override

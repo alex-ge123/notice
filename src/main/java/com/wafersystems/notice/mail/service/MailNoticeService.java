@@ -39,6 +39,12 @@ public interface MailNoticeService {
   void saveTemp(MailTemplateDto mailTemplateDto);
 
   /**
+   * 修改邮件模板
+   * @param mailTemplateDto
+   */
+  void updateTemp(MailTemplateDto mailTemplateDto);
+
+  /**
    * 查询邮件模板列表(不包含content)
    * @param id
    * @param category
@@ -62,4 +68,5 @@ public interface MailNoticeService {
    * @return
    */
   MailTemplateDto getTempByName(String name);
+
 }

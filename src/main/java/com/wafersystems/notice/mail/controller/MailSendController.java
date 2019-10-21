@@ -1,5 +1,6 @@
 package com.wafersystems.notice.mail.controller;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.base.model.TestSendMailDTO;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -91,11 +93,47 @@ public class MailSendController extends BaseController {
       MailTemplateDto mailTemplateDto = new MailTemplateDto();
       mailTemplateDto.setName(fileName);
       mailTemplateDto.setContent(content);
-      mailTemplateDto.setCategory(new String(category.getBytes("ISO8859-1"),"UTF-8"));
-      mailTemplateDto.setDescription(new String(description.getBytes("ISO8859-1"),"UTF-8"));
+      mailTemplateDto.setCategory(new String(category.getBytes("ISO8859-1"), "UTF-8"));
+      mailTemplateDto.setDescription(new String(description.getBytes("ISO8859-1"), "UTF-8"));
       mailNoticeService.saveTemp(mailTemplateDto);
     } catch (Exception e) {
       log.error("上传邮件模板失败", e);
+      return R.fail(e.getMessage());
+    }
+    return R.ok();
+  }
+
+  /**
+   * 更新邮件模板
+   *
+   * @param file
+   * @param id
+   * @param category
+   * @param description
+   * @return
+   */
+  @PostMapping("/template/update")
+  public R templateUpldate(MultipartFile file, @RequestParam Integer id, String category, String description) {
+    try {
+      MailTemplateDto mailTemplateDto = new MailTemplateDto();
+      mailTemplateDto.setId(id.longValue());
+      if (ObjectUtil.isNotNull(file)) {
+        String fileName = StrUtil.getFileNameNoEx(file.getOriginalFilename());
+        log.info("上传的文件名为：" + fileName);
+        byte[] bytes = file.getBytes();
+        String content = new String(bytes);
+        mailTemplateDto.setContent(content);
+        mailTemplateDto.setName(fileName);
+      }
+      if (!cn.hutool.core.util.StrUtil.isEmpty(category)){
+        mailTemplateDto.setCategory(new String(category.getBytes("ISO8859-1"), "UTF-8"));
+      }
+      if (!cn.hutool.core.util.StrUtil.isEmpty(description)){
+        mailTemplateDto.setDescription(new String(description.getBytes("ISO8859-1"), "UTF-8"));
+      }
+      mailNoticeService.updateTemp(mailTemplateDto);
+    } catch (Exception e) {
+      log.error("更新邮件模板失败", e);
       return R.fail(e.getMessage());
     }
     return R.ok();
