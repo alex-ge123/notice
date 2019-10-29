@@ -14,6 +14,7 @@ CREATE TABLE `hibernate_sequence`  (
   `next_val` bigint(20) NULL DEFAULT NULL
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
+INSERT INTO `hibernate_sequence` VALUES (100);
 -- ----------------------------
 -- Table structure for ntc_message_to_user
 -- ----------------------------
