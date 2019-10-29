@@ -25,6 +25,7 @@ import com.wafersystems.virsical.common.entity.SysTenant;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,6 +146,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     if (null != category) {
       criteria.add(Restrictions.eq("category", category));
     }
+    criteria.addOrder(Order.desc("id"));
     PaginationDto<MailTemplateSearchListDto> paginationDto = baseDao.selectPage(criteria, pageSize, startIndex);
     return paginationDto;
   }
