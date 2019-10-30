@@ -165,6 +165,9 @@ public class MailSendController extends BaseController {
     TemContentVal con = getTemContentVal(params);
     con.setLocale(locale);
     con.setResource(resource);
+    con.setLogo(ParamConstant.getLOGO_DEFALUT());
+    con.setPhone(ParamConstant.getPHONE());
+    con.setSystemName(ParamConstant.getSYSTEM_NAME());
     con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
     mailBean.setTemVal(con);
     response.setCharacterEncoding("UTF-8");
