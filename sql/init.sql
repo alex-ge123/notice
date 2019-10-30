@@ -64,7 +64,7 @@ CREATE TABLE `ntc_parameter`  (
 -- ----------------------------
 -- Records of ntc_parameter
 -- ----------------------------
-INSERT INTO `ntc_parameter` VALUES (1, '默认logo', 'LOGO_DEFALUT', 'http://www.virsical.cn/images/logo.png');
+INSERT INTO `ntc_parameter` VALUES (1, '默认logo', 'LOGO_DEFALUT', 'https://vstportal.rd.virsical.cn/res/L9X6U45u82/visit/60683d98f4ab94558e00725e4493f032.jpg');
 INSERT INTO `ntc_parameter` VALUES (2, '短信接口服务地址', 'URL_SMS_SERVER', 'https://work.virsical.cn/sms/ability');
 INSERT INTO `ntc_parameter` VALUES (3, '短信接口CLIENTID', 'URL_SMS_CLIENTID', 'meeting');
 INSERT INTO `ntc_parameter` VALUES (4, '短信接口SECRET', 'URL_SMS_SECRET', '23cbf2b615184418');
@@ -86,7 +86,7 @@ INSERT INTO `ntc_parameter` VALUES (19, '个推消息离线时间(小时)', 'GET
 INSERT INTO `ntc_parameter` VALUES (20, '阿里API AppCode', 'ALI_APP_CODE', 'b13eaf7cb2ff4cb8a18162aa0a85c4dd');
 INSERT INTO `ntc_parameter` VALUES (21, '天气信息间隔更新时间(分钟)', 'WEATHER_UPDATE_INTERVAL', '30');
 INSERT INTO `ntc_parameter` VALUES (22, '系统邮件端口', 'DEFAULT_MAIL_PORT', '25');
-INSERT INTO `ntc_parameter` VALUES (24, '静态图片资源路径', 'IMAGE_DIRECTORY', 'http://www.virsical.cn/images');
+INSERT INTO `ntc_parameter` VALUES (24, '静态图片资源路径', 'IMAGE_DIRECTORY', 'https://work.virsical.cn/res/release/mail');
 
 -- ----------------------------
 -- Table structure for ntc_weather
