@@ -141,10 +141,10 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       criteria.add(Restrictions.eq("id", id));
     }
     if (null != name) {
-      criteria.add(Restrictions.ilike("name", name, MatchMode.ANYWHERE));
+      criteria.add(Restrictions.ilike("name", name.trim(), MatchMode.ANYWHERE));
     }
     if (null != category) {
-      criteria.add(Restrictions.eq("category", category));
+      criteria.add(Restrictions.eq("category", category.trim()));
     }
     criteria.addOrder(Order.desc("id"));
     PaginationDto<MailTemplateSearchListDto> paginationDto = baseDao.selectPage(criteria, pageSize, startIndex);
