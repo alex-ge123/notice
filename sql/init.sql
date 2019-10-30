@@ -87,6 +87,8 @@ INSERT INTO `ntc_parameter` VALUES (20, '阿里API AppCode', 'ALI_APP_CODE', 'b1
 INSERT INTO `ntc_parameter` VALUES (21, '天气信息间隔更新时间(分钟)', 'WEATHER_UPDATE_INTERVAL', '30');
 INSERT INTO `ntc_parameter` VALUES (22, '系统邮件端口', 'DEFAULT_MAIL_PORT', '25');
 INSERT INTO `ntc_parameter` VALUES (24, '静态图片资源路径', 'IMAGE_DIRECTORY', 'https://work.virsical.cn/res/release/mail');
+INSERT INTO `ntc_parameter` VALUES (25, '系统名称', 'SYSTEM_NAME', '威发系统有限公司');
+INSERT INTO `ntc_parameter` VALUES (26, '电话', 'PHONE', '400-685-3160');
 
 -- ----------------------------
 -- Table structure for ntc_weather
