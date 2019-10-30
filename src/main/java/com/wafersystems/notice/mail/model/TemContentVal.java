@@ -18,6 +18,8 @@ public class TemContentVal implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private String logo;
+  private String phone;
+  private String systemName;
   /**
    * 邮件顶部图片URL地址
    */
@@ -158,33 +160,43 @@ public class TemContentVal implements Serializable {
   public String getValue24() {
     return StrUtil.regStr(value24);
   }
+
   public String getValue25() {
     return StrUtil.regStr(value25);
   }
+
   public String getValue26() {
     return StrUtil.regStr(value26);
   }
+
   public String getValue27() {
     return StrUtil.regStr(value27);
   }
+
   public String getValue28() {
     return StrUtil.regStr(value28);
   }
+
   public String getValue29() {
     return StrUtil.regStr(value29);
   }
+
   public String getValue30() {
     return StrUtil.regStr(value30);
   }
+
   public String getValue31() {
     return StrUtil.regStr(value31);
   }
+
   public String getValue32() {
     return StrUtil.regStr(value32);
   }
+
   public String getValue33() {
     return StrUtil.regStr(value33);
   }
+
   public String getValue34() {
     return StrUtil.regStr(value34);
   }

@@ -125,10 +125,10 @@ public class MailSendController extends BaseController {
         mailTemplateDto.setContent(content);
         mailTemplateDto.setName(fileName);
       }
-      if (!cn.hutool.core.util.StrUtil.isEmpty(category)){
+      if (!cn.hutool.core.util.StrUtil.isEmpty(category)) {
         mailTemplateDto.setCategory(new String(category.getBytes("ISO8859-1"), "UTF-8"));
       }
-      if (!cn.hutool.core.util.StrUtil.isEmpty(description)){
+      if (!cn.hutool.core.util.StrUtil.isEmpty(description)) {
         mailTemplateDto.setDescription(new String(description.getBytes("ISO8859-1"), "UTF-8"));
       }
       mailNoticeService.updateTemp(mailTemplateDto);
@@ -213,6 +213,12 @@ public class MailSendController extends BaseController {
     con.setLocale(locale);
     con.setResource(resource);
     con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
+    con.setSystemName(
+      StrUtil.isEmptyStr(con.getSystemName()) ? ParamConstant.getSYSTEM_NAME() : con.getSystemName()
+    );
+    con.setPhone(
+      StrUtil.isEmptyStr(con.getPhone()) ? ParamConstant.getPHONE() : con.getPhone()
+    );
     try {
       taskExecutor.execute(new MailTask(mailNoticeService, StrUtil.regStr(subject), toMail, copyTo,
         tempName, con, lang));

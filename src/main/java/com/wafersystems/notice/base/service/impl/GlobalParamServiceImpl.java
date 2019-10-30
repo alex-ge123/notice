@@ -1,5 +1,6 @@
 package com.wafersystems.notice.base.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.base.service.GlobalParamService;
@@ -161,6 +162,8 @@ public class GlobalParamServiceImpl implements GlobalParamService {
       log.warn("邮件服务参数配置不完整，将不能使用邮件服务！");
       ParamConstant.setEMAIL_SWITCH(false);
     }
+    ParamConstant.setSYSTEM_NAME(StrUtil.equals(map.get("SYSTEM_NAME"), null) ? "威发系统有限公司" : map.get("SYSTEM_NAME"));
+    ParamConstant.setPHONE(StrUtil.equals(map.get("PHONE"), null) ? "400-685-3160" : map.get("PHONE"));
     log.debug("系统数据库配置相关参数加载完毕");
   }
 

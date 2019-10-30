@@ -199,6 +199,20 @@ public class ParamConstant {
   private static String SMS_SIGN_NAME;
 
   /**
+   * 电话.
+   */
+  @Getter
+  @Setter
+  private static String PHONE;
+
+  /**
+   * 系统名称.
+   */
+  @Getter
+  @Setter
+  private static String SYSTEM_NAME;
+
+  /**
    * Title: getLocaleByStr Description: 获取本地语言资源.
    *
    * @param lang - 语言
