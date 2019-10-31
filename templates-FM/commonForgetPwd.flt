@@ -16,7 +16,7 @@
         </tr>
         <tr style="height: 103px;background: #ffffff; border: 1px solid #eaeaea;">
             <td style="display: table-cell;vertical-align: middle;width: 130px;height: 39px;">
-                <img src="bd_logo1.png" alt="logo"
+                <img src="${logo!''}" alt="logo"
                     style="margin-left: 17px; display: block;max-width: 100%;height: 100%;">
             </td>
         </tr>
