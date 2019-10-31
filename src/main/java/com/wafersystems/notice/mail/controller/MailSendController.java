@@ -12,6 +12,7 @@ import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.*;
 import com.wafersystems.virsical.common.core.util.R;
+import com.wafersystems.virsical.common.feign.RemoteTenantService;
 import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,7 +49,6 @@ public class MailSendController extends BaseController {
   private TaskExecutor taskExecutor;
   @Autowired
   private ApplicationContext resource;
-
   @Autowired
   private FreemarkerMacroMessage fMessage;
 
@@ -210,18 +210,9 @@ public class MailSendController extends BaseController {
     if (StrUtil.isNullObject(con)) {
       con = new TemContentVal();
     }
-    con.setLogo(
-      StrUtil.isEmptyStr(con.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : con.getLogo());
-    log.debug("logo地址为：" + con.getLogo());
     con.setLocale(locale);
     con.setResource(resource);
     con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
-    con.setSystemName(
-      StrUtil.isEmptyStr(con.getSystemName()) ? ParamConstant.getSYSTEM_NAME() : con.getSystemName()
-    );
-    con.setPhone(
-      StrUtil.isEmptyStr(con.getPhone()) ? ParamConstant.getPHONE() : con.getPhone()
-    );
     try {
       taskExecutor.execute(new MailTask(mailNoticeService, StrUtil.regStr(subject), toMail, copyTo,
         tempName, con, lang));

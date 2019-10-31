@@ -1,10 +1,12 @@
 package com.wafersystems.notice.mail.service;
 
 import com.wafersystems.notice.base.model.PaginationDto;
+import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.util.ConfConstant;
+import com.wafersystems.virsical.common.entity.TenantDTO;
 
 import java.io.File;
 import java.util.List;
@@ -69,4 +71,10 @@ public interface MailNoticeService {
    */
   MailTemplateDto getTempByName(String name);
 
+  /**
+   * 填充租户信息
+   * @param mailBean
+   * @return
+   */
+  MailBean fillTenantInfo(MailBean mailBean);
 }

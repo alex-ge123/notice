@@ -71,18 +71,10 @@ public class Receiver {
         }
         TemContentVal con = new TemContentVal();
         BeanUtils.copyProperties(mailDTO, con);
-        con.setLogo(
-          StrUtil.isEmptyStr(con.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : con.getLogo());
-        log.debug("logo地址为：" + con.getLogo());
         con.setLocale(locale);
         con.setResource(resource);
         con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
         try {
-//          mailNoticeService.sendMail(StrUtil.regStr(mailDTO.getSubject()),
-//            mailDTO.getToMail(), mailDTO.getCopyTo(),
-//            ConfConstant.TypeEnum.VM,
-//            mailDTO.getTempName().contains(".vm") ? mailDTO.getTempName() : mailDTO.getTempName() + ".vm", con, 0);
-
           mailNoticeService.sendMail(StrUtil.regStr(mailDTO.getSubject()),
             mailDTO.getToMail(), mailDTO.getCopyTo(),
             ConfConstant.TypeEnum.FM,

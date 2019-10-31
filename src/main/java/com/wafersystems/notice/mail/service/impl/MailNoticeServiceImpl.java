@@ -1,5 +1,6 @@
 package com.wafersystems.notice.mail.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.GlobalParameter;
@@ -22,6 +23,8 @@ import com.wafersystems.virsical.common.core.dto.LogDTO;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.entity.SysTenant;
+import com.wafersystems.virsical.common.entity.TenantDTO;
+import com.wafersystems.virsical.common.feign.RemoteTenantService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
@@ -29,11 +32,13 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.remoting.RemoteTimeoutException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 邮件接口实现
@@ -52,6 +57,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
 
   @Autowired
   private RabbitTemplate rabbitTemplate;
+
+  @Autowired
+  private RemoteTenantService tenantService;
 
   /**
    * Description: 邮件发送 author waferzy DateTime 2016-3-10 下午2:37:55.
@@ -76,6 +84,8 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     mailBean.setType(type);
     mailBean.setTemplate(temple);
     mailBean.setTemVal(con);
+    //填充租户信息
+    mailBean = this.fillTenantInfo(mailBean);
     // 发送邮件
     try {
       mailUtil.send(mailBean);
@@ -129,7 +139,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       sendLog(mailTemplateDto, "模板:[" + mailTemplateDto.getName() + "]更新。");
       log.debug("修改{}模板成功！", mailTemplateDto.getName());
     } else {
-      throw new RuntimeException("未查询到id为["+mailTemplateDto.getId()+"]的邮件模板");
+      throw new RuntimeException("未查询到id为[" + mailTemplateDto.getId() + "]的邮件模板");
 
     }
   }
@@ -191,5 +201,34 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setTenantId(TenantContextHolder.getTenantId());
     rabbitTemplate.convertAndSend(UpmsMqConstants.EXCHANGE_DIRECT_UPMS_LOG, UpmsMqConstants.ROUTINT_KEY_LOG,
       JSON.toJSONString(new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.ADD.name(), logDTO)));
+  }
+
+  @Override
+  public MailBean fillTenantInfo(MailBean mailBean) {
+    //填充系统默认参数
+    TemContentVal val = mailBean.getTemVal();
+    val.setLogo(StrUtil.isEmptyStr(val.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : val.getLogo());
+    val.setSystemName(ParamConstant.getSYSTEM_NAME());
+    val.setPhone(ParamConstant.getPHONE());
+    if (ObjectUtil.isNotNull(val.getTenantId())) {
+      TenantDTO tenant = tenantService.getById(val.getTenantId()).getData();
+      if (ObjectUtil.isNotNull(tenant)) {
+        //设置租户logo
+        if (!StrUtil.isEmptyStr(tenant.getLogo())) {
+          val.setLogo(tenant.getLogo());
+        }
+        //设置租户系统名
+        if (!StrUtil.isEmptyStr(tenant.getSystemName())) {
+          val.setSystemName(tenant.getSystemName());
+        }
+        //设置租户电话号
+        if (!StrUtil.isEmptyStr(tenant.getContactNumber())) {
+          val.setPhone(tenant.getContactNumber());
+        }
+      }
+    }
+    mailBean.setTemVal(val);
+    log.debug("发送邮件logo地址为{}，系统名称为{}，电话号码为{}" + val.getLogo(), val.getSystemName(), val.getPhone());
+    return mailBean;
   }
 }
