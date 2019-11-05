@@ -222,37 +222,37 @@
                     'meeting.remind.message.mail.meeting.create.normal.en')$!{TemVal.value27}
                     ，#message(
                     'meeting.remind.message.mail.meeting.create.succ.in.en')
-                    $!{TemVal.value35.split(",")[0]}
+                    $!{TemVal.value34.split(",")[0]}
                     #message(
                     'meeting.remind.message.mail.meeting.create.succ.open.en')
                     #elseif($!{TemVal.value5}==2)
                     #message(
-                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}] #message(
                     'meeting.remind.message.mail.meeting.update.succ.notice.en')
                     #elseif($!{TemVal.value5}==3)
                     #if($!{TemVal.value28}==0)
                     #message(
-                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}] #message(
                     'meeting.remind.message.mail.meeting.cancel.succ.notice.en')
                     #elseif($!{TemVal.value28}==1)
                     #message(
                     'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.not.sign.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.has.not.sign.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.en')
                     #elseif($!{TemVal.value28}==2)
                     #message(
                     'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.not.accept.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.has.not.accept.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.en')
                     #elseif($!{TemVal.value28}==3)
                     #message(
                     'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.maintain.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.has.maintain.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice')
                     #elseif($!{TemVal.value28}==4)
                     #message(
                     'meeting.remind.message.mail.common.your.en')[$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.unvisible.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.has.unvisible.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.en')
                     #end
                     #elseif($!{TemVal.value5}==4)
@@ -272,15 +272,15 @@
                     #elseif($!{TemVal.value5}==8)
                     #if($!{TemVal.value32}!="")
                     #message(
-                    'meeting.remind.message.mail.recurring.meeting.create.succ.en')$!{TemVal.value27}
+                    'meeting.remind.message.mail.recurring.meeting.create.succ.en') $!{TemVal.value27}
                     ，#message(
-                    'meeting.remind.message.mail.meeting.create.succ.in.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.create.succ.open.en')
                     #else
                     #message(
                     'meeting.remind.message.mail.meeting.create.succ.en')$!{TemVal.value27}
                     ，#message(
-                    'meeting.remind.message.mail.meeting.create.succ.in.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.create.succ.open.en')
                     #end
                     #elseif($!{TemVal.value5}==9)
@@ -290,7 +290,7 @@
                     #else
                     #message('meeting.remind.message.mail.common.your.en')
                     #end
-                    [$!{TemVal.value8}]#message(
+                    [$!{TemVal.value8}] #message(
                     'meeting.remind.message.mail.meeting.update.succ.notice.en')
                     #elseif($!{TemVal.value5}==10)
                     #if($!{TemVal.value32}!="")
@@ -300,23 +300,23 @@
                     #message('meeting.remind.message.mail.common.your.en')
                     #end
                     #if($!{TemVal.value28}==0)
-                    [$!{TemVal.value8}]#message(
+                    [$!{TemVal.value8}] #message(
                     'meeting.remind.message.mail.meeting.cancel.succ.notice.en')
                     #elseif($!{TemVal.value28}==1)
                     [$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.not.sign.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.has.not.sign.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.en')
                     #elseif($!{TemVal.value28}==2)
                     [$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.not.accept.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.has.not.accept.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.en')
                     #elseif($!{TemVal.value28}==3)
                     [$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.maintain.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.has.maintain.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.en')
                     #elseif($!{TemVal.value28}==4)
                     [$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.unvisible.en')$!{TemVal.value35.split(",")[0]}#message(
+                    'meeting.remind.message.mail.meeting.has.unvisible.en')$!{TemVal.value34.split(",")[0]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.en')
                     #end
                     #elseif($!{TemVal.value5}==11)
@@ -359,14 +359,14 @@
                     'meeting.remind.message.mail.autoCancel.alarm.content.en')
                     #elseif($!{TemVal.value5}==22)
                     #message(
-                    'meeting.message.smsAndreserve.knd.startKeep1.en')$!{TemVal.value35.split(",")[0]}#message(
-                    'meeting.message.smsAndreserve.knd.startKeep2.en')$!{TemVal.value31}#message(
+                    'meeting.message.smsAndreserve.knd.startKeep1.en')$!{TemVal.value34.split(",")[0]}#message(
+                    'meeting.message.smsAndreserve.knd.startKeep2.en') $!{TemVal.value31} #message(
                     'meeting.message.smsAndreserve.knd.startKeep3.en')
                     #elseif($!{TemVal.value5}==66)
                     #message(
                     'meeting.remind.message.mail.meeting_audit_need.en')
                     #elseif($!{TemVal.value5}==99)
-                    [$!{TemVal.value35.split(",")[0]}]#message(
+                    [$!{TemVal.value34.split(",")[0]}]#message(
                     'meeting.remind.message.mail.clean.room_content.en')
                     #elseif($!{TemVal.value5}==101)
                     #message('meeting.remind.message.mail.maintain.content.en')
@@ -412,39 +412,39 @@
                     $!{TemVal.value6}#message(
                     'meeting.remind.message.mail.meeting.create.normal.zhhk')$!{TemVal.value27}
                     ，#message(
-                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.create.succ.open.zhhk')#if($!{TemVal.value29}==0)
                     <a style="text-decoration: none;"
                        href="$!{TemVal.value15}" style="float: right;">#message(
                       'meeting.remind.message.mail.common.click.confirm')</a>#end
                     #elseif($!{TemVal.value5}==2)
                     #message(
-                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}] #message(
                     'meeting.remind.message.mail.meeting.update.succ.notice.zhhk')
                     #elseif($!{TemVal.value5}==3)
                     #if($!{TemVal.value28}==0)
                     #message(
-                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
+                    'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}] #message(
                     'meeting.remind.message.mail.meeting.cancel.succ.notice.zhhk')
                     #elseif($!{TemVal.value28}==1)
                     #message(
                     'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.not.sign.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.has.not.sign.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
                     #elseif($!{TemVal.value28}==2)
                     #message(
                     'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.not.accept.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.has.not.accept.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
                     #elseif($!{TemVal.value28}==3)
                     #message(
                     'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.maintain.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.has.maintain.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice')
                     #elseif($!{TemVal.value28}==4)
                     #message(
                     'meeting.remind.message.mail.common.your.zhhk')[$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.unvisible.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.has.unvisible.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
                     #end
                     #elseif($!{TemVal.value5}==4)
@@ -466,13 +466,13 @@
                     #message(
                     'meeting.remind.message.mail.recurring.meeting.create.succ.zhhk')$!{TemVal.value27}
                     ，#message(
-                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.create.succ.open.zhhk')
                     #else
                     #message(
                     'meeting.remind.message.mail.meeting.create.succ.zhhk')$!{TemVal.value27}
                     ，#message(
-                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.create.succ.in.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.create.succ.open.zhhk')
                     #end
                     #elseif($!{TemVal.value5}==9)
@@ -482,7 +482,7 @@
                     #else
                     #message('meeting.remind.message.mail.common.your.zhhk')
                     #end
-                    [$!{TemVal.value8}]#message(
+                    [$!{TemVal.value8}] #message(
                     'meeting.remind.message.mail.meeting.update.succ.notice.zhhk')
                     #elseif($!{TemVal.value5}==10)
                     #if($!{TemVal.value32}!="")
@@ -492,23 +492,23 @@
                     #message('meeting.remind.message.mail.common.your.zhhk')
                     #end
                     #if($!{TemVal.value28}==0)
-                    [$!{TemVal.value8}]#message(
+                    [$!{TemVal.value8}] #message(
                     'meeting.remind.message.mail.meeting.cancel.succ.notice.zhhk')
                     #elseif($!{TemVal.value28}==1)
                     [$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.not.sign.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.has.not.sign.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
                     #elseif($!{TemVal.value28}==2)
                     [$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.not.accept.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.has.not.accept.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
                     #elseif($!{TemVal.value28}==3)
                     [$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.maintain.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.has.maintain.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
                     #elseif($!{TemVal.value28}==4)
                     [$!{TemVal.value8}]#message(
-                    'meeting.remind.message.mail.meeting.has.unvisible.zhhk')$!{TemVal.value35.split(",")[1]}#message(
+                    'meeting.remind.message.mail.meeting.has.unvisible.zhhk')$!{TemVal.value34.split(",")[1]}#message(
                     'meeting.remind.message.mail.meeting.release.succ.notice.zhhk')
                     #end
                     #elseif($!{TemVal.value5}==11)
@@ -551,14 +551,14 @@
                     'meeting.remind.message.mail.autoCancel.alarm.content.zhhk')
                     #elseif($!{TemVal.value5}==22)
                     #message(
-                    'meeting.message.smsAndreserve.knd.startKeep1.zhhk')$!{TemVal.value35.split(",")[1]}#message(
-                    'meeting.message.smsAndreserve.knd.startKeep2.zhhk')$!{TemVal.value31}#message(
+                    'meeting.message.smsAndreserve.knd.startKeep1.zhhk')$!{TemVal.value34.split(",")[1]}#message(
+                    'meeting.message.smsAndreserve.knd.startKeep2.zhhk') $!{TemVal.value31} #message(
                     'meeting.message.smsAndreserve.knd.startKeep3.zhhk')
                     #elseif($!{TemVal.value5}==66)
                     #message(
                     'meeting.remind.message.mail.meeting_audit_need.zhhk')
                     #elseif($!{TemVal.value5}==99)
-                    [$!{TemVal.value35.split(",")[1]}]#message(
+                    [$!{TemVal.value34.split(",")[1]}]#message(
                     'meeting.remind.message.mail.clean.room_content.zhhk')
                     #elseif($!{TemVal.value5}==101)
                     #message('meeting.remind.message.mail.maintain.content.zhhk')
