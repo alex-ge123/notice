@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -210,6 +211,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     val.setLogo(StrUtil.isEmptyStr(val.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : val.getLogo());
     val.setSystemName(ParamConstant.getSYSTEM_NAME());
     val.setPhone(ParamConstant.getPHONE());
+//    val.setLocale(ParamConstant.getLocaleByStr("zh_CN"));
     if (ObjectUtil.isNotNull(val.getTenantId())) {
       TenantDTO tenant = tenantService.getById(val.getTenantId()).getData();
       if (ObjectUtil.isNotNull(tenant)) {
@@ -224,6 +226,10 @@ public class MailNoticeServiceImpl implements MailNoticeService {
         //设置租户电话号
         if (!StrUtil.isEmptyStr(tenant.getContactNumber())) {
           val.setPhone(tenant.getContactNumber());
+        }
+        //设置环境编码
+        if(!StrUtil.isEmptyStr(tenant.getLang())){
+          val.setLocale(ParamConstant.getLocaleByStr(tenant.getLang()));
         }
       }
     }
