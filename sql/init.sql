@@ -57,14 +57,14 @@ CREATE TABLE `ntc_parameter`  (
   `id` bigint(20) NOT NULL,
   `param_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `param_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `param_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `param_value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ntc_parameter
 -- ----------------------------
-INSERT INTO `ntc_parameter` VALUES (1, '默认logo', 'LOGO_DEFALUT', 'https://vstportal.rd.virsical.cn/res/L9X6U45u82/visit/60683d98f4ab94558e00725e4493f032.jpg');
+INSERT INTO `ntc_parameter` VALUES (1, '默认logo', 'LOGO_DEFALUT', 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Ny41NSA1MS40MSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMyNWI4ZDg7fS5jbHMtMntmaWxsOiM5MGMyNGU7fS5jbHMtM3tmaWxsOiM0NGFiNGY7fS5jbHMtNHtmaWxsOiMxNTg2YTU7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT7otYTmupAgMTwvdGl0bGU+PGcgaWQ9IuWbvuWxgl8yIiBkYXRhLW5hbWU9IuWbvuWxgiAyIj48ZyBpZD0iUDUuIj48cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iNTcuNTUgMCAyOC43NyAxNi44NiA1Ny41NSAzNC41NiA1Ny41NSAwIi8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjI4Ljc3IDUxLjQxIDU3LjU1IDM0LjU1IDI4Ljc3IDE2Ljg1IDI4Ljc3IDUxLjQxIi8+PHBvbHlnb24gY2xhc3M9ImNscy0zIiBwb2ludHM9IjI4Ljc3IDUxLjI4IDAgMzQuNDQgMjguNzcgMTYuNzcgMjguNzcgNTEuMjgiLz48cG9seWdvbiBjbGFzcz0iY2xzLTQiIHBvaW50cz0iMC4xMiAwLjA2IDI4Ljc3IDE2LjkgMC4xMiAzNC41OCAwLjEyIDAuMDYiLz48L2c+PC9nPjwvc3ZnPg==');
 INSERT INTO `ntc_parameter` VALUES (2, '短信接口服务地址', 'URL_SMS_SERVER', 'https://work.virsical.cn/sms/ability');
 INSERT INTO `ntc_parameter` VALUES (3, '短信接口CLIENTID', 'URL_SMS_CLIENTID', 'meeting');
 INSERT INTO `ntc_parameter` VALUES (4, '短信接口SECRET', 'URL_SMS_SECRET', '23cbf2b615184418');
