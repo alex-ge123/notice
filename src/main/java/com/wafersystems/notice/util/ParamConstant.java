@@ -1,5 +1,6 @@
 package com.wafersystems.notice.util;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -220,6 +221,9 @@ public class ParamConstant {
    */
   public static Locale getLocaleByStr(String lang) {
     Locale locale;
+    if (StrUtil.isEmpty(lang)){
+      return Locale.CHINA;
+    }
     switch (lang.toLowerCase()) {
       case "en_us":
         locale = Locale.ENGLISH;

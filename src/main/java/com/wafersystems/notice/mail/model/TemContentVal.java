@@ -21,6 +21,7 @@ public class TemContentVal implements Serializable {
   private String phone;
   private String systemName;
   private Integer tenantId;
+  private String uuid;
   /**
    * 邮件顶部图片URL地址
    */

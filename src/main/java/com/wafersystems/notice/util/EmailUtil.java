@@ -2,6 +2,7 @@ package com.wafersystems.notice.util;
 
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
 import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
+import com.wafersystems.notice.constants.EmailTemplateNameConstants;
 import com.wafersystems.notice.mail.model.MailBean;
 import freemarker.template.Configuration;
 import lombok.Setter;
@@ -32,6 +33,7 @@ import java.util.UUID;
 
 /**
  * 邮件工具类
+ *
  * @author wafer
  */
 @Slf4j
@@ -102,11 +104,8 @@ public class EmailUtil {
       // 添加第一个body内容
       multipart.addBodyPart(bodyPart);
       // 使用多个body体填充邮件内容。
-//      if ("smtMeeting.vm".equals(mailBean.getTemplate())
-//        || "virsical.vm".equals(mailBean.getTemplate())) {
-
-      if ("smtMeeting".equals(mailBean.getTemplate())
-        || "virsical".equals(mailBean.getTemplate())) {
+      if (EmailTemplateNameConstants.SMTMEETING.equals(mailBean.getTemplate())
+        || EmailTemplateNameConstants.VIRSICAL.equals(mailBean.getTemplate())) {
         message.setContent(this.sendEventEmail(mailBean));
       } else {
         message.setContent(multipart);
@@ -187,29 +186,39 @@ public class EmailUtil {
     try {
       java.util.Calendar cal;
       cal = java.util.Calendar.getInstance();
-      cal.setTime(new Date(Long.parseLong(mailBean.getTemVal().getValue1())));
+      cal.setTime(DateUtil.formatDateTime(mailBean.getTemVal().getValue1()));
       cal.add(java.util.Calendar.HOUR, -8);
       SimpleDateFormat sim = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
       final String startStr = sim.format(cal.getTime());
       cal = java.util.Calendar.getInstance();
-      cal.setTime(new Date(Long.parseLong(mailBean.getTemVal().getValue2())));
+      cal.setTime(DateUtil.formatDateTime(mailBean.getTemVal().getValue2()));
       cal.add(java.util.Calendar.HOUR, -8);
       SimpleDateFormat resultSim = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       final String endStr = sim.format(cal.getTime());
       mailBean.getTemVal()
-        .setValue1(resultSim.format(Long.parseLong(mailBean.getTemVal().getValue1())));
+        .setValue1(resultSim.format(DateUtil.formatDateTime(mailBean.getTemVal().getValue1())));
       mailBean.getTemVal()
-        .setValue2(resultSim.format(Long.parseLong(mailBean.getTemVal().getValue2())));
+        .setValue2(resultSim.format(DateUtil.formatDateTime(mailBean.getTemVal().getValue2())));
       String method;
+      //value3 (status) 状态(-1.纯文本信息,0.邮件事件[带邀请按钮],1.邮件事件[无按钮])
       Integer status = Integer.parseInt(mailBean.getTemVal().getValue3());
+      //value5 (type) 邮件类型 (1-新建|2-修改|3-取消|4-会前提醒|5-减少参会人|6-回执接受|7-回执拒绝|8-创建确认|9-修改确认|10-取消确认|11 -审批通过|12-审批拒绝|99-保洁员提醒)
+      Integer type = Integer.parseInt(mailBean.getTemVal().getValue5());
+      //参考https://blog.csdn.net/han949417140/article/details/90206475
+      int squence = 2;
       if (status == 0) {
         method = "REQUEST";
       } else if (status == 1) {
         method = "PUBLISH";
       } else {
-        bodyPart.setContent(this.getMessage(mailBean), "text/html;charset=UTF-8");
-        multipart.addBodyPart(bodyPart);
-        return multipart;
+        if (type == 3 || type == 10) {//会议取消
+          method = "CANCEL";
+          squence = 3;
+        } else {
+          bodyPart.setContent(this.getMessage(mailBean), "text/html;charset=UTF-8");
+          multipart.addBodyPart(bodyPart);
+          return multipart;
+        }
       }
 
       // Exchange发送邮件时，要求正文部分必须放在附件部分的前面，不然会把正文也作为附件一起发送
@@ -222,19 +231,20 @@ public class EmailUtil {
       buffer.append("BEGIN:VCALENDAR\n").append("PRODID:-//Events Calendar//iCal4j 1.0//EN\n")
         .append("VERSION:2.0\n").append("METHOD:").append(method).append("\nBEGIN:VEVENT\n")
         // 屏蔽日历时间 "接受"、"暂定"、"拒绝" 按钮
-        .append("ATTENDEE;ROLE=REQ-PARTICIPANT;RSVP=TRUE:MAILTO:")
-        .append(mailBean.getToEmails().contains(ConfConstant.COMMA)
-          ? mailBean.getToEmails().split(ConfConstant.COMMA) : mailBean.getToEmails())
-        .append("\nORGANIZER:MAILTO:").append(ParamConstant.getDEFAULT_MAIL_FROM())
-        .append("\nDTSTART:").append(startStr).append("Z\nDTEND:").append(endStr)
-        .append("Z\nLOCATION:").append(mailBean.getTemVal().getValue7()).append("\nUID:")
-        .append(UUID.randomUUID().toString()).append("\nSEQUENCE:").append(2)
+        .append("ATTENDEE;ROLE=REQ-PARTICIPANT;RSVP=TRUE:MAILTO:").append(
+        mailBean.getToEmails().contains(ConfConstant.COMMA) ?
+          mailBean.getToEmails().split(ConfConstant.COMMA) :
+          mailBean.getToEmails()).append("\nORGANIZER:MAILTO:")
+        .append(ParamConstant.getDEFAULT_MAIL_FROM()).append("\nDTSTART:").append(startStr)
+        .append("Z\nDTEND:").append(endStr).append("Z\nLOCATION:")
+        .append(mailBean.getTemVal().getValue7()).append("\nUID:").append(mailBean.getTemVal().getUuid())
+        .append("\nSEQUENCE:").append(squence)
         .append("\nCATEGORIES:SuccessCentral Reminder\nDESCRIPTION:\n\nSUMMARY:")
         .append(mailBean.getSubject()).append("\n");
       buffer.append("PRIORITY:5\nCLASS:PUBLIC\nBEGIN:VALARM\nTRIGGER:-PT10M\nREPEAT:3\nDURATION:"
         + "PT5M\nACTION:DISPLAY\nDESCRIPTION:Reminder\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR");
       String contentType;
-      if (status == 0) {
+      if (status == 0 || status == -22) {
         contentType = "text/calendar;method=REQUEST;charset=UTF-8";
       } else {
         contentType = "text/calendar;method=CANCEL;charset=UTF-8";
@@ -276,17 +286,17 @@ public class EmailUtil {
         Template temple = velocityEngine.getTemplate(mailBean.getTemplate(), "UTF-8");
         temple.merge(context, writer);
         return writer.toString();
-      }else if(ConfConstant.TypeEnum.FM.equals(mailBean.getType())){
+      } else if (ConfConstant.TypeEnum.FM.equals(mailBean.getType())) {
         //freemarker
         log.debug("使用模版" + mailBean.getTemplate());
         //freemarker 配置模板加载器
         configuration.setTemplateLoader(mysqlMailTemplateLoader);
         //配置共享变量
-        configuration.setSharedVariable("loccalMessage",messageService);
+        configuration.setSharedVariable("loccalMessage", messageService);
         //加载模板
         freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate());
         //模板渲染
-        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template,mailBean.getTemVal());
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, mailBean.getTemVal());
         return html;
       } else {
         log.debug("使用html模版" + mailBean.getTemplate());
