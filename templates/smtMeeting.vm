@@ -17,7 +17,7 @@
         <tbody>
         <tr>
           <td colspan="2" bgcolor="#f7f7f7" width="100%"><img
-            style="width:600px;height:100px" src="$!{TemVal.imageDirectory}/knk_logo.png"/></td>
+            style="width:600px;height:100px" src="$!{TemVal.logo}"/></td>
         </tr>
         </tbody>
       </table>
