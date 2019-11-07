@@ -28,40 +28,96 @@
 
                             <tr>
                                 <td align="left" style="font-size:14pt; line-height:50px;">
-                                    <strong>#message(
-                                            'meeting.repair.message.mail.title')</strong></td>
+                                    <span>
+                                        Repair Message
+                                    </span>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('meeting.repair.message.mail.title_zh')
+                                        #else
+                                            #message('meeting.repair.message.mail.title')
+                                        #end
+                                    </span>
                                 <td align="right"><img src="$!{TemVal.logo}" width="110"
                                                        height="35"/>
                             </tr>
                         </table>
                         <br/>
-                        <span>#message('meeting.repair.message.mail.welcome')</span><br/>
+                            <span>
+                                Respected room manager:
+                            </span>
+                            <span>
+                                #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                    #message('meeting.repair.message.mail.welcome_zh')
+                                #else
+                                    #message('meeting.repair.message.mail.welcome')
+                                #end
+                            </span>
                         <br/>
-                        <span class="k2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#message(
-                            'meeting.repair.message.mail.content')</span>
+                        <span class="k2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span>
+                                You have an equipment repair notice of a meeting room.
+                            </span>
+                            <span>
+                                #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                    #message('meeting.repair.message.mail.content_zh')
+                                #else
+                                    #message('meeting.repair.message.mail.content')
+                                #end
+                            </span>
+                        </span>
 
                     </td>
                 </tr>
                 <tr valign="top" align="center">
                     <td colspan="2">
-
                         <table cellpadding="10" cellspacing="0"
                                style="border-bottom:solid 1px #f2f2f2; border-top:1px solid #f2f2f2; border-collapse:collapse;"
                                width="560">
                             <tbody>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                                    'meeting.repair.message.mail.roomName')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        Meeting Room:
+                                    </span>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('meeting.repair.message.mail.roomName_zh')
+                                        #else
+                                            #message('meeting.repair.message.mail.roomName')
+                                        #end
+                                    </span>
+                                </td>
                                 <td width="75%">$!{TemVal.value1}</td>
                             </tr>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                                    'meeting.repair.message.mail.device')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        Repaired Equipment:
+                                    </span>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('meeting.repair.message.mail.device_zh')
+                                        #else
+                                            #message('meeting.repair.message.mail.device')
+                                        #end
+                                    </span>
+                                </td>
                                 <td width="75%">$!{TemVal.value2}</td>
                             </tr>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                                    'meeting.repair.message.mail.time')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        Repair Time:
+                                    </span>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('meeting.repair.message.mail.time_zh')
+                                        #else
+                                            #message('meeting.repair.message.mail.time')
+                                        #end
+                                    </span>
+                                </td>
                                 <td width="75%">$!{TemVal.value3}<br/></td>
                             </tr>
                             </tbody>
@@ -70,8 +126,17 @@
 
                 </tr>
                 <tr valign="top">
-                    <td colspan="2"><span>#message('meeting.repair.message.mail.end')</span>
-
+                    <td colspan="2">
+                        <span>
+                            Hope you have a nice day.
+                        </span>
+                        <span>
+                            #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                #message('meeting.repair.message.mail.end_zh')
+                            #else
+                                #message('meeting.repair.message.mail.end')
+                            #end
+                        </span>
                     </td>
                 </tbody>
             </table>

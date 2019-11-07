@@ -68,12 +68,12 @@ INSERT INTO `ntc_parameter` VALUES (2, '短信接口服务地址', 'URL_SMS_SERV
 INSERT INTO `ntc_parameter` VALUES (3, '短信接口CLIENTID', 'URL_SMS_CLIENTID', 'meeting');
 INSERT INTO `ntc_parameter` VALUES (4, '短信接口SECRET', 'URL_SMS_SECRET', '23cbf2b615184418');
 INSERT INTO `ntc_parameter` VALUES (5, '系统邮件发送邮件', 'DEFAULT_MAIL_FROM', 'office_helper1@wafersystems.com');
-INSERT INTO `ntc_parameter` VALUES (6, '系统邮件服务', 'DEFAULT_MAIL_HOST', 'smtp.263xmail.com');
+INSERT INTO `ntc_parameter` VALUES (6, '系统邮件服务', 'DEFAULT_MAIL_HOST', 'smtp.263.net');
 INSERT INTO `ntc_parameter` VALUES (7, '系统邮件密码', 'DEFAULT_MAIL_PASSWORD', 'WAffHe@2019');
-INSERT INTO `ntc_parameter` VALUES (8, '系统邮件认证', 'DEFAULT_MAIL_AUTH', '   ');
+INSERT INTO `ntc_parameter` VALUES (8, '系统邮件认证', 'DEFAULT_MAIL_AUTH', 'true');
 INSERT INTO `ntc_parameter` VALUES (9, '系统邮件超时时间', 'DEFAULT_MAIL_TIMEOUT', '25000');
 INSERT INTO `ntc_parameter` VALUES (10, '系统邮件编码', 'DEFAULT_MAIL_CHARSET', 'GBK');
-INSERT INTO `ntc_parameter` VALUES (11, '系统邮件显示名称', 'DEFAULT_MAIL_MAILNAME', '威思客预约服务');
+INSERT INTO `ntc_parameter` VALUES (11, '系统邮件显示名称', 'DEFAULT_MAIL_MAILNAME', '威思客');
 INSERT INTO `ntc_parameter` VALUES (12, '后台服务默认时区', 'DEFAULT_TIMEZONE', 'GMT+8');
 INSERT INTO `ntc_parameter` VALUES (13, '默认消息重发次数', 'DEFAULT_REPEAT_COUNT', '5');
 INSERT INTO `ntc_parameter` VALUES (14, '系统默认域名', 'DEFAULT_DOMAIN', 'wafersystems.com');

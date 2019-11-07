@@ -39,24 +39,78 @@
                             <tr>
                                 <td align="left" colspan="2"
                                     style="font-size:14pt; line-height:30px;">
-		                                <span style="margin-left:10px;">
-                                            $!{TemVal.value8}
-                                        </span>
+										#if($!{TemVal.value8}==0 || $!{TemVal.value8}==3)
+											<span style="margin-left:10px;">
+												Application for service
+											</span>
+											<span style="margin-left:10px;">
+												#if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+												   #message('meeting.message.public.service.title_zh')
+											    #else
+													#message('meeting.message.public.service.title')
+												#end
+											</span>
+										#elseif($!{TemVal.value8}==1 || $!{TemVal.value8}==2)
+											<span style="margin-left:10px;">
+												Notification of the results of approval
+											</span>
+											<span style="margin-left:10px;">
+												#if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+												   #message('meeting.message.public.service.result.title_zh')
+											    #else
+													#message('meeting.message.public.service.result.title')
+												#end
+											</span>
+		                                #end
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" align="left"
                                     style="font-size:12pt; line-height:30px;">
-				                        <span style="margin-left:10px;">#message(
-                                            'meeting.moveDevice.message.hello') $!{TemVal.value10}#message(
-                                            'msg.email.content.maohao')</span>
+										Hi&nbsp; $!{TemVal.value10} #message('msg.email.content.maohao')
+										#if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+										   <span style="margin-left:10px;">#message('meeting.moveDevice.message.hello_zh') $!{TemVal.value10}#message('msg.email.content.maohao')</span>
+										#else
+										   <span style="margin-left:10px;">#message('meeting.moveDevice.message.hello') $!{TemVal.value10}#message('msg.email.content.maohao')</span>
+										#end
                                 </td>
                             </tr>
                             <tr>
                                 <td align="left" style="font-size:12pt; line-height:30px;">
-				                        <span class="k2" style="margin-left:10px;">
-                                            $!{TemVal.value9}
-                                        </span>
+										#if($!{TemVal.value8}==0 || $!{TemVal.value8}==3)
+											<span class="k2" style="margin-left:10px;">
+												You have a meeting service application that needs confirmation.
+											</span>
+											<span class="k2" style="margin-left:10px;">
+												#if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+												   #message('meeting.message.public.mail.service.content_zh')
+											    #else
+													#message('meeting.message.public.mail.service.content')
+												#end
+											</span>
+										#elseif($!{TemVal.value8}==1)
+											<span class="k2"  style="margin-left:10px;">
+												Your application for meeting service has been approved.
+											</span>
+											<span class="k2"  style="margin-left:10px;">
+												#if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+												   #message('meeting.message.public.mail.service.approval_zh')
+											    #else
+													#message('meeting.message.public.mail.service.approval')
+												#end
+											</span>
+										#elseif($!{TemVal.value8}==2)
+											<span class="k2" style="margin-left:10px;">
+												Your application for meeting service has not been approved. Resaon: $!{TemVal.value9}
+											</span>
+											<span class="k2" style="margin-left:10px;">
+												#if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+												   #message('meeting.message.public.mail.service.refused_zh') #message('meeting.remind.message.mail.meeting_audit_reason.zhhk') $!{TemVal.value9}
+											    #else
+													#message('meeting.message.public.mail.service.refused') #message('meeting.remind.message.mail.meeting_audit_reason') $!{TemVal.value9}
+												#end
+											</span>
+		                                #end
                                 </td>
                             </tr>
                         </table>
@@ -78,40 +132,114 @@
                                width="580">
                             <tbody>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_subject')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        Title&nbsp;:
+                                    </span>
+									<br/>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('msg.email.content.virsical.meeting_subject_zh')
+                                        #else
+                                            #message('msg.email.content.virsical.meeting_subject')
+                                        #end
+                                    </span>
+                                </td>
                                 <td width="75%" style="word-break:break-all">$!{TemVal.value1}</td>
                             </tr>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_room')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        Room&nbsp;:
+                                    </span>
+									<br/>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('msg.email.content.virsical.meeting_room_zh')
+                                        #else
+                                            #message('msg.email.content.virsical.meeting_room')
+                                        #end
+                                    </span>
+                                </td>
                                 <td width="75%">$!{TemVal.value2}</td>
                             </tr>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_startTime')</td>
-                                <td width="75%">$!{TemVal.value3} #message(
-                                    'msg.email.content.virsical.meeting_timezone')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        Start&nbsp;:
+                                    </span>
+									<br/>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('msg.email.content.virsical.meeting_startTime_zh')
+                                        #else
+                                            #message('msg.email.content.virsical.meeting_startTime')
+                                        #end
+                                    </span>
+                                </td>
+                                <td width="75%">$!{TemVal.value3} #message('msg.email.content.virsical.meeting_timezone')</td>
                             </tr>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_endTime')</td>
-                                <td width="75%">$!{TemVal.value4} #message(
-                                    'msg.email.content.virsical.meeting_timezone')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        End&nbsp;:
+                                    </span>
+									<br/>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('msg.email.content.virsical.meeting_endTime_zh')
+                                        #else
+                                            #message('msg.email.content.virsical.meeting_endTime')
+                                        #end
+                                    </span>
+                                </td>
+                                <td width="75%">$!{TemVal.value4} #message('msg.email.content.virsical.meeting_timezone')</td>
                             </tr>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'msg.email.content.virsical.meeting_host')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        Host&nbsp;
+                                    </span>
+									<br/>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('msg.email.content.virsical.meeting_host_zh')
+                                        #else
+                                            #message('msg.email.content.virsical.meeting_host')
+                                        #end
+                                    </span>
+                                </td>
                                 <td width="75%">$!{TemVal.value5}</td>
                             </tr>
                             <tr>
-                                <td align="right" style="color:#b4b4b4;" width="25%">#message(
-                  'meeting.svc.message.level.name')</td>
+                                <td align="right" style="color:#b4b4b4;" width="25%">
+                                    <span>
+                                        Service level:
+                                    </span>
+									<br/>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('meeting.svc.message.level.name_zh')
+                                        #else
+                                            #message('meeting.svc.message.level.name')
+                                        #end
+                                    </span>
+                                </td>
                                 <td width="75%">$!{TemVal.value6}</td>
                             </tr>
                             <tr>
                                 <td align="right" style="color:#b4b4b4;" valign="top" width="25%">
-                                    #message('meeting.svc.message.project.name')
+                                    <span>
+                                        Service name:
+                                    </span>
+									<br/>
+                                    <span>
+                                        #if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
+                                            #message('meeting.svc.message.project.name_zh')
+                                        #else
+                                            #message('meeting.svc.message.project.name')
+                                        #end
+                                    </span>
                                 </td>
                                 <td width="75%">
                                     <table width="80%">
@@ -136,8 +264,7 @@
                 </tr>
                 <tr valign="top">
                     <td colspan="2">
-                        <span style="display:inline-block;margin:25px 0px 25px 60px;font-size:12pt;">#message(
-                            'msg.email.content.virsical.value7')</span>
+                        <span style="display:inline-block;margin:25px 0px 25px 60px;font-size:12pt;">#message('msg.email.content.virsical.value7')</span>
                     </td>
                 </tr>
                 </tbody>
