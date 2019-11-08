@@ -54,6 +54,7 @@
 											<span style="margin-left:10px;">
 												Notification of the results of approval
 											</span>
+											<br/>
 											<span style="margin-left:10px;">
 												#if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
 												   #message('meeting.message.public.service.result.title_zh')
@@ -68,11 +69,6 @@
                                 <td colspan="2" align="left"
                                     style="font-size:12pt; line-height:30px;">
 										Hi&nbsp; $!{TemVal.value10} #message('msg.email.content.maohao')
-										#if($!{TemVal.locale} == "en_US" || $!{TemVal.locale} == "en")
-										   <span style="margin-left:10px;">#message('meeting.moveDevice.message.hello_zh') $!{TemVal.value10}#message('msg.email.content.maohao')</span>
-										#else
-										   <span style="margin-left:10px;">#message('meeting.moveDevice.message.hello') $!{TemVal.value10}#message('msg.email.content.maohao')</span>
-										#end
                                 </td>
                             </tr>
                             <tr>
