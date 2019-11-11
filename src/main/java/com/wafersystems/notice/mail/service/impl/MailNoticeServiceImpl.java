@@ -236,6 +236,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
         }
       }
     }
+    if (ObjectUtil.isNull(val.getLocale())){
+      ParamConstant.getLocaleByStr("zh_CN");
+    }
     mailBean.setTemVal(val);
     log.debug("发送邮件logo地址为{}，系统名称为{}，电话号码为{}" + val.getLogo(), val.getSystemName(), val.getPhone());
     return mailBean;
