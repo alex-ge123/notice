@@ -211,7 +211,7 @@ public class MailSendController extends BaseController {
     if (StrUtil.isNullObject(con)) {
       con = new TemContentVal();
     }
-    con.setLocale(locale);
+    con.setLocale(cn.hutool.core.util.StrUtil.isBlank(lang) ? null : locale);
     con.setResource(resource);
     con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
     try {
@@ -340,7 +340,7 @@ public class MailSendController extends BaseController {
     for (int i = 1; i <= params.length; i++) {
       clazz.getDeclaredMethod("setValue" + i, String.class).invoke(con, params[i - 1]);
     }
-    con.setTenantId(TenantContextHolder.getTenantId());
+//    con.setTenantId(1);
     return con;
   }
 

@@ -231,7 +231,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
           val.setPhone(tenant.getContactNumber());
         }
         //设置环境编码
-        if (!StrUtil.isEmptyStr(tenant.getLang())) {
+        if (ObjectUtil.isNull(val.getLocale()) && !StrUtil.isEmptyStr(tenant.getLang())) {
           val.setLocale(ParamConstant.getLocaleByStr(tenant.getLang()));
         }
       }
