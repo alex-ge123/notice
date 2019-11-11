@@ -2,10 +2,10 @@ package com.wafersystems.notice.sms.controller;
 
 import cn.hutool.core.util.RandomUtil;
 import com.wafersystems.notice.base.controller.BaseController;
-import com.wafersystems.notice.sms.model.SmsDTO;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.notice.util.SmsUtil;
+import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.extern.slf4j.Slf4j;
