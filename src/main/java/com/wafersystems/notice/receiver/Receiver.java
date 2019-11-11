@@ -71,7 +71,7 @@ public class Receiver {
         }
         TemContentVal con = new TemContentVal();
         BeanUtils.copyProperties(mailDTO, con);
-        con.setLocale(locale);
+        con.setLocale(cn.hutool.core.util.StrUtil.isBlank(mailDTO.getLang()) ? null : locale);
         con.setResource(resource);
         con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
         try {

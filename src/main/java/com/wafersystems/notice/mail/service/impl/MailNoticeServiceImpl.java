@@ -15,6 +15,7 @@ import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.constant.SecurityConstants;
 import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
@@ -22,6 +23,7 @@ import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
+import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.entity.SysTenant;
 import com.wafersystems.virsical.common.entity.TenantDTO;
 import com.wafersystems.virsical.common.feign.RemoteTenantService;
@@ -38,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -156,7 +159,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     if (null != category) {
       criteria.add(Restrictions.eq("category", category.trim()));
     }
-    criteria.addOrder(Order.desc("id"));
+    criteria.addOrder(Order.desc("modtime"));
     PaginationDto<MailTemplateSearchListDto> paginationDto = baseDao.selectPage(criteria, pageSize, startIndex);
     return paginationDto;
   }
@@ -210,9 +213,11 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     val.setLogo(StrUtil.isEmptyStr(val.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : val.getLogo());
     val.setSystemName(ParamConstant.getSYSTEM_NAME());
     val.setPhone(ParamConstant.getPHONE());
+//    val.setLocale(ParamConstant.getLocaleByStr("zh_CN"));
     if (ObjectUtil.isNotNull(val.getTenantId())) {
-      TenantDTO tenant = tenantService.getById(val.getTenantId()).getData();
-      if (ObjectUtil.isNotNull(tenant)) {
+      R<TenantDTO> tenantByIdForInner = tenantService.getTenantByIdForInner(val.getTenantId(), SecurityConstants.FROM_IN);
+      if (ObjectUtil.isNotNull(tenantByIdForInner)) {
+        TenantDTO tenant = tenantByIdForInner.getData();
         //设置租户logo
         if (!StrUtil.isEmptyStr(tenant.getLogo())) {
           val.setLogo(tenant.getLogo());
@@ -224,6 +229,10 @@ public class MailNoticeServiceImpl implements MailNoticeService {
         //设置租户电话号
         if (!StrUtil.isEmptyStr(tenant.getContactNumber())) {
           val.setPhone(tenant.getContactNumber());
+        }
+        //设置环境编码
+        if (ObjectUtil.isNull(val.getLocale()) && !StrUtil.isEmptyStr(tenant.getLang())) {
+          val.setLocale(ParamConstant.getLocaleByStr(tenant.getLang()));
         }
       }
     }
