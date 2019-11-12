@@ -78,7 +78,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   @Override
   public void sendMail(String subject, String to, String copyTo, ConfConstant.TypeEnum type,
                        String temple, TemContentVal con, Integer count) throws Exception {
-    log.debug("开始发送邮件。。。。。。");
+    log.debug("开始发送邮件。");
     // 创建邮件
     MailBean mailBean = new MailBean();
     mailBean.setSubject(subject);

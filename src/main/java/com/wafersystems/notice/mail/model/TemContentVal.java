@@ -4,6 +4,7 @@ import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.notice.util.StrUtil;
 import lombok.Data;
 import org.springframework.context.ApplicationContext;
+import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -21,7 +22,7 @@ public class TemContentVal implements Serializable {
   private String phone;
   private String systemName;
   private Integer tenantId;
-  private String uuid;
+  private MailScheduleDto mailScheduleDto;
   /**
    * 邮件顶部图片URL地址
    */
