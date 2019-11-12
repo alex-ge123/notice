@@ -202,7 +202,7 @@
        <p class="k2"style="margin-left:10px; text-indent: 35px; margin-top: 0px; margin-bottom: 10px;width: 90%;">
         <#if value5=='1'>${value6!''}
          <@message code="meeting.remind.message.mail.meeting.create.normal.en" locale="${locale}"/>${value27!''}，
-        <@message code="meeting.remind.message.mail.meeting.create.succ.in.en" locale="${locale}"/>${value35.split(",")[0]!''}
+        <@message code="meeting.remind.message.mail.meeting.create.succ.in.en" locale="${locale}"/>${value35?split(",")[0]!''}
        <@message code="meeting.remind.message.mail.meeting.create.succ.open.en" locale="${locale}"/>
       <#elseif value5=='2'>
        <@message code="meeting.remind.message.mail.common.your.en" locale="${locale}"/>[${value8!''}]
@@ -213,19 +213,19 @@
       <@message code="meeting.remind.message.mail.meeting.cancel.succ.notice.en" locale="${locale}"/>
      <#elseif value28=='1'>
       <@message code="meeting.remind.message.mail.common.your.en" locale="${locale}"/>[${value8!''}]
-     <@message code="meeting.remind.message.mail.meeting.has.not.sign.en" locale="${locale}"/>${value35.split(",")[0]!''}
+     <@message code="meeting.remind.message.mail.meeting.has.not.sign.en" locale="${locale}"/>${value35?split(",")[0]!''}
     <@message code="meeting.remind.message.mail.meeting.release.succ.notice.en" locale="${locale}"/>
    <#elseif value28=='2'>
     <@message code="meeting.remind.message.mail.common.your.en" locale="${locale}"/>[${value8!''}]
-   <@message code="meeting.remind.message.mail.meeting.has.not.accept.en" locale="${locale}"/>${value35.split(",")[0]!''}
+   <@message code="meeting.remind.message.mail.meeting.has.not.accept.en" locale="${locale}"/>${value35?split(",")[0]!''}
   <@message code="meeting.remind.message.mail.meeting.release.succ.notice.en" locale="${locale}"/>
  <#elseif value28=='3'>
   <@message code="meeting.remind.message.mail.common.your.en" locale="${locale}"/>[${value8!''}]
- <@message code="meeting.remind.message.mail.meeting.has.maintain.en" locale="${locale}"/>${value35.split(",")[0]!''}
+ <@message code="meeting.remind.message.mail.meeting.has.maintain.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice" locale="${locale}"/>
 <#elseif value28=='4'>
 <@message code="meeting.remind.message.mail.common.your.en" locale="${locale}"/>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.unvisible.en" locale="${locale}"/>${value35.split(",")[0]!''}
+<@message code="meeting.remind.message.mail.meeting.has.unvisible.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.en" locale="${locale}"/>
 </#if>
 <#elseif value5=='4'>
@@ -243,11 +243,11 @@
 <#elseif value5=='8'>
 <#if value32!="">
 <@message code="meeting.remind.message.mail.recurring.meeting.create.succ.en" locale="${locale}"/>${value27!''}，
-<@message code="meeting.remind.message.mail.meeting.create.succ.in.en" locale="${locale}"/>${value35.split(",")[0]!''}
+<@message code="meeting.remind.message.mail.meeting.create.succ.in.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.remind.message.mail.meeting.create.succ.open.en" locale="${locale}"/>
 <#else>
 <@message code="meeting.remind.message.mail.meeting.create.succ.en" locale="${locale}"/>${value27!''}，
-<@message code="meeting.remind.message.mail.meeting.create.succ.in.en" locale="${locale}"/>${value35.split(",")[0]!''}
+<@message code="meeting.remind.message.mail.meeting.create.succ.in.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.remind.message.mail.meeting.create.succ.open.en" locale="${locale}"/>
 </#if>
 <#elseif value5=='9'>
@@ -266,16 +266,16 @@
 <#if value28=='0'>[${value8!''}]
 <@message code="meeting.remind.message.mail.meeting.cancel.succ.notice.en" locale="${locale}"/>
 <#elseif value28=='1'>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.not.sign.en" locale="${locale}"/>${value35.split(",")[0]!''}
+<@message code="meeting.remind.message.mail.meeting.has.not.sign.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.en" locale="${locale}"/>
 <#elseif value28=='2'>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.not.accept.en" locale="${locale}"/>${value35.split(",")[0]!''}
+<@message code="meeting.remind.message.mail.meeting.has.not.accept.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.en" locale="${locale}"/>
 <#elseif value28=='3'>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.maintain.en" locale="${locale}"/>${value35.split(",")[0]!''}
+<@message code="meeting.remind.message.mail.meeting.has.maintain.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.en" locale="${locale}"/>
 <#elseif value28=='4'>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.unvisible.en" locale="${locale}"/>${value35.split(",")[0]!''}
+<@message code="meeting.remind.message.mail.meeting.has.unvisible.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.en" locale="${locale}"/>
 </#if>
 <#elseif value5=='11'>
@@ -312,12 +312,12 @@
 <#elseif value5=='21'>
 <@message code="meeting.remind.message.mail.autoCancel.alarm.content.en" locale="${locale}"/>
 <#elseif value5=='22'>
-<@message code="meeting.message.smsAndreserve.knd.startKeep1.en" locale="${locale}"/>${value35.split(",")[0]!''}
+<@message code="meeting.message.smsAndreserve.knd.startKeep1.en" locale="${locale}"/>${value35?split(",")[0]!''}
 <@message code="meeting.message.smsAndreserve.knd.startKeep2.en" locale="${locale}"/>${value31!''}
 <@message code="meeting.message.smsAndreserve.knd.startKeep3.en" locale="${locale}"/>
 <#elseif value5=='66'>
 <@message code="meeting.remind.message.mail.meeting_audit_need.en" locale="${locale}"/>
-<#elseif value5=='99'>[${value35.split(",")[0]!''}]
+<#elseif value5=='99'>[${value35?split(",")[0]!''}]
 <@message code="meeting.remind.message.mail.clean.room_content.en" locale="${locale}"/>
 <#elseif value5=='101'>
 <@message code="meeting.remind.message.mail.maintain.content.en" locale="${locale}"/>
@@ -370,7 +370,7 @@
 <p class="k2"style="margin-left:10px; text-indent: 35px; margin-top: 0px; margin-bottom: 10px;width: 90%;">
 <#if value5=='1'>${value6!''}
 <@message code="meeting.remind.message.mail.meeting.create.normal.zhhk" locale="${locale}"/>${value27!''}，
-<@message code="meeting.remind.message.mail.meeting.create.succ.in.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.create.succ.in.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.create.succ.open.zhhk" locale="${locale}"/>
 <#if value29=='0'>
 <a style="text-decoration: none;"href="${value15!''}" style="float: right;">
@@ -386,19 +386,19 @@
 <@message code="meeting.remind.message.mail.meeting.cancel.succ.notice.zhhk" locale="${locale}"/>
 <#elseif value28=='1'>
 <@message code="meeting.remind.message.mail.common.your.zhhk" locale="${locale}"/>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.not.sign.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.has.not.sign.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.zhhk" locale="${locale}"/>
 <#elseif value28=='2'>
 <@message code="meeting.remind.message.mail.common.your.zhhk" locale="${locale}"/>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.not.accept.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.has.not.accept.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.zhhk" locale="${locale}"/>
 <#elseif value28=='3'>
 <@message code="meeting.remind.message.mail.common.your.zhhk" locale="${locale}"/>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.maintain.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.has.maintain.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice" locale="${locale}"/>
 <#elseif value28=='4'>
 <@message code="meeting.remind.message.mail.common.your.zhhk" locale="${locale}"/>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.unvisible.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.has.unvisible.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.zhhk" locale="${locale}"/>
 </#if>
 <#elseif value5=='4'>
@@ -416,11 +416,11 @@
 <#elseif value5=='8'>
 <#if value32!="">
 <@message code="meeting.remind.message.mail.recurring.meeting.create.succ.zhhk" locale="${locale}"/>${value27!''}，
-<@message code="meeting.remind.message.mail.meeting.create.succ.in.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.create.succ.in.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.create.succ.open.zhhk" locale="${locale}"/>
 <#else>
 <@message code="meeting.remind.message.mail.meeting.create.succ.zhhk" locale="${locale}"/>${value27!''}，
-<@message code="meeting.remind.message.mail.meeting.create.succ.in.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.create.succ.in.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.create.succ.open.zhhk" locale="${locale}"/>
 </#if>
 <#elseif value5=='9'>
@@ -439,16 +439,16 @@
 <#if value28=='0'>[${value8!''}]
 <@message code="meeting.remind.message.mail.meeting.cancel.succ.notice.zhhk" locale="${locale}"/>
 <#elseif value28=='1'>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.not.sign.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.has.not.sign.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.zhhk" locale="${locale}"/>
 <#elseif value28=='2'>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.not.accept.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.has.not.accept.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.zhhk" locale="${locale}"/>
 <#elseif value28=='3'>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.maintain.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.has.maintain.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.zhhk" locale="${locale}"/>
 <#elseif value28=='4'>[${value8!''}]
-<@message code="meeting.remind.message.mail.meeting.has.unvisible.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.remind.message.mail.meeting.has.unvisible.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.remind.message.mail.meeting.release.succ.notice.zhhk" locale="${locale}"/>
 </#if>
 <#elseif value5=='11'>
@@ -485,12 +485,12 @@
 <#elseif value5=='21'>
 <@message code="meeting.remind.message.mail.autoCancel.alarm.content.zhhk" locale="${locale}"/>
 <#elseif value5=='22'>
-<@message code="meeting.message.smsAndreserve.knd.startKeep1.zhhk" locale="${locale}"/>${value35.split(",")[1]!''}
+<@message code="meeting.message.smsAndreserve.knd.startKeep1.zhhk" locale="${locale}"/>${value35?split(",")[1]!''}
 <@message code="meeting.message.smsAndreserve.knd.startKeep2.zhhk" locale="${locale}"/>${value31!''}
 <@message code="meeting.message.smsAndreserve.knd.startKeep3.zhhk" locale="${locale}"/>
 <#elseif value5=='66'>
 <@message code="meeting.remind.message.mail.meeting_audit_need.zhhk" locale="${locale}"/>
-<#elseif value5=='99'>[${value35.split(",")[1]!''}]
+<#elseif value5=='99'>[${value35?split(",")[1]!''}]
 <@message code="meeting.remind.message.mail.clean.room_content.zhhk" locale="${locale}"/>
 <#elseif value5=='101'>
 <@message code="meeting.remind.message.mail.maintain.content.zhhk" locale="${locale}"/>
