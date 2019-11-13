@@ -16,7 +16,7 @@
        <tbody>
         <tr>
          <td colspan="2" bgcolor="#f7f7f7" width="100%">
-          <imgstyle="width:600px;height:100px" src="${imageDirectory!''}/knk_logo.png"/>
+          <img style="width:600px;height:100px" src="${logo}"/>
        </td>
       </tr>
      </tbody>

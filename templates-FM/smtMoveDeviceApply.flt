@@ -84,6 +84,7 @@
  <span>Title&nbsp;:
   </span>
  <span>
+ <br/>
   <#if locale == "en_US" || locale == "en">
    <@message code="msg.email.content.virsical.meeting_subject_zh" locale="${locale}"/>
   <#else>
@@ -98,6 +99,7 @@
 <td align="right" style="color:#b4b4b4;" width="25%">
 <span>Room&nbsp;:
  </span>
+  <br/>
 <span>
  <#if locale == "en_US" || locale == "en">
   <@message code="msg.email.content.virsical.meeting_room_zh" locale="${locale}"/>
@@ -113,6 +115,7 @@
 <td align="right" style="color:#b4b4b4;" width="25%">
 <span>Start&nbsp;:
 </span>
+ <br/>
 <span>
 <#if locale == "en_US" || locale == "en">
  <@message code="msg.email.content.virsical.meeting_startTime_zh" locale="${locale}"/>
@@ -129,6 +132,7 @@
 <td align="right" style="color:#b4b4b4;" width="25%">
 <span>End&nbsp;:
 </span>
+ <br/>
 <span>
 <#if locale == "en_US" || locale == "en">
 <@message code="msg.email.content.virsical.meeting_endTime_zh" locale="${locale}"/>
@@ -145,6 +149,7 @@
 <td align="right" style="color:#b4b4b4;" width="25%">
 <span>Host&nbsp;:
 </span>
+ <br/>
 <span>
 <#if locale == "en_US" || locale == "en">
 <@message code="msg.email.content.virsical.meeting_host_zh" locale="${locale}"/>
@@ -160,6 +165,7 @@
 <td align="right" style="color:#b4b4b4;" valign="top" width="25%">
 <span>Move device:
 </span>
+ <br/>
 <span>
 <#if locale == "en_US" || locale == "en">
 <@message code="meeting.moveDevice.message.move.name_zh" locale="${locale}"/>
