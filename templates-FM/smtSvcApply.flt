@@ -36,22 +36,75 @@
  <table cellpadding="0" cellspacing="0" style="margin:10px;" width="580"bgcolor="#FFFFFF">
   <tr>
    <td align="left" colspan="2"style="font-size:14pt; line-height:30px;">
-    <span style="margin-left:10px;">${value8!''}
-     </span>
+   <#if value8 == 0 || value8 == 3>
+	<span style="margin-left:10px;">
+		Application for service
+	</span>
+	<span style="margin-left:10px;">
+		<#if locale == "en_US" || locale == "en">
+			<@message code="meeting.message.public.service.title_zh" locale="${locale}"/>
+		<#else>
+			<@message code="meeting.message.public.service.title" locale="${locale}"/>
+		</#if>
+	</span>
+	<#elseif value8 == 1 || value8 == 2>
+	<span style="margin-left:10px;">
+		Notification of the results of approval
+	</span>
+	<span style="margin-left:10px;">
+		<#if locale == "en_US" || locale == "en">
+			<@message code="meeting.message.public.service.result.title_zh" locale="${locale}"/>
+		<#else>
+			<@message code="meeting.message.public.service.result.title" locale="${locale}"/>
+		</#if>
+	</span>
+   </#if>
     </td>
    </tr>
   <tr>
    <td colspan="2" align="left"style="font-size:12pt; line-height:30px;">
-    <span style="margin-left:10px;">
-     <@message code="meeting.moveDevice.message.hello" locale="${locale}"/> ${value10!''}
-    <@message code="msg.email.content.maohao" locale="${locale}"/>
-   </span>
+    Hi&nbsp; ${value10!''} <@message code="msg.email.content.maohao" locale="${locale}"/>
   </td>
  </tr>
 <tr>
  <td align="left" style="font-size:12pt; line-height:30px;">
-  <span class="k2" style="margin-left:10px;">${value9!''}
-   </span>
+ <#if value8 ==0 || value8 == 3>
+	<span class="k2" style="margin-left:10px;">
+		You have a meeting service application that needs confirmation.
+	</span>
+	<br/>
+	<span class="k2" style="margin-left:10px;">
+		<#if locale == "en_US" || locale == "en">
+			<@message code="meeting.message.public.mail.service.content_zh" locale="${locale}"/>
+		<#else>	
+			<@message code="meeting.message.public.mail.service.content" locale="${locale}"/>
+		</#if>
+	</span>
+ <#elseif value8 == 1>
+	<span class="k2" style="margin-left:10px;">
+		Your application for meeting service has been approved.
+	</span>
+	<br/>
+	<span class="k2" style="margin-left:10px;">
+		<#if locale == "en_US" || locale == "en">
+			<@message code="meeting.message.public.mail.service.approval_zh" locale="${locale}"/>
+		<#else>	
+			<@message code="meeting.message.public.mail.service.approval" locale="${locale}"/>
+		</#if>
+	</span>	
+ <#elseif value8 == 2>
+ 	<span class="k2" style="margin-left:10px;">
+		Your application for meeting service has not been approved. Resaon: ${value9!''}
+	</span>
+	<br/>
+	<span class="k2" style="margin-left:10px;">
+		<#if locale == "en_US" || locale == "en">
+			<@message code="meeting.message.public.mail.service.refused_zh" locale="${locale}"/><@message code="meeting.remind.message.mail.meeting_audit_reason.zhhk" locale="${locale}"/>${value9!''}
+		<#else>	
+			<@message code="meeting.message.public.mail.service.refused" locale="${locale}"/><@message code="meeting.remind.message.mail.meeting_audit_reason" locale="${locale}"/>${value9!''}
+		</#if>
+	</span>
+ </#if>
   </td>
  </tr>
 </table>
@@ -73,6 +126,7 @@
   <td align="right" style="color:#b4b4b4;" width="25%">
    <span>Title&nbsp;:
     </span>
+	<br/>
    <span>
     <#if locale == "en_US" || locale == "en">
      <@message code="msg.email.content.virsical.meeting_subject_zh" locale="${locale}"/>
@@ -88,6 +142,7 @@
  <td align="right" style="color:#b4b4b4;" width="25%">
   <span>Room&nbsp;:
    </span>
+   <br/>
   <span>
    <#if locale == "en_US" || locale == "en">
     <@message code="msg.email.content.virsical.meeting_room_zh" locale="${locale}"/>
@@ -103,6 +158,7 @@
 <td align="right" style="color:#b4b4b4;" width="25%">
  <span>Start&nbsp;:
   </span>
+  <br/>
  <span>
   <#if locale == "en_US" || locale == "en">
    <@message code="msg.email.content.virsical.meeting_startTime_zh" locale="${locale}"/>
@@ -119,6 +175,7 @@
 <td align="right" style="color:#b4b4b4;" width="25%">
 <span>End&nbsp;:
 </span>
+<br/>
 <span>
 <#if locale == "en_US" || locale == "en">
  <@message code="msg.email.content.virsical.meeting_endTime_zh" locale="${locale}"/>
@@ -135,6 +192,7 @@
 <td align="right" style="color:#b4b4b4;" width="25%">
 <span>Host&nbsp;
 </span>
+<br/>
 <span>
 <#if locale == "en_US" || locale == "en">
 <@message code="msg.email.content.virsical.meeting_host_zh" locale="${locale}"/>
@@ -150,6 +208,7 @@
 <td align="right" style="color:#b4b4b4;" width="25%">
 <span>Service level:
 </span>
+<br/>
 <span>
 <#if locale == "en_US" || locale == "en">
 <@message code="meeting.svc.message.level.name_zh" locale="${locale}"/>
@@ -165,6 +224,7 @@
 <td align="right" style="color:#b4b4b4;" valign="top" width="25%">
 <span>Service name:
 </span>
+<br/>
 <span>
 <#if locale == "en_US" || locale == "en">
 <@message code="meeting.svc.message.project.name_zh" locale="${locale}"/>
