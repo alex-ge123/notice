@@ -223,8 +223,8 @@ public class MailNoticeServiceImpl implements MailNoticeService {
           val.setLogo(tenant.getLogo());
         }
         //设置租户系统名
-        if (!StrUtil.isEmptyStr(tenant.getSystemName())) {
-          val.setSystemName(tenant.getSystemName());
+        if (!StrUtil.isEmptyStr(tenant.getName())) {
+          val.setSystemName(tenant.getName());
         }
         //设置租户电话号
         if (!StrUtil.isEmptyStr(tenant.getContactNumber())) {
