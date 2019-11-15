@@ -1,10 +1,9 @@
 package com.wafersystems.notice.mail.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.base.dao.BaseDao;
-import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.base.model.PaginationDto;
+import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
@@ -16,15 +15,10 @@ import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SecurityConstants;
-import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
-import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
-import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
-import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
-import com.wafersystems.virsical.common.entity.SysTenant;
 import com.wafersystems.virsical.common.entity.TenantDTO;
 import com.wafersystems.virsical.common.feign.RemoteTenantService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +26,10 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.remoting.RemoteTimeoutException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 /**
  * 邮件接口实现
@@ -59,10 +47,10 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   private EmailUtil mailUtil;
 
   @Autowired
-  private RabbitTemplate rabbitTemplate;
+  private RemoteTenantService tenantService;
 
   @Autowired
-  private RemoteTenantService tenantService;
+  private AsyncTaskManager asyncTaskManager;
 
   /**
    * Description: 邮件发送 author waferzy DateTime 2016-3-10 下午2:37:55.
@@ -191,7 +179,6 @@ public class MailNoticeServiceImpl implements MailNoticeService {
    *
    * @param mailTemplateDto
    */
-  @Async("mqAsync")
   public void sendLog(MailTemplateDto mailTemplateDto, String content) {
     LogDTO logDTO = new LogDTO();
     logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
@@ -202,8 +189,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setUserId(TenantContextHolder.getUserId());
     logDTO.setObjectId(mailTemplateDto.getName());
     logDTO.setTenantId(TenantContextHolder.getTenantId());
-    rabbitTemplate.convertAndSend(UpmsMqConstants.EXCHANGE_DIRECT_UPMS_LOG, UpmsMqConstants.ROUTINT_KEY_LOG,
-      JSON.toJSONString(new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.ADD.name(), logDTO)));
+    asyncTaskManager.asyncSendLogMessage(logDTO);
   }
 
   @Override
@@ -213,7 +199,6 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     val.setLogo(StrUtil.isEmptyStr(val.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : val.getLogo());
     val.setSystemName(ParamConstant.getSYSTEM_NAME());
     val.setPhone(ParamConstant.getPHONE());
-//    val.setLocale(ParamConstant.getLocaleByStr("zh_CN"));
     if (ObjectUtil.isNotNull(val.getTenantId())) {
       R<TenantDTO> tenantByIdForInner = tenantService.getTenantByIdForInner(val.getTenantId(), SecurityConstants.FROM_IN);
       if (ObjectUtil.isNotNull(tenantByIdForInner)) {
@@ -236,7 +221,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
         }
       }
     }
-    if (ObjectUtil.isNull(val.getLocale())){
+    if (ObjectUtil.isNull(val.getLocale())) {
       val.setLocale(ParamConstant.getLocaleByStr("zh_CN"));
     }
     mailBean.setTemVal(val);
