@@ -6,6 +6,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.Reader;
@@ -20,6 +21,7 @@ import java.util.Locale;
 public class MysqlMailTemplateLoader implements TemplateLoader {
 
   @Autowired
+  @Lazy
   private MailNoticeService mailNoticeService;
 
   @Autowired
