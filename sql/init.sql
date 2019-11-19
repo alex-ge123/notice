@@ -64,7 +64,7 @@ CREATE TABLE `ntc_parameter`  (
 -- ----------------------------
 -- Records of ntc_parameter
 -- ----------------------------
-INSERT INTO `ntc_parameter` VALUES (1, '默认logo', 'LOGO_DEFALUT', 'https://vstportal.rd.virsical.cn/res/L9X6U45u82/visit/60683d98f4ab94558e00725e4493f032.jpg');
+INSERT INTO `ntc_parameter` VALUES (1, '默认logo', 'LOGO_DEFALUT', 'http://www.virsical.cn/images/ico_wafer.png');
 INSERT INTO `ntc_parameter` VALUES (2, '短信接口服务地址', 'URL_SMS_SERVER', 'https://work.virsical.cn/sms/ability');
 INSERT INTO `ntc_parameter` VALUES (3, '短信接口CLIENTID', 'URL_SMS_CLIENTID', 'meeting');
 INSERT INTO `ntc_parameter` VALUES (4, '短信接口SECRET', 'URL_SMS_SECRET', '23cbf2b615184418');
