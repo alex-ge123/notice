@@ -1,6 +1,7 @@
 package com.wafersystems.notice.util;
 
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
+import com.wafersystems.notice.config.RabbitMqConfig;
 import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
 import com.wafersystems.notice.mail.model.MailBean;
 import freemarker.template.Configuration;
@@ -32,6 +33,7 @@ import java.util.UUID;
 
 /**
  * 邮件工具类
+ *
  * @author wafer
  */
 @Slf4j
@@ -182,6 +184,7 @@ public class EmailUtil {
    * @throws Exception 异常
    */
   private Multipart sendEventEmail(MailBean mailBean) throws Exception {
+    log.info("[发送事件邮件入参信息]{}", mailBean.toString());
     MimeMultipart multipart = new MimeMultipart();
     BodyPart bodyPart = new MimeBodyPart();
     try {
@@ -276,17 +279,17 @@ public class EmailUtil {
         Template temple = velocityEngine.getTemplate(mailBean.getTemplate(), "UTF-8");
         temple.merge(context, writer);
         return writer.toString();
-      }else if(ConfConstant.TypeEnum.FM.equals(mailBean.getType())){
+      } else if (ConfConstant.TypeEnum.FM.equals(mailBean.getType())) {
         //freemarker
         log.debug("使用模版" + mailBean.getTemplate());
         //freemarker 配置模板加载器
         configuration.setTemplateLoader(mysqlMailTemplateLoader);
         //配置共享变量
-        configuration.setSharedVariable("loccalMessage",messageService);
+        configuration.setSharedVariable("loccalMessage", messageService);
         //加载模板
         freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate());
         //模板渲染
-        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template,mailBean.getTemVal());
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, mailBean.getTemVal());
         return html;
       } else {
         log.debug("使用html模版" + mailBean.getTemplate());
