@@ -29,7 +29,7 @@ public class AsyncTaskManager {
    *
    * @param logDTO 日志对象
    */
-  @Async("mqAsync")
+  @Async
   public void asyncSendLogMessage(LogDTO logDTO) {
     rabbitTemplate.convertAndSend(UpmsMqConstants.EXCHANGE_DIRECT_UPMS_LOG, UpmsMqConstants.ROUTINT_KEY_LOG,
       JSON.toJSONString(new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.ADD.name(), logDTO)));
