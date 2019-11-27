@@ -189,6 +189,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setUserId(TenantContextHolder.getUserId());
     logDTO.setObjectId(mailTemplateDto.getName());
     logDTO.setTenantId(TenantContextHolder.getTenantId());
+    logDTO.setUsername(TenantContextHolder.getUsername());
     asyncTaskManager.asyncSendLogMessage(logDTO);
   }
 
