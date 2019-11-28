@@ -127,7 +127,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       }
       dto.setModtime(null);
       baseDao.update(dto);
-      sendLog(mailTemplateDto, "模板:[" + mailTemplateDto.getName() + "]更新。");
+      sendLog(mailTemplateDto, "模板:[" + dto.getName() + "]更新。");
       log.debug("修改{}模板成功！", mailTemplateDto.getName());
     } else {
       throw new RuntimeException("未查询到id为[" + mailTemplateDto.getId() + "]的邮件模板");
