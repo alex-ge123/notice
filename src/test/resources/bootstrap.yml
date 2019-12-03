@@ -1,0 +1,171 @@
+server:
+  port: 4001
+
+spring:
+  application:
+    name: virsical-notice
+  profiles:
+    active: testcase
+  # 配置中心
+  cloud:
+    config:
+      enabled: false
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+  datasource:
+    url: jdbc:mysql://192.168.203.20:20000/virsical_notice_testcase?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=Asia/Shanghai
+    username: wafer
+    password: wafer
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    host: 0.0.0.0
+    port: 6380
+  rabbitmq:
+    host: 192.168.203.141
+    port: 5672
+    virtual-host: /testcase-notice
+    username: testcase-notice
+    password: testcase-notice
+
+# 注册中心配置
+eureka:
+  client:
+    enabled: false
+
+## spring security 配置
+security:
+  oauth2:
+    client:
+      client-id: ENC(KmOp5EIyjX0n6hoYE0jMSIDq12xwlmcs)
+      client-secret: ENC(KmOp5EIyjX0n6hoYE0jMSIDq12xwlmcs)
+      scope: server
+      ignore-urls:
+        - '/actuator/**'
+        - '/v2/api-docs'
+        - '/sms/sendSms'
+        - '/sms/sendCaptcha'
+        - '/sms/checkCaptcha'
+        - '/mail/sendMail'
+    resource:
+      loadBalanced: true
+      # token解码的URI
+      token-info-uri: http://virsical-auth/oauth/check_token
+      
+# 加解密根密码
+jasypt:
+  encryptor:
+    password: wafer
+aes:
+  # 前端密码密钥，必须16位
+  key: 'XDH206VF30Nf9q7t'
+
+# 系统参数配置
+system:
+  # 云服务开关
+  cloud-service: false
+  # 手机号认证开关
+  phone-auth: true
+  # 邮箱认证开关
+  email-auth: true
+  # 默认域配置（开启配置对应域名，不开启配置null）
+  default-domain: baidu.com
+
+# 暴露监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+# feign 配置
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+    # 最多连接数，默认200
+    max-connections: 800
+    # 每个route最多连接数，默认50
+    max-connections-per-route: 200
+  httpclient:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 20000
+        readTimeout: 20000
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+# hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
+# you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds:  10000
+          semaphore:
+            maxConcurrentRequests: 1000
+      circuitBreaker:
+        sleepWindowInMilliseconds:  5000
+  shareSecurityContext: true
+
+#请求处理的超时时间
+ribbon:
+  # 请求处理时间
+  ReadTimeout: 5000
+  # 获取连接的超时时间
+  ConnectTimeout: 3000
+
+#swagger公共信息
+swagger:
+  title: Swagger API
+  description: 微服务公共基础服务
+  version: 3.0
+  license: Powered By Virsical
+  contact:
+    name: admin
+    email: tandongkui@wafersystems.com
+  authorization:
+    name: Virsical OAuth
+    auth-regex: ^.*$
+    authorization-scope-list:
+      - scope: server
+        description: server all
+    token-url-list:
+      - http://localhost:8000/virsical-auth/oauth/token
+
+logging:
+  file: logs/${spring.application.name}/debug.log
+  level:
+    root: info
+
+sms:
+  captcha:
+    # 验证码长度
+    length: 6
+    # 验证码有效期，单位秒
+    timeout: 300
+
+# 邮件模板路径
+mail:
+  template:
+    path: d:/vms/
+
