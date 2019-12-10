@@ -108,7 +108,7 @@ CREATE TABLE `ntc_weather`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `mail_template`;
 CREATE TABLE `mail_template`  (
-  `id` bigint(20) NOT NULL COMMENT '主键id',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '模板名称',
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '模板内容',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '模板描述',
