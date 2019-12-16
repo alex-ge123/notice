@@ -4,9 +4,9 @@ import cn.hutool.core.util.ObjectUtil;
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
 import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
 import com.wafersystems.notice.mail.model.MailBean;
-import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.model.enums.MailScheduleStatusEnum;
+import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
 import freemarker.template.Configuration;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.security.Security;
 import java.text.SimpleDateFormat;
@@ -110,8 +109,6 @@ public class EmailUtil {
       } else {
         message.setContent(multipart);
       }
-      // 免认证模式
-      // Transport.send(message, message.getAllRecipients());
       // 使用认证模式发送邮件。
       Transport transport = session.getTransport("smtp");
       //设置端口
@@ -141,10 +138,6 @@ public class EmailUtil {
     BodyPart bodyPart = new MimeBodyPart();
     try {
       TemContentVal temVal = mailBean.getTemVal();
-      //格式化会议模板中日期
-//      SimpleDateFormat resultSim = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//      temVal.setValue1(resultSim.format(DateUtil.formatDateTime(temVal.getValue1())));
-//      temVal.setValue2(resultSim.format(DateUtil.formatDateTime(temVal.getValue2())));
       //格式化时间日程日期
       MailScheduleDto mailScheduleDo = temVal.getMailScheduleDto();
       log.debug("mailScheduleDo:{}", mailScheduleDo);
@@ -230,12 +223,10 @@ public class EmailUtil {
    * @return
    */
   public String getMessage(MailBean mailBean) throws Exception {
-    StringWriter writer = new StringWriter();
     VelocityContext context;
-    try {
+    try (StringWriter writer = new StringWriter();) {
       if (ConfConstant.TypeEnum.VM.equals(mailBean.getType())) {
         log.debug("使用模版" + mailBean.getTemplate());
-        writer = new StringWriter();
         context = new VelocityContext();
         context.put("TemVal", mailBean.getTemVal());
         Template temple = velocityEngine.getTemplate(mailBean.getTemplate(), "UTF-8");
@@ -251,8 +242,7 @@ public class EmailUtil {
         //加载模板
         freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate());
         //模板渲染
-        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, mailBean.getTemVal());
-        return html;
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, mailBean.getTemVal());
       } else {
         log.debug("使用html模版" + mailBean.getTemplate());
         context = new VelocityContext(mailBean.getData());
@@ -262,13 +252,6 @@ public class EmailUtil {
     } catch (VelocityException ex) {
       log.error(" VelocityException : " + mailBean.getSubject(), ex);
       throw ex;
-    } finally {
-      try {
-        writer.close();
-      } catch (IOException ex) {
-        log.error("StringWriter close error ... ", ex);
-        throw ex;
-      }
     }
   }
 
@@ -297,51 +280,4 @@ public class EmailUtil {
     }
     return true;
   }
-
-
-  /**
-   * 发送事件邮件(不支持html格式).
-   *
-   * @param mailBean -
-   * @return -
-   */
-  /*
-   * private Multipart getContentText(MailBean mailBean) throws Exception { DateTime start = new
-   * DateTime(Long.parseLong(mailBean.getTemVal().getValue2())); // 开始时间 DateTime end = new
-   * DateTime(Long.parseLong(mailBean.getTemVal().getValue3())); // 结束时间 VEvent vevent = new
-   * VEvent(start, end, mailBean.getSubject()); // 时区 // TimeZoneRegistry registry =
-   * TimeZoneRegistryFactory.getInstance().createRegistry(); // TimeZone timezone =
-   * registry.getTimeZone("Asia/Shanghai"); //
-   * vevent.getProperties().add(timezone.getVTimeZone().getTimeZoneId());// 时区
-   * vevent.getProperties().add(new Location(mailBean.getTemVal().getValue1()));// 会议地点
-   * vevent.getProperties().add(new Summary(mailBean.getSubject()));// 邮件主题
-   * vevent.getProperties().add(new Description(this.getMessage(mailBean)));// 邮件内容
-   * vevent.getProperties().add(new UidGenerator("meeting invite").generateUid());// 设置uid
-   * vevent.getProperties() .add(new Organizer(URI.create("mailto:" +
-   * ParamConstant.getDEFAULT_MAIL_FROM()))); // 与会人 Set<String> emailSet = new HashSet<String>();
-   * emailSet.add(ParamConstant.getDEFAULT_MAIL_FROM()); if
-   * (mailBean.getToEmails().contains(ConfConstant.COMMA)) { emailSet.addAll(Arrays
-   * .asList(mailBean.getToEmails().split(ConfConstant.COMMA))); } else {
-   * emailSet.add(mailBean.getToEmails()); } int index = 1; for (String email : emailSet) { Attendee
-   * attendee = new Attendee(URI.create("mailto:" + email)); if (1 == index) {
-   * attendee.getParameters().add(Role.REQ_PARTICIPANT); } else {
-   * attendee.getParameters().add(Role.OPT_PARTICIPANT); } attendee.getParameters().add(new
-   * Cn("Developer" + index)); vevent.getProperties().add(attendee); index++; } // --------VEvent
-   * Over---------- // --------VAlarm Start---------- // 提醒,提前10分钟 VAlarm valarm = new VAlarm(new
-   * Dur(0, 0, -10, 0)); valarm.getProperties().add(new Repeat(1)); valarm.getProperties().add(new
-   * Duration(new Dur(0, 0, 10, 0))); // 提醒窗口显示的文字信息 valarm.getProperties().add(new Summary(
-   * "Event Alarm")); valarm.getProperties().add(Action.DISPLAY); valarm.getProperties().add(new
-   * Description("Progress Meeting at 9:30am")); vevent.getAlarms().add(valarm);// 将VAlarm加入VEvent
-   * // --------VAlarm Over------------- // --------日历对象 Start--------------- Calendar icsCalendar =
-   * new Calendar(); icsCalendar.getProperties().add(new ProdId("-//Events Calendar//iCal4j 1.0//EN"
-   * )); icsCalendar.getProperties().add(CalScale.GREGORIAN);
-   * icsCalendar.getProperties().add(Version.VERSION_2_0);
-   * icsCalendar.getProperties().add(Method.REQUEST); icsCalendar.getComponents().add(vevent);//
-   * 将VEvent加入Calendar // 将日历对象转换为二进制流 CalendarOutputter co = new CalendarOutputter(false);
-   * ByteArrayOutputStream os = new ByteArrayOutputStream(); co.output(icsCalendar, os); byte[]
-   * mailbytes = os.toByteArray(); // --------日历对象 Over------------------ BodyPart mbp = new
-   * MimeBodyPart(); mbp.setContent(mailbytes, "text/calendar;method=REQUEST;charset=UTF-8");
-   * MimeMultipart mm = new MimeMultipart(); mm.setSubType("related"); mm.addBodyPart(mbp); return
-   * mm; }
-   */
 }

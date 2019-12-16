@@ -1,5 +1,6 @@
 package org.apache.log4j;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
 
   /**
    * 删除过多的文件
-   * 
+   *
    * @param fileList 所有日志文件
    */
   private void deleteOvermuch(List<File> fileList) {
@@ -50,7 +51,7 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
 
   /**
    * 根据文件名称上的特定格式的时间排序日志文件
-   * 
+   *
    * @param fileList
    */
   private void sortFiles(List<File> fileList) {
@@ -74,7 +75,9 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
             return -1;
           }
         } catch (ParseException e) {
-        	logger.debug("排序所有日志文件"+o1.getName()+"----"+getDateStr(o1));
+          if (ObjectUtil.isNotNull(o1)) {
+            logger.debug(String.format("排序所有日志文件 %s ---- %s ", o1.getName(), getDateStr(o1)));
+          }
         }
         return 0;
       }
@@ -90,7 +93,7 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
 
   /**
    * 获取所有日志文件，只有文件名符合DatePattern格式的才为日志文件
-   * 
+   *
    * @return
    */
   private List<File> getAllLogs() {
@@ -110,7 +113,9 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
           sdf.parse(getDateStr(pathname));
           return true;
         } catch (ParseException e) {
-          logger.debug("获取所有日志文件"+pathname.getName()+"----"+getDateStr(pathname));
+          if (ObjectUtil.isNotNull(pathname)) {
+            logger.debug(String.format("获取所有日志文件 %s ---- %s", pathname.getName(), getDateStr(pathname)));
+          }
           return false;
         }
       }

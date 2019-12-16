@@ -1,5 +1,6 @@
 package com.wafersystems.notice.util;
 
+import cn.hutool.core.util.ObjectUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -7,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * ClassName Accesstoken Description 访问令牌实体类.
- * 
+ *
  * @author fengxiang Date 2015年7月1日 下午3:28:08
  */
 @Data
@@ -16,10 +17,10 @@ public class Accesstoken implements Serializable {
 
   /**
    * ClassName TokenType Description 令牌类别.
-   * 
+   *
    * @author fengxiang Date 2015年7月1日 下午3:30:51
    */
-  public static enum TokenType {
+  public enum TokenType {
     /**
      * 基于用户ID的令牌.
      */
@@ -28,7 +29,7 @@ public class Accesstoken implements Serializable {
     /**
      * 基于用户ID和密码的令牌.
      */
-    UIDPWD,
+    UIDP8D,
 
     /**
      * 基于完整参数的令牌.
@@ -63,7 +64,7 @@ public class Accesstoken implements Serializable {
 
   /**
    * Description 工厂方法：使用基本属性创建对象.
-   * 
+   *
    * @param uid 用户ID
    * @return 用户登录令牌的数据传输对象 author fengxiang Date 2015年7月1日 上午10:59:13
    */
@@ -76,14 +77,14 @@ public class Accesstoken implements Serializable {
 
   /**
    * Description 工厂方法：使用基本属性创建对象.
-   * 
-   * @param uid 用户ID
+   *
+   * @param uid      用户ID
    * @param password 密码
    * @return 用户登录令牌的数据传输对象 author fengxiang Date 2015年7月1日 上午10:59:13
    */
   public static Accesstoken createInstance(String uid, String password) {
     Accesstoken tokenInfo = new Accesstoken();
-    tokenInfo.tokenType = TokenType.UIDPWD;
+    tokenInfo.tokenType = TokenType.UIDP8D;
     tokenInfo.uid = uid;
     tokenInfo.password = password;
     return tokenInfo;
@@ -91,10 +92,10 @@ public class Accesstoken implements Serializable {
 
   /**
    * Description 工厂方法：使用基本属性创建对象.
-   * 
-   * @param uid 用户ID
+   *
+   * @param uid        用户ID
    * @param clientType 客户端类型
-   * @param version 客户端版本
+   * @param version    客户端版本
    * @return 用户登录令牌的数据传输对象 author fengxiang Date 2015年7月1日 上午10:59:13
    */
   public static Accesstoken createInstance(String uid, String clientType, String version) {
@@ -108,8 +109,8 @@ public class Accesstoken implements Serializable {
 
   /**
    * Description 根据待加密字符串创建.
-   * 
-   * @param tokenStr - author fengxiang
+   *
+   * @param tokenStr  - author fengxiang
    * @param tokenType - Date 2015年7月1日 上午11:21:58
    */
   public static Accesstoken createFromTokenStr(String tokenStr, TokenType tokenType) {
@@ -122,7 +123,7 @@ public class Accesstoken implements Serializable {
           tokenInfo = createInstance(uid);
         }
         break;
-      case UIDPWD:
+      case UIDP8D:
         if (str.length >= 2) {
           String uid = str[0];
           String password = str[1];
@@ -139,14 +140,14 @@ public class Accesstoken implements Serializable {
         }
         break;
       default:
-        tokenInfo = null;
+        ;
     }
     return tokenInfo;
   }
 
   /**
    * Description 生成带用户名的待加密字符串.
-   * 
+   *
    * @return 带用户名和密码的待加密字符串 author fengxiang Date 2015年7月1日 上午11:45:05
    */
   public String toTokenStr() {
@@ -156,18 +157,18 @@ public class Accesstoken implements Serializable {
       case UID:
         tokenStr.append(uid).append(ConfConstant.DIVIDER).append(randomValue);
         break;
-      case UIDPWD:
+      case UIDP8D:
         tokenStr.append(uid).append(ConfConstant.DIVIDER).append(password)
-            .append(ConfConstant.DIVIDER).append(randomValue);
+          .append(ConfConstant.DIVIDER).append(randomValue);
         break;
       case FULL:
         tokenStr.append(uid).append(ConfConstant.DIVIDER).append(clientType)
-            .append(ConfConstant.DIVIDER).append(version).append(ConfConstant.DIVIDER)
-            .append(randomValue).append(ConfConstant.DIVIDER);
+          .append(ConfConstant.DIVIDER).append(version).append(ConfConstant.DIVIDER)
+          .append(randomValue).append(ConfConstant.DIVIDER);
         break;
       default:
-        tokenStr = null;
+        ;
     }
-    return StrUtil.isNullObject(tokenStr) ? null : tokenStr.toString();
+    return ObjectUtil.isNull(tokenStr) ? null : tokenStr.toString();
   }
 }

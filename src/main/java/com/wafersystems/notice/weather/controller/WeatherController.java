@@ -1,5 +1,6 @@
 package com.wafersystems.notice.weather.controller;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.base.controller.BaseController;
@@ -10,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 /**
  * 天气预报.
- * 
+ *
  * @author zhuyi
  */
 @Slf4j
@@ -44,7 +45,7 @@ public class WeatherController extends BaseController {
     Weather bean = weatherInfoService.getWeatherInfo(city, type);
     if (!StrUtil.isNullObject(bean)) {
       if (((DateUtil.getCurrentTimeInMillis() - bean.getCreateTime()) / 1000 / 60) >= Long
-          .parseLong(ParamConstant.getWEATHER_UPDATE_INTERVAL())) {
+        .parseLong(ParamConstant.getWEATHER_UPDATE_INTERVAL())) {
         bean = this.getInfo(type, city);
       }
     } else {
@@ -55,11 +56,11 @@ public class WeatherController extends BaseController {
 
   /**
    * Description: 获取天气信息.
-   * 
+   *
    * @param city 城市
    * @return -
    */
-  @RequestMapping(method = RequestMethod.GET)
+  @GetMapping
   public Object getWeatherInfo(String city) {
     log.debug("开始查城市【" + city + "】天气信息");
     try {
@@ -75,12 +76,15 @@ public class WeatherController extends BaseController {
    */
   private Weather getData(String city) {
     Weather info = this.getWeather(city, WEATHER_INFO);
-    if (!StrUtil.isNullObject(info)) {
-      info.setPm(this.getWeather(city, WEATHER_PM).getInfo());
+    Weather weather = this.getWeather(city, WEATHER_PM);
+    if (ObjectUtil.isNotNull(info) && ObjectUtil.isNotNull(weather)) {
+      info.setPm(weather.getInfo());
     } else {
       info = this.getWeather(city, WEATHER_PM);
-      info.setPm(info.getInfo());
-      info.setInfo(null);
+      if (ObjectUtil.isNotNull(info)) {
+        info.setPm(info.getInfo());
+        info.setInfo(null);
+      }
     }
     return info;
   }

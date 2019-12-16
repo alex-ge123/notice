@@ -14,15 +14,17 @@ import java.util.List;
 
 /**
  * ClassName: HttpClientUtil Description: HttpClient工具类.
- * 
+ *
  * @author Moon
  */
 @Slf4j
 public class HttpClientUtil {
 
+  private HttpClientUtil() {
+  }
 
   private static final MultiThreadedHttpConnectionManager MANAGER =
-      new MultiThreadedHttpConnectionManager();
+    new MultiThreadedHttpConnectionManager();
 
   private static final int CONNECTION_TIME_OUT = 20000;
 
@@ -56,13 +58,13 @@ public class HttpClientUtil {
 
   /**
    * getHttpDefaultHeader.
-   * 
+   *
    * @return String
    */
   public static List<Header> getHttpDefaultHeader() {
-    List<Header> headers = new ArrayList<Header>();
+    List<Header> headers = new ArrayList<>();
     headers.add(
-        new Header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
+      new Header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
     headers.add(new Header("Accept-Charset", "GBK,utf-8;q=0.7,*;q=0.3"));
     headers.add(new Header("Accept-Encoding", "deflate,sdch"));
     headers.add(new Header("Accept-Language", "zh-CN,zh;q=0.8"));
@@ -71,19 +73,19 @@ public class HttpClientUtil {
     headers.add(new Header("Cookie", ""));
     headers.add(new Header("Referer", "http://www.google.com"));
     headers.add(new Header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.8 "
-        + "(KHTML, like Gecko; Google Web Preview) Chrome/19.0.1084.36 Safari/536.8"));
+      + "(KHTML, like Gecko; Google Web Preview) Chrome/19.0.1084.36 Safari/536.8"));
     return headers;
   }
 
   /**
    * Title: getHttpClient Description: 获得一个HttpClient.
-   * 
+   *
    * @return HttpClient
    */
   public static HttpClient getHttpClient() {
     HttpClient client = new HttpClient(MANAGER);
     client.getHostConfiguration().getParams().setParameter("http.default-headers",
-        getHttpDefaultHeader());
+      getHttpDefaultHeader());
     if (INITIALED) {
       HttpClientUtil.setPara();
     }
@@ -92,8 +94,8 @@ public class HttpClientUtil {
 
   /**
    * Title: getGetResponseWithHttpClient Description: 获取响应数据.
-   * 
-   * @param url - 请求的URL
+   *
+   * @param url    - 请求的URL
    * @param encode - 请求的编码
    * @return String
    * @throws IOException IOE
@@ -104,30 +106,30 @@ public class HttpClientUtil {
 
   /**
    * Title: getGetResponseWithHttpClient Description: 获取响应数据.
-   * 
-   * @param url - 请求的URL
-   * @param encode - 请求的编码
+   *
+   * @param url     - 请求的URL
+   * @param encode  - 请求的编码
    * @param byProxy - 是否使用代理
    * @return String
    * @throws IOException IOE
    */
   public static String getGetResponseWithHttpClient(String url, String encode, boolean byProxy)
-      throws IOException {
+    throws IOException {
     return getGetResponseWithHttpClient(url, encode, byProxy, null);
   }
 
   /**
    * Title: getGetResponseWithHttpClient Description: 使用get方法获取响应数据.
-   * 
-   * @param url - 请求的URL
-   * @param encode - 请求的编码
+   *
+   * @param url     - 请求的URL
+   * @param encode  - 请求的编码
    * @param byProxy - 是否使用代理
-   * @param cookie - cookie值
+   * @param cookie  - cookie值
    * @return String
    * @throws IOException IOE
    */
   public static String getGetResponseWithHttpClient(String url, String encode, boolean byProxy,
-      String cookie) throws IOException {
+                                                    String cookie) throws IOException {
     // 初始化get方法
     HttpClient client = new HttpClient(MANAGER);
     GetMethod get = new GetMethod(url);
@@ -136,21 +138,19 @@ public class HttpClientUtil {
     String result = null;
     StringBuilder resultBuffer = new StringBuilder();
 
-    try {
+    try (BufferedReader in = new BufferedReader(
+      new InputStreamReader(get.getResponseBodyAsStream(), get.getResponseCharSet()));) {
       client.executeMethod(get);
-      BufferedReader in = new BufferedReader(
-          new InputStreamReader(get.getResponseBodyAsStream(), get.getResponseCharSet()));
+
       String inputLine = null;
 
       while ((inputLine = in.readLine()) != null) {
         resultBuffer.append(inputLine);
         resultBuffer.append("\n");
       }
-      in.close();
-      result = resultBuffer.toString();
       // iso-8859-1 is the default reading encode
       result = HttpClientUtil.converterStringCode(resultBuffer.toString(), get.getResponseCharSet(),
-          encode);
+        encode);
 
     } finally {
       get.releaseConnection();
@@ -160,16 +160,16 @@ public class HttpClientUtil {
 
   /**
    * Title: getGetResponseWithHttpClient Description: 使用get方法获取响应的字节数据.
-   * 
-   * @param url - 请求的URL
-   * @param encode - 请求的编码
+   *
+   * @param url     - 请求的URL
+   * @param encode  - 请求的编码
    * @param byProxy - 是否使用代理
-   * @param cookie - cookie值
+   * @param cookie  - cookie值
    * @return String
    * @throws IOException IOE
    */
   public static byte[] getGetResponseBytesWithHttpClient(String url, String encode, boolean byProxy,
-      String cookie) throws IOException {
+                                                         String cookie) throws IOException {
     // 初始化get方法
     HttpClient client = new HttpClient(MANAGER);
     GetMethod get = new GetMethod(url);
@@ -184,26 +184,26 @@ public class HttpClientUtil {
 
   /**
    * Title: getGetResponseWithHttpClient Description: 使用get方法获取响应的字节数据.
-   * 
-   * @param url - 请求的URL
+   *
+   * @param url    - 请求的URL
    * @param encode - 请求的编码
    * @return String
    * @throws IOException IOE
    */
   public static byte[] getGetResponseBytesWithHttpClient(String url, String encode)
-      throws IOException {
+    throws IOException {
     return getGetResponseBytesWithHttpClient(url, encode, IS_USER_PROXY, null);
   }
 
   /**
    * Description 初始化get方法.
-   * 
+   *
    * @param byProxy 是否使用代理
-   * @param cookie cookie值 author fengxiang Date 2015年5月20日 下午6:20:02
+   * @param cookie  cookie值 author fengxiang Date 2015年5月20日 下午6:20:02
    */
   private static void initGetMethod(HttpClient client, GetMethod get, boolean byProxy,
-      String cookie) {
-    if (!StrUtil.isEmptyStr(PROXY) && byProxy) {
+                                    String cookie) {
+    if (cn.hutool.core.util.StrUtil.isNotEmpty(PROXY) && byProxy) {
       String[] hostArray = PROXY.split(":");
       client.getHostConfiguration().setProxy(hostArray[0], Integer.parseInt(hostArray[1]));
       client.getParams().setAuthenticationPreemptive(true);
@@ -213,10 +213,10 @@ public class HttpClientUtil {
 
     List<Header> headers = new ArrayList<Header>();
     headers.add(new Header("User-Agent",
-        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.2 (KHTML, like Gecko) "
-            + "Chrome/15.0.854.0 Safari/535.2"));
+      "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.2 (KHTML, like Gecko) "
+        + "Chrome/15.0.854.0 Safari/535.2"));
     headers.add(
-        new Header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
+      new Header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
     headers.add(new Header("Accept-Charset", "GBK,utf-8;q=0.7,*;q=0.3"));
     headers.add(new Header("Accept-Language", "zh-CN,zh;q=0.8"));
     headers.add(new Header("Cache-Control", "max-age=3600"));
@@ -238,8 +238,8 @@ public class HttpClientUtil {
 
   /**
    * Title: getPostResponseWithHttpClient Description: 获取响应数据.
-   * 
-   * @param url - 请求的URL
+   *
+   * @param url    - 请求的URL
    * @param encode - 请求编码
    * @return String
    */
@@ -249,14 +249,14 @@ public class HttpClientUtil {
 
   /**
    * Title: getPostResponseWithHttpClient Description: 获取响应数据.
-   * 
-   * @param url - 请求的URL
-   * @param encode - 请求的编码
+   *
+   * @param url           - 请求的URL
+   * @param encode        - 请求的编码
    * @param nameValuePair - post 参数
    * @return String
    */
   public static String getPostResponseWithHttpClient(String url, String encode,
-      NameValuePair[] nameValuePair) {
+                                                     NameValuePair[] nameValuePair) {
     // 初始化post方法
     HttpClient client = new HttpClient(MANAGER);
     PostMethod post = new PostMethod(url);
@@ -265,10 +265,10 @@ public class HttpClientUtil {
     String result = null;
     StringBuilder resultBuffer = new StringBuilder();
 
-    try {
+    try (BufferedReader in = new BufferedReader(
+      new InputStreamReader(post.getResponseBodyAsStream(), post.getResponseCharSet()));) {
       client.executeMethod(post);
-      BufferedReader in = new BufferedReader(
-          new InputStreamReader(post.getResponseBodyAsStream(), post.getResponseCharSet()));
+
       String inputLine;
 
       while ((inputLine = in.readLine()) != null) {
@@ -276,10 +276,9 @@ public class HttpClientUtil {
         resultBuffer.append("\n");
       }
 
-      in.close();
       // iso-8859-1 is the default reading encode
       result = HttpClientUtil.converterStringCode(resultBuffer.toString(),
-          post.getResponseCharSet(), encode);
+        post.getResponseCharSet(), encode);
     } catch (Exception exception) {
       log.error("getPostResponseWithHttpClient Error", exception);
 
@@ -293,15 +292,15 @@ public class HttpClientUtil {
 
   /**
    * Title: getPostResponseStreamWithHttpClient Description: 使用post方法获取响应数据的原始输入流.
-   * 
-   * @param url - 请求的URL
-   * @param encode - 请求的编码
+   *
+   * @param url           - 请求的URL
+   * @param encode        - 请求的编码
    * @param nameValuePair - post 参数
    * @return String
    * @throws IOException 异常
    */
   public static InputStream getPostResponseStreamWithHttpClient(String url, String encode,
-      NameValuePair[] nameValuePair) throws IOException {
+                                                                NameValuePair[] nameValuePair) throws IOException {
     // 初始化post方法
     HttpClient client = new HttpClient(MANAGER);
     PostMethod post = new PostMethod(url);
@@ -316,25 +315,25 @@ public class HttpClientUtil {
 
   /**
    * Title: getPostResponseStreamWithHttpClient Description: 使用post方法获取响应数据的原始输入流.
-   * 
-   * @param url - 请求的URL
+   *
+   * @param url    - 请求的URL
    * @param encode - 请求的编码
    * @return String
    * @throws IOException 异常
    */
   public static InputStream getPostResponseStreamWithHttpClient(String url, String encode)
-      throws IOException {
+    throws IOException {
     return getPostResponseStreamWithHttpClient(url, encode, null);
   }
 
   /**
    * Description 初始化post方法.
-   * 
+   *
    * @param nameValuePair author fengxiang
-   * @param client - Date 2015年5月20日 下午6:39:07
+   * @param client        - Date 2015年5月20日 下午6:39:07
    */
   private static PostMethod initPostMethod(PostMethod post, NameValuePair[] nameValuePair,
-      HttpClient client) {
+                                           HttpClient client) {
     if (INITIALED) {
       HttpClientUtil.setPara();
     }
@@ -351,29 +350,15 @@ public class HttpClientUtil {
 
   /**
    * Title: ConverterStringCode Description: 字符编码转换.
-   * 
-   * @param source - 源
-   * @param srcEncode - 源编码
+   *
+   * @param source     - 源
+   * @param srcEncode  - 源编码
    * @param destEncode - 目标编码
    * @return String
    * @throws UnsupportedEncodingException UnsupportedEncodingException
    */
   private static String converterStringCode(String source, String srcEncode, String destEncode)
-      throws UnsupportedEncodingException {
+    throws UnsupportedEncodingException {
     return new String(source.getBytes(srcEncode), destEncode);
   }
-
-//  /**
-//   * 测试主方法.
-//   *
-//   * @param arg -
-//   * @throws IOException 异常
-//   */
-//  public static void main(String[] arg) throws IOException {
-//    String url =
-//        "http://192.168.0.159:8080/wse/deviceif!getPowerState.do?devName=SEP0004F2ED799D&level=11&userName=peteryang&pwd=12345";
-//    String encode = "utf-8";
-//    String content = getPostResponseWithHttpClient(url, encode);
-//    System.out.println(content);
-//  }
 }

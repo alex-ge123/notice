@@ -14,7 +14,7 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,8 @@ import java.util.Map;
  */
 @Slf4j
 public class SmsUtil {
+  private SmsUtil() {
+  }
 
   /**
    * 发送短信
@@ -49,7 +51,7 @@ public class SmsUtil {
       }
       phoneNum = phoneNum.substring(3);
     }
-    Map<String, String> hashMap = new HashMap<String, String>();
+    Map<String, String> hashMap = new HashMap<>();
     // 不支持带+86的
     hashMap.put("calleeNbr", phoneNum);
     hashMap.put("templetId", templetId);
@@ -91,13 +93,12 @@ public class SmsUtil {
         // 调用前删除私钥
         hashMap.remove(privateKey);
         method.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(hashMap),
-          Charset.forName("UTF-8")));
+          StandardCharsets.UTF_8));
         HttpClient httpsClient = new SslClient();
         response = httpsClient.execute(method);
       } catch (Exception ex) {
         // 异常信息
-        ex.printStackTrace();
-        log.info("发送https短信异常:{}", ex.getMessage());
+        log.info("发送https短信异常:{}", ex);
       }
     } else {
       try {
@@ -107,13 +108,12 @@ public class SmsUtil {
         //调用前删除私钥
         hashMap.remove(privateKey);
         method.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(hashMap),
-          Charset.forName("UTF-8")));
+          StandardCharsets.UTF_8));
         HttpClient httpClient = new DefaultHttpClient();
         response = httpClient.execute(method);
       } catch (Exception ex) {
         // 异常信息
-        ex.printStackTrace();
-        log.info("发送其它类型短信异常:{}", ex.getMessage());
+        log.info("发送其它类型短信异常:{}", ex);
       }
     }
 
@@ -127,23 +127,13 @@ public class SmsUtil {
           log.error(EntityUtils.toString(response.getEntity()));
         } catch (ParseException pe) {
           // 异常信息
-          pe.printStackTrace();
-          log.info("发送短信异常:{}", pe.getMessage());
+          log.info("发送短信异常:{}", pe);
         } catch (IOException io) {
           // 异常信息
-          io.printStackTrace();
-          log.info("发送短信异常:{}", io.getMessage());
+          log.info("发送短信异常:{}", io);
         }
       }
     }
     return "1";
   }
-
-//  public static void main(String[] args) {
-//    List<String> params = new ArrayList<String>();
-//    params
-//        .add("Meeting Remind:Hi [yz], This is a remainder that you have an updated appointment with [人名] at [织田] on [2018-04-09 11:30 ~ 11:45], Please reply with Click to confirm http://t.cn/RmVpvp9 .【威发系统】");
-//    String flag = sendSms("100427", "+8618729861476", params, "wafersystems.com");
-//    System.out.println(flag);
-//  }
 }

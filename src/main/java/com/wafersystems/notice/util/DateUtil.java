@@ -1,17 +1,16 @@
 package com.wafersystems.notice.util;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * <pre>
@@ -29,6 +28,9 @@ import org.apache.commons.lang.StringUtils;
  */
 @Slf4j
 public class DateUtil {
+
+  private DateUtil() {
+  }
 
   /**
    * 默认日期时间格式[时间戳(yyyy-MM-dd HH:mm:ss)].
@@ -79,7 +81,7 @@ public class DateUtil {
   /**
    * 一天毫秒数.
    */
-  public static final long ONE_DAY = 1000 * 60 * 60 * 24;
+  public static final long ONE_DAY = 1000 * 60 * 60 * 24L;
 
   public static final String DEFAULT_TIME_HMS = " 00:00:00";
 
@@ -111,7 +113,7 @@ public class DateUtil {
     try {
       SimpleDateFormat sdf;
       if (StrUtil.isEmptyStr(format)) {
-        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf = new SimpleDateFormat(DEFAULT_FORMATE_DATE_TIME);
       } else {
         sdf = new SimpleDateFormat(format);
       }
@@ -130,7 +132,7 @@ public class DateUtil {
    * </pre>
    *
    * @param dateTime 日期时间
-   * @param format 日期格式
+   * @param format   日期格式
    * @return 日期
    */
   public static Date formatDateTime(String dateTime, String format) {
@@ -191,7 +193,7 @@ public class DateUtil {
    * </pre>
    *
    * @param dateTime 日期时间
-   * @param format 日期格式
+   * @param format   日期格式
    * @return 字符串
    */
   public static String formatDateTimeStr(Date dateTime, String format) {
@@ -360,13 +362,13 @@ public class DateUtil {
     DatatypeFactory datatypeFactory = null;
     try {
       datatypeFactory = DatatypeFactory.newInstance();
+      GregorianCalendar calendar = new GregorianCalendar();
+      calendar.setTime(date);
+      return datatypeFactory.newXMLGregorianCalendar(calendar);
     } catch (DatatypeConfigurationException exception) {
       log.error("获取时间转换工厂时发生错误", exception);
     }
-    GregorianCalendar calendar = new GregorianCalendar();
-    calendar.setTime(date);
-    XMLGregorianCalendar xmlDatetime = datatypeFactory.newXMLGregorianCalendar(calendar);
-    return xmlDatetime;
+    return null;
   }
 
   /**
@@ -489,7 +491,7 @@ public class DateUtil {
    *
    * @param dateTime 指定日期
    * @param interval 间隔月数(间隔几个月)
-   * @param day 指定天数
+   * @param day      指定天数
    */
   public static Date handleDateTimeByMonth(Date dateTime, int interval, int day) {
     try {
@@ -513,8 +515,8 @@ public class DateUtil {
    *
    * @param dateTime 指定日期
    * @param interval 间隔月数(间隔几个月)
-   * @param num 指定周数(1-4:第几个星期)
-   * @param week 指定周几(1-7:周一至周日,-1:不指定周几(JDK默认星期一))
+   * @param num      指定周数(1-4:第几个星期)
+   * @param week     指定周几(1-7:周一至周日,-1:不指定周几(JDK默认星期一))
    */
   public static Date handleDateTimeByMonth(Date dateTime, int interval, int num, int week) {
     try {
@@ -547,8 +549,8 @@ public class DateUtil {
    *
    * @param dateTime 指定日期
    * @param interval 间隔年(间隔几年)
-   * @param month 指定月份(1-12:月份)
-   * @param day 指定天数
+   * @param month    指定月份(1-12:月份)
+   * @param day      指定天数
    */
   public static Date handleDateTimeByYear(Date dateTime, int interval, int month, int day) {
     try {
@@ -573,9 +575,9 @@ public class DateUtil {
    *
    * @param dateTime 指定日期
    * @param interval 间隔年(间隔几年)
-   * @param month 指定月份(1-12:月份)
-   * @param num 指定周数(1-4:第几个星期)
-   * @param week 指定周几(1-7:周一至周日,-1:不指定周几[默认星期一])
+   * @param month    指定月份(1-12:月份)
+   * @param num      指定周数(1-4:第几个星期)
+   * @param week     指定周几(1-7:周一至周日,-1:不指定周几[默认星期一])
    */
   public static Date handleDateTimeByYear(Date dateTime, int interval, int month, int num,
                                           int week) {
@@ -634,8 +636,8 @@ public class DateUtil {
   public static String formatWeek(Date date, String lang) {
     String[] weeks = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
     if (!StringUtil.isEmptyStr(lang) && (lang.contains("en") || lang.contains("EN"))) {
-      weeks = new String[] {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-              "Saturday"};
+      weeks = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+        "Saturday"};
     }
     Calendar cal = Calendar.getInstance();
     cal.setTime(date);
@@ -659,7 +661,7 @@ public class DateUtil {
   public static String formatWeek(int week, String lang) {
     String[] weeks = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
     if (!StringUtil.isEmptyStr(lang) && (lang.contains("en") || lang.contains("EN"))) {
-      weeks = new String[] {"Sun.", "Mon.", "Tues.", "Wed.", "Thur.", "Fri.", "Sat."};
+      weeks = new String[]{"Sun.", "Mon.", "Tues.", "Wed.", "Thur.", "Fri.", "Sat."};
     }
     if (week < 0) {
       week = 0;
@@ -675,7 +677,7 @@ public class DateUtil {
    * </pre>
    *
    * @param from 起始时间
-   * @param to 结束时间
+   * @param to   结束时间
    */
   public static int intervalMinutes(String from, String to) {
     try {
@@ -697,7 +699,7 @@ public class DateUtil {
    * </pre>
    *
    * @param startTime 起始时间
-   * @param endTime 结束时间
+   * @param endTime   结束时间
    */
   public static int intervalMinutes(Date startTime, Date endTime) {
     try {
@@ -717,7 +719,7 @@ public class DateUtil {
    * </pre>
    *
    * @param from 起始时间
-   * @param to 结束时间
+   * @param to   结束时间
    */
   public static int intervalHours(String from, String to) {
     try {
@@ -739,7 +741,7 @@ public class DateUtil {
    * </pre>
    *
    * @param start 起始时间
-   * @param end 结束时间
+   * @param end   结束时间
    */
   public static int intervalHours(Date start, Date end) {
     try {
@@ -759,7 +761,7 @@ public class DateUtil {
    * </pre>
    *
    * @param from 起始时间
-   * @param to 结束时间
+   * @param to   结束时间
    */
   public static int intervalDays(String from, String to) {
     try {
@@ -781,7 +783,7 @@ public class DateUtil {
    * </pre>
    *
    * @param start 起始时间
-   * @param end 结束时间
+   * @param end   结束时间
    */
   public static int intervalDays(Date start, Date end) {
     try {
@@ -882,7 +884,6 @@ public class DateUtil {
   }
 
   /**
-   *
    * <pre>
    * 描述:根据传入日期获取所在周开始日期
    * 作者:wafer
@@ -899,7 +900,6 @@ public class DateUtil {
   }
 
   /**
-   *
    * <pre>
    * 描述: 根据传入日期获取所在周结束日期
    * 作者:wafer
@@ -916,7 +916,6 @@ public class DateUtil {
   }
 
   /**
-   *
    * <pre>
    * 描述:根据传入日期获取月初日期
    * 作者:wafer
@@ -933,7 +932,6 @@ public class DateUtil {
   }
 
   /**
-   *
    * <pre>
    * 描述: 根据传入日期获取月末日期
    * 作者:wafer
@@ -968,7 +966,7 @@ public class DateUtil {
    * 描述: 本地时区时间转换为UTC时间.
    * </pre>
    *
-   * @param date 本地时区时间
+   * @param date   本地时区时间
    * @param format 转换格式例如："yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"或者"yyyyMMdd'T'HHmmss'Z'"
    */
   public static String localToUtc(Date date, String format) {
@@ -993,7 +991,7 @@ public class DateUtil {
    * </pre>
    *
    * @param start 开始时间
-   * @param end 结束时间
+   * @param end   结束时间
    */
   public static String formatRange(Date start, Date end) {
     String startDate = formatDateStr(start);
@@ -1013,7 +1011,7 @@ public class DateUtil {
    * </pre>
    *
    * @param start 开始时间
-   * @param end 结束时间
+   * @param end   结束时间
    * @return eg:2017年04月25日11:00-12:00
    */
   public static String formatRangeCn(Date start, Date end) {
@@ -1072,7 +1070,6 @@ public class DateUtil {
       return null;
     }
   }
-
 
 
   /**
@@ -1151,7 +1148,6 @@ public class DateUtil {
 
     return currentCalendar.getTime();
   }
-
 
 
   /**
@@ -1278,62 +1274,6 @@ public class DateUtil {
     String dateTime = formatDateStr(date) + " " + endTime;
     return formatDateTime(dateTime);
   }
-
-
-//  /**
-//   * 测试主方法。
-//   */
-//  public static void main(String[] args) {
-//
-//
-//    Date dateTime = DateUtil.formatDate("2017-02-03 17:30:20");
-//    String startTime = formatDateNewTimeStr(dateTime);
-//    dateTime = getDateNewTime(startTime);
-//
-//    System.out.println(startTime);
-//    System.out.println(dateTime);
-//
-//    String dateString = formatRangeCn(new Date(), new Date());
-//    System.out.println(dateString);
-    // String date = "1970-01-01 00:00:00";
-    // String time = "1461032462000";
-    // String to = "1462032000000";
-    // long t1 = Long.valueOf(time) / (24 * 60 * 60 * 1000);
-    // System.out.println(t1);
-    // System.out.println(DateUtil.getDate(date).getTime());
-    // System.out.println(DateUtil.formatDateTime(time));
-    // System.out.println(DateUtil.getDate("2016-05-01"));
-    // System.out.println(DateUtil.getChinaDateYMD(new Date()));
-    // System.out.println(DateUtil.formatDateTimeStr(getLastTime(new Date())));
-    // Calendar calender1 = Calendar.getInstance();
-    // calender1.setTime(new Date());
-    // calender1.add(Calendar.DATE, 30);
-    // String dateTime1 = formatDateTimeStr(calender1.getTime());
-    // System.out.println(dateTime1);
-    // GregorianCalendar calendar = new GregorianCalendar();
-    // calendar.setTime(new Date());
-    // calendar.add(Calendar.MONTH, 2);
-    // calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-    // calendar.set(Calendar.DAY_OF_WEEK_IN_MONTH, 4);
-    // String chinaFormateDateTime =
-    // "G yyyy年MM月dd日 a HH时mm分ss秒SSS毫秒 zZ(本年第w周,本月第W周,本年第D天,本月第F星期的E)";
-    // String dateTime =
-    // formatDateTimeStr(formatDateTime("2016-07-31 13:26:50"),
-    // chinaFormateDateTime);
-    // System.out.println(dateTime);
-    // Calendar calender3 = Calendar.getInstance();
-    // calender3.setTime(new Date());
-    // calender3.add(Calendar.DAY_OF_YEAR, 30);
-    // String dateTime3 = formatDateTimeStr(calender3.getTime());
-    // System.out.println(dateTime3);
-    // Date date = new Date("2017/01/14");
-    // System.out.println("月初：" + getMinMonthDate(date));
-    // System.out.println("月末：" + getMaxMonthDate(date));
-    // System.out.println("所在周开始日期：" + getMinWeekDate(date));
-    // System.out.println("所在周结束日期：" + getMaxWeekDate(date));
-//    System.out.println(formatWeek(new Date(), "en"));
-//    System.out.println(handCorn(new Date()));
-//  }
 
   public static String handCorn(Date startTaskTime) {
     String format = "ss mm HH * * ?";

@@ -1,29 +1,27 @@
 package com.wafersystems.notice.util;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Random;
 
 /**
- * 
+ * @author superwing
  * @ClassName: NumberUtil
  * @Description: 数字工具类
- * @author superwing
  */
-@Slf4j
 public class NumberUtil {
   /**
    * 默认除法运算精度
    */
   private static final int DEF_DIV_SCALE = 10;
+  private static Random rand = new Random();
 
-  private NumberUtil() {}
+  private NumberUtil() {
+  }
 
   /**
    * 判断传入的字符是不是数字.
-   * 
+   *
    * @param number 字符串
    * @return true/false
    */
@@ -45,7 +43,7 @@ public class NumberUtil {
 
   /**
    * 百分比格式.
-   * 
+   *
    * @param number 要格式化的数字
    */
   public static String getPercentage(double number) {
@@ -59,7 +57,7 @@ public class NumberUtil {
 
   /**
    * 获取金额格式.
-   * 
+   *
    * @param number 金额
    * @param digits 小数位个数
    */
@@ -75,7 +73,7 @@ public class NumberUtil {
 
   /**
    * 格式化double类型数字输出形式（去除小数位无用的0）.
-   * 
+   *
    * @param number 数字
    */
   public static String format(double number) {
@@ -89,12 +87,12 @@ public class NumberUtil {
   // ----------------------------------------------------------------------------
   // 精确的四则运算
   // ----------------------------------------------------------------------------
+
   /**
    * 提供精确的加法运算。
-   * 
+   *
    * @param v1 被加数
    * @param v2 加数
-   * 
    * @return 两个参数的和
    */
   public static double add(double v1, double v2) {
@@ -105,10 +103,9 @@ public class NumberUtil {
 
   /**
    * 提供精确的减法运算。
-   * 
+   *
    * @param v1 被减数
    * @param v2 减数
-   * 
    * @return 两个参数的差
    */
   public static double sub(double v1, double v2) {
@@ -119,7 +116,7 @@ public class NumberUtil {
 
   /**
    * 提供精确的乘法运算。
-   * 
+   *
    * @param v1 被乘数
    * @param v2 乘数
    * @return 两个参数的积
@@ -132,7 +129,7 @@ public class NumberUtil {
 
   /**
    * 提供（相对）精确的除法运算，当发生除不尽的情况时，精确到 小数点以后10位，以后的数字四舍五入。
-   * 
+   *
    * @param v1 被除数
    * @param v2 除数
    * @return 两个参数的商
@@ -143,9 +140,9 @@ public class NumberUtil {
 
   /**
    * 提供（相对）精确的除法运算。当发生除不尽的情况时，由scale参数指 定精度，以后的数字四舍五入。
-   * 
-   * @param v1 被除数
-   * @param v2 除数
+   *
+   * @param v1    被除数
+   * @param v2    除数
    * @param scale 表示表示需要精确到小数点以后几位。
    * @return 两个参数的商
    */
@@ -161,30 +158,18 @@ public class NumberUtil {
 
   /**
    * 产生整型的随机数.
-   * 
+   *
    * @param from 起始值
-   * @param to 结束值
+   * @param to   结束值
    */
   public static int getRandomInt(int from, int to) {
     if (from >= to) {
       return -1;
     } else {
       int value = -1;
-      Random random = new Random();
       // 整数随机数字
-      value = from + random.nextInt((int) (to - from));
+      value = from + rand.nextInt((int) (to - from));
       return value;
     }
   }
-
-//  /**
-//   * 测试方法.
-//   */
-//  public static void main(String[] args) {
-//    log.info(NumberUtil.getMoney(123540111.132555, 3));
-//    log.info(NumberUtil.getMoney(1.100000000000000, 3));
-//    // logger.info(NumberUtil.isNumber("111102243434324234230077423424"));
-//    // logger.info(NumberUtil.isNumber("90999993333i9'"));
-//    // logger.info(NumberUtil.mul(0.15, 1000));
-//  }
 }
