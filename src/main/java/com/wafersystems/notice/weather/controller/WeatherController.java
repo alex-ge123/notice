@@ -1,6 +1,5 @@
 package com.wafersystems.notice.weather.controller;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.base.controller.BaseController;
@@ -77,11 +76,11 @@ public class WeatherController extends BaseController {
   private Weather getData(String city) {
     Weather info = this.getWeather(city, WEATHER_INFO);
     Weather weather = this.getWeather(city, WEATHER_PM);
-    if (ObjectUtil.isNotNull(info) && ObjectUtil.isNotNull(weather)) {
+    if (null != info && null != weather) {
       info.setPm(weather.getInfo());
     } else {
       info = this.getWeather(city, WEATHER_PM);
-      if (ObjectUtil.isNotNull(info)) {
+      if (null != info) {
         info.setPm(info.getInfo());
         info.setInfo(null);
       }

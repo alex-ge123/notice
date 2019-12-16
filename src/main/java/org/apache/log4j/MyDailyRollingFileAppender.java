@@ -1,6 +1,5 @@
 package org.apache.log4j;
 
-import cn.hutool.core.util.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +74,7 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
             return -1;
           }
         } catch (ParseException e) {
-          if (ObjectUtil.isNotNull(o1)) {
+          if (null != o1) {
             logger.debug(String.format("排序所有日志文件 %s ---- %s ", o1.getName(), getDateStr(o1)));
           }
         }
@@ -113,7 +112,7 @@ public class MyDailyRollingFileAppender extends DailyRollingFileAppender {
           sdf.parse(getDateStr(pathname));
           return true;
         } catch (ParseException e) {
-          if (ObjectUtil.isNotNull(pathname)) {
+          if (null != pathname) {
             logger.debug(String.format("获取所有日志文件 %s ---- %s", pathname.getName(), getDateStr(pathname)));
           }
           return false;

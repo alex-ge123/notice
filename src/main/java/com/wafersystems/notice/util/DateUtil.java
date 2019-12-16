@@ -683,8 +683,10 @@ public class DateUtil {
     try {
       Date startTime = formatDateTime(from);
       Date endTime = formatDateTime(to);
-      double interval = (endTime.getTime() - startTime.getTime()) / (double) (1000 * 60);
-      return (int) Math.floor(interval);
+      if (null != endTime && null != startTime) {
+        double interval = (endTime.getTime() - startTime.getTime()) / (double) (1000 * 60);
+        return (int) Math.floor(interval);
+      }
     } catch (Exception exception) {
       log.error("--获取日期间隔分钟数失败!", exception);
     }
@@ -725,8 +727,10 @@ public class DateUtil {
     try {
       Date startTime = formatDateTime(from);
       Date endTime = formatDateTime(to);
-      double interval = (endTime.getTime() - startTime.getTime()) / (double) (1000 * 60 * 60);
-      return (int) Math.floor(interval);
+      if (null != endTime && null != startTime) {
+        double interval = (endTime.getTime() - startTime.getTime()) / (double) (1000 * 60 * 60);
+        return (int) Math.floor(interval);
+      }
     } catch (Exception exception) {
       log.error("--获取日期间隔小时数失败!", exception);
     }
@@ -767,8 +771,10 @@ public class DateUtil {
     try {
       Date startTime = formatDateTime(from);
       Date endTime = formatDateTime(to);
-      double interval = (endTime.getTime() - startTime.getTime()) / (double) (1000 * 60 * 60 * 24);
-      return (int) Math.ceil(interval);
+      if (null != endTime && null != startTime) {
+        double interval = (endTime.getTime() - startTime.getTime()) / (double) (1000 * 60 * 60 * 24);
+        return (int) Math.ceil(interval);
+      }
     } catch (Exception exception) {
       log.error("--获取日期间隔小时数失败!", exception);
     }
@@ -996,7 +1002,7 @@ public class DateUtil {
   public static String formatRange(Date start, Date end) {
     String startDate = formatDateStr(start);
     String endDate = formatDateStr(end);
-    if (!startDate.equals(endDate)) {
+    if (null != startDate && !startDate.equals(endDate)) {
       return formatDateHmTimeStr(start) + " ~ " + formatDateHmTimeStr(end);
     } else {
       return formatDateHmTimeStr(start) + " ~ " + formatHmStr(end);

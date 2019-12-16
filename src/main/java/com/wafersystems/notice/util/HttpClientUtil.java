@@ -203,7 +203,7 @@ public class HttpClientUtil {
    */
   private static void initGetMethod(HttpClient client, GetMethod get, boolean byProxy,
                                     String cookie) {
-    if (cn.hutool.core.util.StrUtil.isNotEmpty(PROXY) && byProxy) {
+    if (null != PROXY && !"".equals(PROXY) && byProxy) {
       String[] hostArray = PROXY.split(":");
       client.getHostConfiguration().setProxy(hostArray[0], Integer.parseInt(hostArray[1]));
       client.getParams().setAuthenticationPreemptive(true);
