@@ -203,11 +203,11 @@ public class HttpClientUtil {
    */
   private static void initGetMethod(HttpClient client, GetMethod get, boolean byProxy,
                                     String cookie) {
-    if (cn.hutool.core.util.StrUtil.isNotEmpty(PROXY) && byProxy) {
-      String[] hostArray = PROXY.split(":");
-      client.getHostConfiguration().setProxy(hostArray[0], Integer.parseInt(hostArray[1]));
-      client.getParams().setAuthenticationPreemptive(true);
-    }
+//    if (cn.hutool.core.util.StrUtil.isNotEmpty(PROXY) && byProxy) {
+//      String[] hostArray = PROXY.split(":");
+//      client.getHostConfiguration().setProxy(hostArray[0], Integer.parseInt(hostArray[1]));
+//      client.getParams().setAuthenticationPreemptive(true);
+//    }
     client.getParams().setParameter("http.socket.timeout", CONNECTION_TIME_OUT);
     client.getParams().setParameter("http.connection.timeout", CONNECTION_TIME_OUT);
 
