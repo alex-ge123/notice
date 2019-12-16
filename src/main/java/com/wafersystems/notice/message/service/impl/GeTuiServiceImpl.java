@@ -66,7 +66,7 @@ public class GeTuiServiceImpl {
     } catch (RequestException ex) {
       log.error("个推推送失败！", ex);
       int count = 0;
-      while (count < ParamConstant.getDEFAULT_REPEAT_COUNT() && ObjectUtil.isNotNull(singleMessage) && ObjectUtil.isNotNull(target)) {
+      while (count < ParamConstant.getDEFAULT_REPEAT_COUNT() && null != singleMessage && null != target) {
         ++count;
         log.warn("ClientId为{}的移动设备第{}次重新推送！", target.getClientId(), count);
         ipushResult = push.pushMessageToSingle(singleMessage, target, ex.getRequestId());
