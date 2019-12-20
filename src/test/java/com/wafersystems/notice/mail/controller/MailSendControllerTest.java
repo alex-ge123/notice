@@ -1,18 +1,29 @@
 package com.wafersystems.notice.mail.controller;
 
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.BaseTest;
+import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.util.FileUtils;
+import com.wafersystems.virsical.common.core.util.R;
+import com.wafersystems.virsical.common.entity.TenantDTO;
+import com.wafersystems.virsical.common.feign.fallback.RemoteTenantServiceFallbackImpl;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
-import com.alibaba.fastjson.JSONObject;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.io.FileWriter;
 
 /**
  * @author shennan
@@ -21,6 +32,16 @@ import java.io.File;
 @Rollback
 @WithMockUser(authorities = {"admin@platform@upms_sys_tenant_add"})
 public class MailSendControllerTest extends BaseTest {
+
+  @Autowired
+  MailSendController mailSendController;
+
+  @MockBean
+  RemoteTenantServiceFallbackImpl remoteTenantServiceFallbackImpl;
+
+//  @MockBean
+//  @Qualifier("mailUtil")
+//  private EmailUtil emailUtil;
 
   @Test
   public void testTemplateList() throws Exception {
@@ -31,39 +52,72 @@ public class MailSendControllerTest extends BaseTest {
 
   @Test
   public void testTemplateUpload() throws Exception {
-    String url = "/mail/template/upload";
-    File tempFile = new File("test");
-    MultipartFile multipartFile = FileUtils.file2MultipartFile(tempFile);
-    LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-
-//    JSONObject jsonObject = doPost(url, null, map);
-//    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+    File file = new File("./testTemplateUpload.flt");
+    if (!file.exists()) {
+      file.createNewFile();
+    }
+    try (FileWriter writer = new FileWriter(file);) {
+      writer.append("aaaaa");
+      writer.flush();
+    }
+    R r = mailSendController.templateUpload(FileUtils.file2MultipartFile(file), "分类", "描述");
+    Assert.assertEquals(r.getCode(), CommonConstants.SUCCESS.intValue());
   }
 
   @Test
   public void testTemplateUpldate() throws Exception {
-    String url = "/mail/TemplateUpldate";
-    //String content = JSON.toJSONString(sysDept);
-    //JSONObject jsonObject = doPost(url, content, null);
-    JSONObject jsonObject = doGet(url);
-    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+    File file = new File("./testTemplateUpload1.flt");
+    if (!file.exists()) {
+      file.createNewFile();
+    }
+    try (FileWriter writer = new FileWriter(file);) {
+      writer.append("aaaaa");
+      writer.flush();
+    }
+    final LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+    map.add("id", "1");
+    map.add("category", "1123");
+    map.add("description", "34gjsd");
+    R r = mailSendController.templateUpdate(FileUtils.file2MultipartFile(file), 1, "aaaa", "bbbb");
+    Assert.assertEquals(r.getCode(), CommonConstants.SUCCESS.intValue());
   }
 
   @Test
   public void testTemplatePreview() throws Exception {
-    String url = "/mail/TemplatePreview";
-    //String content = JSON.toJSONString(sysDept);
-    //JSONObject jsonObject = doPost(url, content, null);
-    JSONObject jsonObject = doGet(url);
-    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+    String url = "/mail/template/preview";
+    final LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+    map.add("tempName", "commonForgetPwd");
+    final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(url);
+    requestBuilder.params(map);
+    ResultActions result = super.mockMvc.perform(requestBuilder);
+    result.andExpect(MockMvcResultMatchers.status().isOk());
   }
 
-  @Test
+  @Test(enabled = false)
   public void testSendMail() throws Exception {
-    String url = "/mail/SendMail";
-    //String content = JSON.toJSONString(sysDept);
-    //JSONObject jsonObject = doPost(url, content, null);
-    JSONObject jsonObject = doGet(url);
+//    Mockito.doNothing().when(emailUtil).send(Mockito.any());
+    TenantDTO tenantDTO = new TenantDTO();
+    tenantDTO.setLogo("aaa");
+    tenantDTO.setSystemName("bbb");
+    tenantDTO.setContactNumber("111111");
+    R<TenantDTO> r = new R<>();
+    r.setCode(CommonConstants.SUCCESS);
+    r.setData(tenantDTO);
+    Mockito.when(remoteTenantServiceFallbackImpl.getTenantByIdForInner(Mockito.any(), Mockito.any())).thenReturn(r);
+    String url = "/mail/sendMail";
+    final LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+    map.add("subject", "test");
+    map.add("toMail", "shennan@wafersystems.com");
+    map.add("tempName", "commonForgetPwd");
+    final TemContentVal val = new TemContentVal();
+    val.setTenantId(0);
+    val.setValue1("1");
+    val.setValue2("2");
+    val.setValue3("3");
+    val.setValue4("4");
+    val.setValue5("5");
+    String content = JSON.toJSONString(val);
+    JSONObject jsonObject = doPost(url, content, map, true, true);
     Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
   }
 

@@ -52,7 +52,7 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
 
   private static RedisServer redisServer = null;
 
-  private MockMvc mockMvc;
+  public MockMvc mockMvc;
 
   /**
    * 在所有方法运行之前运行
