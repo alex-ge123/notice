@@ -17,7 +17,7 @@ public interface GlobalParamService {
 
   /**
    * 根据paramKey获取SystemParam
-   * 
+   *
    * @param paramKey
    * @return
    */
@@ -32,7 +32,7 @@ public interface GlobalParamService {
 
   /**
    * 保存SystemParam
-   * 
+   *
    * @param gp
    */
   void save(GlobalParameter gp);

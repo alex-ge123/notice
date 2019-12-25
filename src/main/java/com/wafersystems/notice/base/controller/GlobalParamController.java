@@ -51,7 +51,7 @@ public class GlobalParamController extends BaseController {
     return map;
   }
 
-  @RequestMapping("/init/getSmsSingName")
+  @GetMapping("/init/getSmsSingName")
   public Object getSmsSingName() {
     GlobalParameter gp = globalParamService.getSystemParamByParamKey("SMS_SIGN_NAME");
     if (gp == null) {
@@ -60,7 +60,7 @@ public class GlobalParamController extends BaseController {
     return returnBackMap(gp, ConfConstant.RESULT_SUCCESS);
   }
 
-  @RequestMapping("/init/setSmsSingName")
+  @PostMapping("/init/setSmsSingName")
   public Object setSmsSingName(String paramValue, String lang) {
     GlobalParameter gp = globalParamService.getSystemParamByParamKey("SMS_SIGN_NAME");
     if (gp == null) {
@@ -78,7 +78,7 @@ public class GlobalParamController extends BaseController {
    * @param lang -
    * @return -
    */
-  @RequestMapping(value = "/init", method = RequestMethod.POST)
+  @PostMapping(value = "/init")
   public Object initSysParam(String lang) {
     Locale locale = ParamConstant.getLocaleByStr(lang);
     try {
@@ -112,7 +112,7 @@ public class GlobalParamController extends BaseController {
   /**
    * 设置某个参数值
    *
-   * @param param  参数对象
+   * @param param 参数对象
    * @return Object
    */
   @PostMapping("/parameter/set")

@@ -14,8 +14,8 @@ import java.util.Date;
 public class MailTemplateDto implements Serializable {
 
   /**
-	 *
-	 */
+   *
+   */
   private static final long serialVersionUID = -4136244528141345715L;
 
   @Id
@@ -50,6 +50,6 @@ public class MailTemplateDto implements Serializable {
   /**
    * 创建时间
    */
-  @Column(updatable=false)
+  @Column(updatable = false)
   private Date createtime;
 }

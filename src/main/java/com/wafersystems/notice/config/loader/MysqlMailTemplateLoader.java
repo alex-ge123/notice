@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Locale;
 
 /**
  * @author shennanb

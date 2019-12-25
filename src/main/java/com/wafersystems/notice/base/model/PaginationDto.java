@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * ClassName: PaginationDTO Description:分页对象.
- * 
+ *
  * @author gelin
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
@@ -32,7 +32,7 @@ public class PaginationDto<T> implements Serializable {
 
   /**
    * Description:.
-   * 
+   *
    * @return int
    */
   public int getTotal() {

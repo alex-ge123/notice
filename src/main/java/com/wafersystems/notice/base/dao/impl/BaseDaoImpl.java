@@ -26,7 +26,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 获取session对象.
-   * 
+   *
    * @return session对象
    */
   public Session getSession() {
@@ -40,9 +40,9 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 根据id取得实体.
-   * 
+   *
    * @param clasz 实体
-   * @param id 实体主键
+   * @param id    实体主键
    * @return 返回实体
    */
   @SuppressWarnings("unchecked")
@@ -53,7 +53,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 根据HQL取得实体列表.
-   * 
+   *
    * @param resultSql 查询语句
    * @return 查询结果
    */
@@ -65,7 +65,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 根据HQL取得实体数量.
-   * 
+   *
    * @param criteria 查询条件
    * @return 查询结果
    */
@@ -77,7 +77,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 根据DetachedCriteria查询.
-   * 
+   *
    * @param criteria 查询条件
    * @return 查询结果
    */
@@ -89,7 +89,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 保存实体.
-   * 
+   *
    * @param clazs 实体对象
    */
   @Override
@@ -99,9 +99,9 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 根据id删除指定实体.
-   * 
+   *
    * @param clazs 实体的类别
-   * @param id 主键
+   * @param id    主键
    */
   @Override
   public void delete(Class<T> clazs, Serializable id) {
@@ -114,7 +114,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 更新实体对象.
-   * 
+   *
    * @param clazs 实体对象
    */
   @Override
@@ -125,7 +125,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * Title: updateBySql. Description: 使用Sql语句进行更新
-   * 
+   *
    * @param sql Sql语句
    * @return 更新记录数
    */
@@ -136,7 +136,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * 更新或新增实体.
-   * 
+   *
    * @param clazs 实体对象
    */
   @Override
@@ -154,10 +154,10 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
   /**
    * Title: selectPage. Description: 使用查询条件对象分页查询
-   * 
+   *
    * @param detachedCriteria 查询组合条件
-   * @param pageSize 分页大小
-   * @param startIndex 起始页
+   * @param pageSize         分页大小
+   * @param startIndex       起始页
    * @return PaginationDTO
    */
   @SuppressWarnings("unchecked")

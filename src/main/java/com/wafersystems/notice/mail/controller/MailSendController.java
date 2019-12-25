@@ -11,9 +11,7 @@ import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.*;
-import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
-import com.wafersystems.virsical.common.feign.RemoteTenantService;
 import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,8 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +149,7 @@ public class MailSendController extends BaseController {
    * @param params   参数
    * @throws Exception Exception
    */
-  @RequestMapping("/template/preview")
+  @GetMapping("/template/preview")
   public void templatePreview(String title, String toMail, String copyTo,
                               @RequestParam String tempName, String[] params,
                               String lang, HttpServletResponse response) throws Exception {
@@ -192,7 +191,7 @@ public class MailSendController extends BaseController {
    * @return -
    */
   @Inner
-  @RequestMapping(value = "/sendMail", method = RequestMethod.POST)
+  @PostMapping(value = "/sendMail")
   public R sendMail(@RequestParam String subject, @RequestParam String toMail, String copyTo,
                     @RequestParam String tempName,
                     @RequestBody TemContentVal con, String lang) {
@@ -267,26 +266,9 @@ public class MailSendController extends BaseController {
    * @param testSendMailDTO 测试发送邮件对象
    * @return Object
    */
-  @RequestMapping("/testSend")
+  @PostMapping("/testSend")
   public R testMailSend(@RequestBody TestSendMailDTO testSendMailDTO) throws Exception {
     log.info("发送测试邮件【{}】", testSendMailDTO.getTitle());
-//    con.setValue1(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");// 开始时间
-//    con.setValue2(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");// 结束时间
-//    con.setValue3("-1");// 状态(-1.纯文本信息,0.邮件事件[带邀请按钮],1.邮件事件[无按钮])
-//    con.setValue4("测试");// 邮件title称呼
-//    con.setValue5("7");// 邮件类型(1-邀请|2-被创建|3-主持人邀请|4-删除参会人|5-创建人取消会议邮件|6-参会人取消邮件|7-提醒|8-修改|9-同意邀请|10-拒绝邀请)
-//    con.setValue6("chenlei");// 创建人或被邀请者
-//    con.setValue7("华山");// 会议室名称
-//    con.setValue8("开发会议");// 会议主题
-//    con.setValue9("李四");// 主持人
-//    con.setValue10("张三;王五");// 参会人姓名
-//    con.setValue11("无");// 会议备注
-//    con.setValue12("每天6:00——7:00");// 会议周期
-//    con.setValue13("");// (value5=9和value5=10时 回执邮件中 **接受或**拒绝了会议邀请中的 **）
-//    con.setValue14("https://bkdev.virsical.cn:8499/smartmeeting/smart/third/jumpToWebEx?meetingId=32&type=1");//
-//    // WebEx会议URL
-//    con.setValue15("https://bkdev.virsical.cn:8499/smartmeeting/smart/third/jumpToReceipt?meetingId=32&userId" +
-//      "=zhangyi&type=0");// 回执URL
     sendMail(testSendMailDTO.getTitle(), testSendMailDTO.getToMail(), null, testSendMailDTO.getTempName(),
       getTemContentVal(getTestParams(testSendMailDTO.getTempName(), null)), testSendMailDTO.getLang());
     return R.ok();
@@ -340,7 +322,6 @@ public class MailSendController extends BaseController {
     for (int i = 1; i <= params.length; i++) {
       clazz.getDeclaredMethod("setValue" + i, String.class).invoke(con, params[i - 1]);
     }
-//    con.setTenantId(1);
     return con;
   }
 

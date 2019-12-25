@@ -24,18 +24,20 @@ public class SslClient extends DefaultHttpClient {
 
       @Override
       public void checkClientTrusted(X509Certificate[] chain, String authType)
-          throws CertificateException {}
+        throws CertificateException {
+      }
 
       @Override
       public void checkServerTrusted(X509Certificate[] chain, String authType)
-          throws CertificateException {}
+        throws CertificateException {
+      }
 
       @Override
       public X509Certificate[] getAcceptedIssuers() {
         return null;
       }
     };
-    ctx.init(null, new TrustManager[] {tm}, null);
+    ctx.init(null, new TrustManager[]{tm}, null);
     SSLSocketFactory ssf = new SSLSocketFactory(ctx, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
     ClientConnectionManager ccm = this.getConnectionManager();
     SchemeRegistry sr = ccm.getSchemeRegistry();

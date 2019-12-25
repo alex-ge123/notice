@@ -221,7 +221,7 @@ public class ParamConstant {
    */
   public static Locale getLocaleByStr(String lang) {
     Locale locale;
-    if (StrUtil.isEmpty(lang)){
+    if (StrUtil.isEmpty(lang)) {
       return Locale.CHINA;
     }
     switch (lang.toLowerCase()) {

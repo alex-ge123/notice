@@ -11,21 +11,21 @@ public class SmsConstants {
   /**
    * 中国电话区号
    */
-  public static String CHINA_AREA_CODE = "+86";
+  public final static String CHINA_AREA_CODE = "+86";
 
   /**
    * 区号前缀
    */
-  public static String AREA_CODE_PREFIX = "+";
+  public final static String AREA_CODE_PREFIX = "+";
 
   /**
    * https
    */
-  public static String HTTPS = "https";
+  public final static String HTTPS = "https";
 
   /**
    * 成功码
    */
-  public static Integer SUCCESS_CODE = 200;
+  public final static Integer SUCCESS_CODE = 200;
 
 }

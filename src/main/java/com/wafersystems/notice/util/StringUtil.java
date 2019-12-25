@@ -10,7 +10,7 @@ import java.util.*;
 
 /**
  * .
- * 
+ *
  * <pre>
  * 项目:aliyun[smartmeeting3.5]
  * 描述:字符串工具类
@@ -117,7 +117,7 @@ public class StringUtil {
 
   /**
    * 判断对象是否为空.
-   * 
+   *
    * @param obj -
    * @return -
    */
@@ -156,7 +156,7 @@ public class StringUtil {
    */
   public static boolean checkStr(String value, int type) {
     String reg = "^[-a-zA-Z0-9_\u4e00-\u9fa5" + "" //
-        + "\\-\\. &,;()；，（）]+$";
+      + "\\-\\. &,;()；，（）]+$";
     if (type == 0) { // 数字
       reg = "^[0-9]+$";
     }
@@ -171,7 +171,7 @@ public class StringUtil {
     }
     if (type == 4) { // 汉字+空格
       reg = "^[\u4e00-\u9fa5 " //
-          + "]+$";
+        + "]+$";
     }
     if (isEmptyStr(value)) {
       return false;
@@ -197,9 +197,9 @@ public class StringUtil {
    */
   public static boolean telMatches(String tel) {
     String reg =
-        "(^[1-9]{1}([0-9]{5,7})$|^[0]([1-9]{2,3})([-]?)([1-9]{1}[0-9]{5,7})$|(^[1]([34578]{1})"
-            + "([0-9]{9})$)|(^[+]([8][6])([1][34578]{1})([0-9]{9})$)|(^[+](([8][5][2])|([8][5][3]))"
-            + "([69]{1})([0-9]{7})$)|(^[+]([8][8][6])([0]?[9]{1})([0-9]{8})$))";
+      "(^[1-9]{1}([0-9]{5,7})$|^[0]([1-9]{2,3})([-]?)([1-9]{1}[0-9]{5,7})$|(^[1]([34578]{1})"
+        + "([0-9]{9})$)|(^[+]([8][6])([1][34578]{1})([0-9]{9})$)|(^[+](([8][5][2])|([8][5][3]))"
+        + "([69]{1})([0-9]{7})$)|(^[+]([8][8][6])([0]?[9]{1})([0-9]{8})$))";
     if (isEmptyStr(tel)) {
       return false;
     } else {
@@ -220,8 +220,8 @@ public class StringUtil {
   public static int countLength(String value) {
     int len = 0;
     String chinese = "[\u0391-" //
-        + "\uFFE5" //
-        + "]";
+      + "\uFFE5" //
+      + "]";
     /* 获取字段值的长度，如果含中文字符，则每个中文字符长度为2，否则为1 */
     for (int i = 0; i < value.length(); i++) {
       /* 获取一个字符 */
@@ -244,8 +244,8 @@ public class StringUtil {
    * 作者:ZhangYi
    * 时间:2015年9月11日 下午5:36:48
    * 参数：(参数列表)
-   * &#64;param value  原始字符串 
-   * &#64;param len  截取长度(一个汉字长度按2算的) 
+   * &#64;param value  原始字符串
+   * &#64;param len  截取长度(一个汉字长度按2算的)
    * &#64;return
    * </pre>
    */
@@ -364,7 +364,7 @@ public class StringUtil {
    * 描述：替换res中多个replacement为1个,并替换头尾replacement
    * 时间：2014年8月4日 下午6:43:29
    * &#64;param target 字符串源
-   * &#64;param replacement 替换标示 
+   * &#64;param replacement 替换标示
    * &#64;return
    * </pre>
    */
@@ -557,7 +557,7 @@ public class StringUtil {
 
   /**
    * 字符串特殊字符过滤.
-   * 
+   *
    * @param str -
    * @return -
    */
@@ -566,12 +566,11 @@ public class StringUtil {
       return str;
     } else {
       return str.replace("%", "%25").replace("+", "%2B").replace("?", "%3F").replace("#", "%23")
-          .replace("&", "%26").replace("=", "%3D");
+        .replace("&", "%26").replace("=", "%3D");
     }
   }
 
   /**
-   * 
    * <pre>
    * 描述: 解析区域全名称.
    * 作者:wafer
@@ -603,7 +602,6 @@ public class StringUtil {
   }
 
   /**
-   * 
    * <pre>
    * 描述: 解析区域全名称.
    * 作者:wafer
@@ -635,15 +633,14 @@ public class StringUtil {
   }
 
   /**
-   * 
    * <pre>
    * 描述:字符串排序.
    * 作者:ChenLei
    * 时间:2017年3月15日 上午11:00:43.
    * 参数：(参数列表)
    * </pre>
-   * 
-   * @param str 原始字符串
+   *
+   * @param str       原始字符串
    * @param separator 分隔符
    */
   public static String sort(String str, String separator) {
@@ -663,7 +660,7 @@ public class StringUtil {
 
   /**
    * 描述:根据一串数字经过一系列运算得出一个6位数字串（如果来源串相同，则多次生成结果也相同）.
-   * 
+   *
    * @param resource 来源Long
    * @return 字符串
    */
@@ -694,7 +691,7 @@ public class StringUtil {
    * 描述:去掉回车符号.
    * 参数：(参数列表)
    * </pre>
-   * 
+   *
    * @param string 字符串
    * @return string
    */
@@ -708,7 +705,7 @@ public class StringUtil {
       return "";
     }
   }
-  
+
   /**
    * string转int.
    */
@@ -730,22 +727,22 @@ public class StringUtil {
 //   * </pre>
 //   */
 //  public static void main(String[] args) {
-    /*
-     * System.out.println(fillString("1001", 3, false)); System.out.println("13659285211[大陆]: " +
-     * telMatches("13659285211")); System.out.println("+8613659285211[大陆]: " +
-     * telMatches("+8613659285211")); System.out.println("+85293505959[香港]: " +
-     * telMatches("+85293505959")); System.out.println("+85362954356[澳门]: " +
-     * telMatches("+85362954356")); System.out.println("+8860932637679[台湾]: " +
-     * telMatches("+886932637679")); System.out.println("029-86707016[西安]: " +
-     * telMatches("029-86707016")); System.out.println("02986707016[西安]: " +
-     * telMatches("02986707016")); System.out.println("825216[短号]: " + telMatches("825216"));
-     * System.out.println(parsZoneFullName( "OU=会议室,OU=二级区域,OU=一级区域,DC=wafersystems,DC=com"));
-     * System.out.println(randomHexNumber(8)); System.out.println(reverseString2("56789"));
-     * System.out.println(arrayToString(new String[] {"12", "69", "fds"}, true));
-     * System.out.println(arrayToString(new String[] {"12", "69", "fds"}, false));
-     * System.out.println(extractionAssemble("123654ggg"));
-     * System.out.println(sort("5;4;6;3;7;2;9;1", ";"));
-     */
+  /*
+   * System.out.println(fillString("1001", 3, false)); System.out.println("13659285211[大陆]: " +
+   * telMatches("13659285211")); System.out.println("+8613659285211[大陆]: " +
+   * telMatches("+8613659285211")); System.out.println("+85293505959[香港]: " +
+   * telMatches("+85293505959")); System.out.println("+85362954356[澳门]: " +
+   * telMatches("+85362954356")); System.out.println("+8860932637679[台湾]: " +
+   * telMatches("+886932637679")); System.out.println("029-86707016[西安]: " +
+   * telMatches("029-86707016")); System.out.println("02986707016[西安]: " +
+   * telMatches("02986707016")); System.out.println("825216[短号]: " + telMatches("825216"));
+   * System.out.println(parsZoneFullName( "OU=会议室,OU=二级区域,OU=一级区域,DC=wafersystems,DC=com"));
+   * System.out.println(randomHexNumber(8)); System.out.println(reverseString2("56789"));
+   * System.out.println(arrayToString(new String[] {"12", "69", "fds"}, true));
+   * System.out.println(arrayToString(new String[] {"12", "69", "fds"}, false));
+   * System.out.println(extractionAssemble("123654ggg"));
+   * System.out.println(sort("5;4;6;3;7;2;9;1", ";"));
+   */
 //    // System.out.println(encodeRandomNumber(5234));
 //    String a = padLeft("000", "0", 3);
 //    System.out.println(a);
@@ -759,9 +756,9 @@ public class StringUtil {
    * 时间:2017年10月18日 下午3:45:46
    * 参数：(参数列表).
    * </pre>
-   * 
+   *
    * @param names -
-   * @param name -
+   * @param name  -
    */
   public static boolean isContains(String names, String name) {
     String[] nameArr = names.split(";");
@@ -783,7 +780,7 @@ public class StringUtil {
    * 时间:2017年11月13日 下午4:09:17
    * 参数：(参数列表).
    * </pre>
-   * 
+   *
    * @param byt -
    */
   public static Object unserizlize(final byte[] byt) {
@@ -802,19 +799,19 @@ public class StringUtil {
 
   /**
    * 判断邮箱是否符合规范.
-   * 
+   *
    * @param content -
    * @return -
    */
   public static boolean isMatchEmail(String content) {
     return isMatch(content,
-        "^([a-z0-9A-Z_-]+[_-|\\.]?)+[_a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$");
+      "^([a-z0-9A-Z_-]+[_-|\\.]?)+[_a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$");
   }
 
   /**
    * Title: isMatch. Description: 判断是否与给定的模式匹配
-   * 
-   * @param value 给定的字符串
+   *
+   * @param value   给定的字符串
    * @param pattern 给定的模式
    * @return boolean
    */
@@ -873,24 +870,24 @@ public class StringUtil {
 //    return convert.toString();
 //  }
 
-  public static String padLeft(String str,String padStr,int length){
+  public static String padLeft(String str, String padStr, int length) {
     StringBuffer newStr = new StringBuffer(str);
     int padLength = length - str.length();
-    if(padLength>0){
-      for(int i=0;i<padLength;i++){
+    if (padLength > 0) {
+      for (int i = 0; i < padLength; i++) {
         newStr.insert(0, padStr);
       }
     }
     return newStr.toString();
   }
-  
+
   /**
    * <pre>
    * 描述： 数组匹配，计算arr1的所有元素是否都在arr2中
    * 作者：'WangSS'
    * 时间： 2018年9月25日上午11:29:23
    * </pre>
-   * 
+   *
    * @param arr1
    * @param arr2
    * @return

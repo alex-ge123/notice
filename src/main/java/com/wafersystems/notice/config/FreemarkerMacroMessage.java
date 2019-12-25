@@ -4,9 +4,6 @@ import com.wafersystems.notice.util.ParamConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import java.util.Locale;
 
 /**
  * @author shennan
@@ -19,8 +16,8 @@ public class FreemarkerMacroMessage {
   @Autowired
   private ApplicationContext resource;
 
-  public String getMessage(String s , String locale){
-    return resource.getMessage(s,null, ParamConstant.getLocaleByStr(locale));
+  public String getMessage(String s, String locale) {
+    return resource.getMessage(s, null, ParamConstant.getLocaleByStr(locale));
   }
 
 }

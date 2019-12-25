@@ -13,14 +13,14 @@ import java.util.Collection;
 
 /**
  * ClassName: StrUtil Description: .
- * 
+ *
  * @author Administrator
  */
 public class StrUtil {
 
   /**
    * Title: isEmptyStr. Description: 检查字符串是否空.
-   * 
+   *
    * @param str - 检查字串
    * @return boolean
    */
@@ -30,7 +30,7 @@ public class StrUtil {
 
   /**
    * Title: isNullObject. Description: 检查对象是否空.
-   * 
+   *
    * @param obj - 检查对象
    * @return boolean
    */
@@ -40,7 +40,7 @@ public class StrUtil {
 
   /**
    * 判断集合是否为空.
-   * 
+   *
    * @param col -
    * @return -
    */
@@ -59,19 +59,20 @@ public class StrUtil {
       return str;
     } else {
       return str.replace("%2B", "+").replace("%3F", "?").replace("%25", "%").replace("%23", "#")
-          .replace("%26", "&").replace("%3D", "=");
+        .replace("%26", "&").replace("%3D", "=");
     }
   }
 
   /**
    * 去掉文件后缀
+   *
    * @param filename
    * @return
    */
   public static String getFileNameNoEx(String filename) {
     if ((filename != null) && (filename.length() > 0)) {
       int dot = filename.lastIndexOf('.');
-      if ((dot >-1) && (dot < (filename.length()))) {
+      if ((dot > -1) && (dot < (filename.length()))) {
         return filename.substring(0, dot);
       }
     }

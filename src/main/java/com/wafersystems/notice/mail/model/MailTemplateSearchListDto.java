@@ -14,8 +14,8 @@ import java.util.Date;
 public class MailTemplateSearchListDto implements Serializable {
 
   /**
-	 *
-	 */
+   *
+   */
   private static final long serialVersionUID = -4136234528141345715L;
 
   @Id
@@ -45,6 +45,6 @@ public class MailTemplateSearchListDto implements Serializable {
   /**
    * 创建时间
    */
-  @Column(updatable=false)
+  @Column(updatable = false)
   private Date createtime;
 }
