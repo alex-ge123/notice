@@ -11,7 +11,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
@@ -47,9 +46,6 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
   @Autowired
   private WebApplicationContext wac;
 
-  @Autowired
-  private RedisTemplate redisTemplate;
-
   private static RedisServer redisServer = null;
 
   public MockMvc mockMvc;
@@ -63,7 +59,7 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
     // Redis Mock
     try {
       // 默认地址 0.0.0.0
-      redisServer = RedisServer.newRedisServer(6380);
+      redisServer = RedisServer.newRedisServer(7491);
       redisServer.start();
     } catch (IOException e) {
       throw new RuntimeException(e);

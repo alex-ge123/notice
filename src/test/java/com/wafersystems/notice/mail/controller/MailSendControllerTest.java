@@ -59,6 +59,10 @@ public class MailSendControllerTest extends BaseTest {
     if (file.exists()) {
       file.delete();
     }
+    File file1 = new File("./testTemplateUpload1.flt");
+    if (file1.exists()) {
+      file1.delete();
+    }
   }
 
   @Test

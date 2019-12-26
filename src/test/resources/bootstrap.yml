@@ -29,7 +29,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   redis:
     host: 0.0.0.0
-    port: 6380
+    port: 7491
   rabbitmq:
     host: 192.168.203.141
     port: 5672
