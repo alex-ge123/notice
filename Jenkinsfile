@@ -81,7 +81,6 @@ pipeline {
                 sh "mkdir -p  tmp_sql/${JOB_NAME}"
 
                 sh "cp target/*.jar tmp"
-                sh "cp templates/*.vm tmp/vms"
 
                 sh "cp k8s/backend-k8s.yml k8s.yml"
                 sh "cp k8s/backend-service.yml k8s-service.yml"
