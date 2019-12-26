@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -113,7 +112,7 @@ public class MailSendController extends BaseController {
    * @return
    */
   @PostMapping("/template/update")
-  public R templateUpldate(MultipartFile file, @RequestParam Integer id, String category, String description) {
+  public R templateUpdate(MultipartFile file, @RequestParam Integer id, String category, String description) {
     try {
       MailTemplateDto mailTemplateDto = new MailTemplateDto();
       mailTemplateDto.setId(id.longValue());
@@ -248,9 +247,6 @@ public class MailSendController extends BaseController {
     @Override
     public void run() {
       try {
-//        mailNoticeService.sendMail(subject, toMail, copyTo, ConfConstant.TypeEnum.VM,
-//          tempName.contains(".vm") ? tempName : tempName + ".vm", con, 0);
-
         mailNoticeService.sendMail(subject, toMail, copyTo, ConfConstant.TypeEnum.FM,
           tempName, con, 0);
       } catch (Exception ex) {
@@ -323,33 +319,5 @@ public class MailSendController extends BaseController {
       clazz.getDeclaredMethod("setValue" + i, String.class).invoke(con, params[i - 1]);
     }
     return con;
-  }
-
-  /**
-   * 获取指定路径下所有文件地址
-   *
-   * @param path 路径
-   * @return 文件地址
-   */
-  private ArrayList<String> getFiles(String path) {
-    ArrayList<String> fileList = new ArrayList<>();
-    File file = new File(path);
-    if (file.isDirectory()) {
-      File[] files = file.listFiles();
-      if (files != null) {
-        for (File fileIndex : files) {
-          if (!fileIndex.isDirectory()) {
-            //如果文件是普通文件，则将文件地址放入集合中
-            String fileIndexPath = fileIndex.getPath();
-            int index = fileIndexPath.lastIndexOf(File.separator);
-            if (index != -1) {
-              fileIndexPath = fileIndexPath.substring(index + 1);
-            }
-            fileList.add(fileIndexPath);
-          }
-        }
-      }
-    }
-    return fileList;
   }
 }

@@ -11,6 +11,8 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -71,6 +73,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * 初始化系统参数.
    */
   @Override
+  @EventListener({WebServerInitializedEvent.class})
   public void initSystemParam() {
     log.debug("开始加载系统数据库配置相关参数");
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);

@@ -9,6 +9,8 @@ import java.util.Map;
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/5/13 10:20 Company:
  * wafersystems
+ *
+ * @author wafer
  */
 public class BaseController {
 
@@ -20,7 +22,7 @@ public class BaseController {
    * @return 返回给前端
    */
   protected Map<String, Object> returnBackMap(Object obj, int status) {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     if (ConfConstant.RESULT_SUCCESS == status) {
       map.put("status", status);
       map.put("data", obj);
