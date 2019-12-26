@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.BaseTest;
 import com.wafersystems.notice.base.model.TestSendMailDTO;
-import com.wafersystems.notice.mail.service.impl.MailNoticeServiceImpl;
+import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.dto.TemContentVal;
 import com.wafersystems.virsical.common.core.util.FileUtils;
@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -42,9 +43,17 @@ public class MailSendControllerTest extends BaseTest {
   @MockBean
   RemoteTenantServiceFallbackImpl remoteTenantServiceFallbackImpl;
 
-  @MockBean
+  //  @MockBean
+//  private MailNoticeServiceImpl mailNoticeService;
+
+  //  @MockBean
 //  @Qualifier("mailUtil")
-  private MailNoticeServiceImpl mailNoticeService;
+//  private EmailUtil mailUtil;
+  
+  @BeforeClass
+  public void initData() {
+    ParamConstant.setDEFAULT_MAIL_HOST("12345");
+  }
 
   @Test
   public void testTemplateList() throws Exception {
@@ -110,8 +119,8 @@ public class MailSendControllerTest extends BaseTest {
 
   @Test
   public void testSendMail() throws Exception {
-    Mockito.doNothing().when(mailNoticeService).sendMail
-      (Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+//    Mockito.doNothing().when(mailNoticeService).sendMail
+//      (Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     TenantDTO tenantDTO = new TenantDTO();
     tenantDTO.setLogo("aaa");
     tenantDTO.setSystemName("bbb");
@@ -139,8 +148,8 @@ public class MailSendControllerTest extends BaseTest {
 
   @Test
   public void testTestMailSend() throws Exception {
-    Mockito.doNothing().when(mailNoticeService).sendMail
-      (Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+//    Mockito.doNothing().when(mailNoticeService).sendMail
+//      (Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     TestSendMailDTO testSendMailDTO = new TestSendMailDTO();
     testSendMailDTO.setTitle("测试");
     testSendMailDTO.setToMail("shennan@wafersystems.com");
