@@ -8,9 +8,6 @@
 
 package com.wafersystems.notice.util;
 
-import java.util.Collection;
-
-
 /**
  * ClassName: StrUtil Description: .
  *
@@ -36,16 +33,6 @@ public class StrUtil {
    */
   public static boolean isNullObject(Object obj) {
     return null == obj || "".equals(obj) || "null".equals(obj);
-  }
-
-  /**
-   * 判断集合是否为空.
-   *
-   * @param col -
-   * @return -
-   */
-  public static boolean isEmptyList(Collection<?> col) {
-    return null == col || 0 == col.size();
   }
 
   /**

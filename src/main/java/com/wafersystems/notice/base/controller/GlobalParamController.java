@@ -4,15 +4,16 @@ import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.base.model.ParameterDTO;
 import com.wafersystems.notice.base.service.GlobalParamService;
 import com.wafersystems.notice.util.ConfConstant;
-import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/14 11:30 Company:
@@ -20,74 +21,25 @@ import java.util.*;
  */
 @Slf4j
 @RestController
-public class GlobalParamController extends BaseController {
-
+public class GlobalParamController {
   @Autowired
   private GlobalParamService globalParamService;
-  @Autowired
-  private ApplicationContext resource;
-
   @Autowired
   private StringEncryptor stringEncryptor;
 
   /**
-   * Description: author dingfeng DateTime 2016年3月10日 下午2:18:39
-   *
-   * @param obj    返回的数据,异常时表示异常信息
-   * @param status 是否出现异常
-   * @return 返回给前端
-   */
-  @Override
-  protected Map<String, Object> returnBackMap(Object obj, int status) {
-    Map<String, Object> map = new HashMap<>();
-    if (ConfConstant.RESULT_SUCCESS == status) {
-      map.put("status", status);
-      map.put("data", obj);
-    } else {
-      map.put("status", status);
-      map.put("msg", obj);
-    }
-    map.put("time", new Date());
-    return map;
-  }
-
-  @GetMapping("/init/getSmsSingName")
-  public Object getSmsSingName() {
-    GlobalParameter gp = globalParamService.getSystemParamByParamKey("SMS_SIGN_NAME");
-    if (gp == null) {
-      return returnBackMap("短息签名不存在", ConfConstant.RESULT_FAIL);
-    }
-    return returnBackMap(gp, ConfConstant.RESULT_SUCCESS);
-  }
-
-  @PostMapping("/init/setSmsSingName")
-  public Object setSmsSingName(String paramValue, String lang) {
-    GlobalParameter gp = globalParamService.getSystemParamByParamKey("SMS_SIGN_NAME");
-    if (gp == null) {
-      return returnBackMap("短息签名不存在", ConfConstant.RESULT_FAIL);
-    }
-    gp.setParamValue(stringEncryptor.encrypt(paramValue));
-    globalParamService.save(gp);
-    initSysParam(lang);
-    return returnBackMap(null, ConfConstant.RESULT_SUCCESS);
-  }
-
-  /**
    * 更新系统配置信息到缓存.
    *
-   * @param lang -
    * @return -
    */
   @PostMapping(value = "/init")
-  public Object initSysParam(String lang) {
-    Locale locale = ParamConstant.getLocaleByStr(lang);
+  public Object initSysParam() {
     try {
       globalParamService.initSystemParam();
-      return returnBackMap(null, ConfConstant.RESULT_SUCCESS);
+      return R.ok(ConfConstant.RESULT_SUCCESS);
     } catch (Exception ex) {
       log.error("更新系统配置信息异常：", ex);
-      return returnBackMap(resource.getMessage("msg.action.fail", null, locale),
-        ConfConstant.RESULT_SUCCESS);
+      return R.fail();
     }
   }
 
@@ -123,7 +75,7 @@ public class GlobalParamController extends BaseController {
     }
     gp.setParamValue(stringEncryptor.encrypt(param.getParamValue()));
     globalParamService.save(gp);
-    initSysParam(param.getLang());
+    initSysParam();
     return R.ok();
   }
 }

@@ -1,7 +1,6 @@
 package com.wafersystems.notice.sms.controller;
 
 import cn.hutool.core.util.RandomUtil;
-import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
 import com.wafersystems.notice.util.SmsUtil;
@@ -25,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RestController
 @RequestMapping("/sms")
-public class SmsSendController extends BaseController {
+public class SmsSendController {
 
   @Autowired
   private ApplicationContext resource;
@@ -52,7 +51,7 @@ public class SmsSendController extends BaseController {
    * @return -
    */
   @Inner
-  @RequestMapping(value = "/sendSms", method = RequestMethod.POST)
+  @PostMapping(value = "/sendSms")
   public R sendSms(@RequestBody SmsDTO smsDTO, String lang) {
     if (!ParamConstant.isSMS_SWITCH()) {
       log.warn("未配置短信服务调用地址！");
@@ -89,7 +88,7 @@ public class SmsSendController extends BaseController {
    * @return 结果
    */
   @Inner
-  @RequestMapping(value = "/sendCaptcha", method = RequestMethod.POST)
+  @PostMapping(value = "/sendCaptcha")
   public R sendCaptcha(@RequestBody SmsDTO smsDTO, String lang) {
     if (smsDTO == null || smsDTO.getPhoneList().isEmpty()) {
       log.warn("接收短信的手机号不能为空！");
@@ -122,7 +121,7 @@ public class SmsSendController extends BaseController {
    * @return 结果
    */
   @Inner
-  @RequestMapping(value = "/checkCaptcha", method = RequestMethod.GET)
+  @PostMapping(value = "/checkCaptcha")
   public R checkCaptcha(@RequestParam String code, @RequestParam String phone, @RequestParam String business) {
     String str = stringRedisTemplate.opsForValue().get(SMS_CAPTCHA_KEY + business + ":" + phone);
     if (code.equals(str)) {

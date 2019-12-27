@@ -1,7 +1,6 @@
 package com.wafersystems.notice.mail.controller;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.wafersystems.notice.base.controller.BaseController;
 import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.base.model.TestSendMailDTO;
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
@@ -40,7 +39,7 @@ import java.util.Locale;
 @Slf4j
 @RestController
 @RequestMapping("/mail")
-public class MailSendController extends BaseController {
+public class MailSendController {
 
   @Autowired
   private MailNoticeService mailNoticeService;
