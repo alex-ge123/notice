@@ -42,5 +42,10 @@ public class GlobalParamControllerTest extends BaseTest {
     String content = JSON.toJSONString(parameter);
     JSONObject jsonObject = doPost(url, content, null);
     Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+    parameter.setParamKey("test");
+    content = JSON.toJSONString(parameter);
+    jsonObject = doPost(url, content, null);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.FAIL);
+
   }
 }
