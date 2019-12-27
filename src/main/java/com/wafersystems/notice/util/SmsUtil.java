@@ -6,11 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -87,44 +85,27 @@ public class SmsUtil {
     url = url + sign;
     log.info("发送短信的服务接口为:{}", url);
     HttpResponse response = null;
-    if (url.startsWith(SmsConstants.HTTPS)) {
-      CloseableHttpClient httpsClient = null;
-      try {
-        HttpPost method = new HttpPost(url);
-        method.addHeader("Content-type", "application/json; charset=utf-8");
-        method.setHeader("Accept", "application/json");
-        // 调用前删除私钥
-        hashMap.remove(privateKey);
-        method.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(hashMap),
-          StandardCharsets.UTF_8));
-        httpsClient = HttpClientBuilder.create().build();
-        response = httpsClient.execute(method);
-      } catch (Exception ex) {
-        // 异常信息
-        log.info("发送https短信异常:{}", ex);
-      } finally {
-        if (null != httpsClient) {
-          try {
-            httpsClient.close();
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
+    CloseableHttpClient httpClient = null;
+    try {
+      HttpPost method = new HttpPost(url);
+      method.addHeader("Content-type", "application/json; charset=utf-8");
+      method.setHeader("Accept", "application/json");
+      // 调用前删除私钥
+      hashMap.remove(privateKey);
+      method.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(hashMap),
+        StandardCharsets.UTF_8));
+      httpClient = HttpClientBuilder.create().build();
+      response = httpClient.execute(method);
+    } catch (Exception ex) {
+      // 异常信息
+      log.info("发送https短信异常:{}", ex);
+    } finally {
+      if (null != httpClient) {
+        try {
+          httpClient.close();
+        } catch (IOException e) {
+          e.printStackTrace();
         }
-      }
-    } else {
-      try {
-        HttpPost method = new HttpPost(url);
-        method.addHeader("Content-type", "application/json; charset=utf-8");
-        method.setHeader("Accept", "application/json");
-        //调用前删除私钥
-        hashMap.remove(privateKey);
-        method.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(hashMap),
-          StandardCharsets.UTF_8));
-        HttpClient httpClient = new DefaultHttpClient();
-        response = httpClient.execute(method);
-      } catch (Exception ex) {
-        // 异常信息
-        log.info("发送其它类型短信异常:{}", ex);
       }
     }
 
