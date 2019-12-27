@@ -4,6 +4,7 @@ import com.wafersystems.virsical.common.security.annotation.EnableCustomFeignCli
 import com.wafersystems.virsical.common.security.annotation.EnableCustomResourceServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * SpringBoot启动类
@@ -13,6 +14,7 @@ import org.springframework.cloud.client.SpringCloudApplication;
 @SpringCloudApplication
 @EnableCustomFeignClients
 @EnableCustomResourceServer
+@EnableWebMvc
 public class NoticeApplication {
 
   public static void main(String[] args) {
