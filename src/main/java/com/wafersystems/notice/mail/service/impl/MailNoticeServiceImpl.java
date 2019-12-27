@@ -1,5 +1,6 @@
 package com.wafersystems.notice.mail.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.PaginationDto;
@@ -148,8 +149,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       criteria.add(Restrictions.eq("category", category.trim()));
     }
     criteria.addOrder(Order.desc("modtime"));
-    PaginationDto<MailTemplateSearchListDto> paginationDto = baseDao.selectPage(criteria, pageSize, startIndex);
-    return paginationDto;
+    return baseDao.selectPage(criteria, pageSize, startIndex);
   }
 
   @Override
@@ -157,7 +157,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDto.class);
     criteria.add(Restrictions.eq("id", id));
     List<MailTemplateDto> list = baseDao.findByCriteria(criteria);
-    if (list.size() > 0) {
+    if (CollUtil.isNotEmpty(list)) {
       return list.get(0);
     }
     return null;
@@ -168,7 +168,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDto.class);
     criteria.add(Restrictions.eq("name", name));
     List<MailTemplateDto> list = baseDao.findByCriteria(criteria);
-    if (list.size() > 0) {
+    if (CollUtil.isNotEmpty(list)) {
       return list.get(0);
     }
     return null;

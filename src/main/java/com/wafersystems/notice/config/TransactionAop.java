@@ -22,30 +22,29 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 @Configuration
 public class TransactionAop {
   private static final String AOP_POINTCUT_EXPRESSION = "execution (* com.wafersystems.*.*.service..*(..))";
-
   @Autowired
   private PlatformTransactionManager transactionManager;
 
   @Bean
   public TransactionInterceptor txAdvice() {
-    DefaultTransactionAttribute txAttr_REQUIRED = new DefaultTransactionAttribute();
-    txAttr_REQUIRED.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-    DefaultTransactionAttribute txAttr_REQUIRED_READONLY = new DefaultTransactionAttribute();
-    txAttr_REQUIRED_READONLY.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-    txAttr_REQUIRED_READONLY.setReadOnly(true);
+    DefaultTransactionAttribute txAttrRequired = new DefaultTransactionAttribute();
+    txAttrRequired.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    DefaultTransactionAttribute txAttrRequiredReadonly = new DefaultTransactionAttribute();
+    txAttrRequiredReadonly.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    txAttrRequiredReadonly.setReadOnly(true);
     NameMatchTransactionAttributeSource source = new NameMatchTransactionAttributeSource();
-    source.addTransactionalMethod("save*", txAttr_REQUIRED);
-    source.addTransactionalMethod("add*", txAttr_REQUIRED);
-    source.addTransactionalMethod("create*", txAttr_REQUIRED);
-    source.addTransactionalMethod("insert*", txAttr_REQUIRED);
-    source.addTransactionalMethod("update*", txAttr_REQUIRED);
-    source.addTransactionalMethod("merge*", txAttr_REQUIRED);
-    source.addTransactionalMethod("del*", txAttr_REQUIRED);
-    source.addTransactionalMethod("remove*", txAttr_REQUIRED);
-    source.addTransactionalMethod("send*", txAttr_REQUIRED);
-    source.addTransactionalMethod("init*", txAttr_REQUIRED);
-    source.addTransactionalMethod("get*", txAttr_REQUIRED_READONLY);
-    source.addTransactionalMethod("find*", txAttr_REQUIRED_READONLY);
+    source.addTransactionalMethod("save*", txAttrRequired);
+    source.addTransactionalMethod("add*", txAttrRequired);
+    source.addTransactionalMethod("create*", txAttrRequired);
+    source.addTransactionalMethod("insert*", txAttrRequired);
+    source.addTransactionalMethod("update*", txAttrRequired);
+    source.addTransactionalMethod("merge*", txAttrRequired);
+    source.addTransactionalMethod("del*", txAttrRequired);
+    source.addTransactionalMethod("remove*", txAttrRequired);
+    source.addTransactionalMethod("send*", txAttrRequired);
+    source.addTransactionalMethod("init*", txAttrRequired);
+    source.addTransactionalMethod("get*", txAttrRequiredReadonly);
+    source.addTransactionalMethod("find*", txAttrRequiredReadonly);
     return new TransactionInterceptor(transactionManager, source);
   }
 

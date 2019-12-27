@@ -104,7 +104,7 @@ public class SmsUtil {
         try {
           httpClient.close();
         } catch (IOException e) {
-          e.printStackTrace();
+          log.error("关闭httpClient异常！", e);
         }
       }
     }

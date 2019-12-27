@@ -7,25 +7,27 @@ package com.wafersystems.notice.constants;
  * @date 2019/11/21 9:07
  */
 public class SmsConstants {
+  private SmsConstants() {
+  }
 
   /**
    * 中国电话区号
    */
-  public final static String CHINA_AREA_CODE = "+86";
+  public static final String CHINA_AREA_CODE = "+86";
 
   /**
    * 区号前缀
    */
-  public final static String AREA_CODE_PREFIX = "+";
+  public static final String AREA_CODE_PREFIX = "+";
 
   /**
    * https
    */
-  public final static String HTTPS = "https";
+  public static final String HTTPS = "https";
 
   /**
    * 成功码
    */
-  public final static Integer SUCCESS_CODE = 200;
+  public static final Integer SUCCESS_CODE = 200;
 
 }

@@ -9,8 +9,8 @@ public interface ConfConstant {
   /**
    * Mail模版规则.
    */
-  public static enum TypeEnum {
-    DEF, VM ,FM
+  public enum TypeEnum {
+    DEF, VM, FM
   }
 
   /**

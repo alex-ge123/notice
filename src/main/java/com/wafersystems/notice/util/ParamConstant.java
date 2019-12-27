@@ -8,7 +8,12 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+/**
+ * @author wafer
+ */
 public class ParamConstant {
+  private ParamConstant() {
+  }
 
   /**
    * 系统默认域名.

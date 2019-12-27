@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -91,8 +92,8 @@ public class MailSendController {
       MailTemplateDto mailTemplateDto = new MailTemplateDto();
       mailTemplateDto.setName(fileName);
       mailTemplateDto.setContent(content);
-      mailTemplateDto.setCategory(new String(category.getBytes("ISO8859-1"), "UTF-8"));
-      mailTemplateDto.setDescription(new String(description.getBytes("ISO8859-1"), "UTF-8"));
+      mailTemplateDto.setCategory(new String(category.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+      mailTemplateDto.setDescription(new String(description.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
       mailNoticeService.saveTemp(mailTemplateDto);
     } catch (Exception e) {
       log.error("上传邮件模板失败", e);
@@ -124,10 +125,10 @@ public class MailSendController {
         mailTemplateDto.setName(fileName);
       }
       if (!cn.hutool.core.util.StrUtil.isEmpty(category)) {
-        mailTemplateDto.setCategory(new String(category.getBytes("ISO8859-1"), "UTF-8"));
+        mailTemplateDto.setCategory(new String(category.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
       }
       if (!cn.hutool.core.util.StrUtil.isEmpty(description)) {
-        mailTemplateDto.setDescription(new String(description.getBytes("ISO8859-1"), "UTF-8"));
+        mailTemplateDto.setDescription(new String(description.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
       }
       mailNoticeService.updateTemp(mailTemplateDto);
     } catch (Exception e) {
