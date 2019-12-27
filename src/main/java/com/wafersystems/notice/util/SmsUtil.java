@@ -9,7 +9,9 @@ import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -86,6 +88,7 @@ public class SmsUtil {
     log.info("发送短信的服务接口为:{}", url);
     HttpResponse response = null;
     if (url.startsWith(SmsConstants.HTTPS)) {
+      CloseableHttpClient httpsClient = null;
       try {
         HttpPost method = new HttpPost(url);
         method.addHeader("Content-type", "application/json; charset=utf-8");
@@ -94,11 +97,19 @@ public class SmsUtil {
         hashMap.remove(privateKey);
         method.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(hashMap),
           StandardCharsets.UTF_8));
-        HttpClient httpsClient = new SslClient();
+        httpsClient = HttpClientBuilder.create().build();
         response = httpsClient.execute(method);
       } catch (Exception ex) {
         // 异常信息
         log.info("发送https短信异常:{}", ex);
+      } finally {
+        if (null != httpsClient) {
+          try {
+            httpsClient.close();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
     } else {
       try {
