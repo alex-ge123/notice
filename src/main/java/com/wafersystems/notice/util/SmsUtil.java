@@ -66,7 +66,7 @@ public class SmsUtil {
     // 签名
     hashMap.put("smsSign", smsSign);
     // 签名是否前缀
-    hashMap.put("suffix", "false");
+    hashMap.put("suffix", "true");
     // 必须和服务器时间差三分钟以内的时间戳才能通过验证
     hashMap.put("timestamp", System.currentTimeMillis() + "");
     String privateKey = "47a31cf3b5bea2e4e9a12659f4181283";
