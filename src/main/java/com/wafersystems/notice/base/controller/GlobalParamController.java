@@ -8,6 +8,7 @@ import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +34,7 @@ public class GlobalParamController {
    * @return -
    */
   @PostMapping(value = "/init")
+  @PreAuthorize("@pms.hasPermission('')")
   public Object initSysParam() {
     try {
       globalParamService.initSystemParam();
@@ -49,6 +51,7 @@ public class GlobalParamController {
    * @return Object
    */
   @GetMapping("/parameter/get")
+  @PreAuthorize("@pms.hasPermission('')")
   public R get() {
     List<GlobalParameter> systemParamList = globalParamService.getSystemParamList();
     systemParamList.forEach(globalParameter -> {
@@ -68,6 +71,7 @@ public class GlobalParamController {
    * @return Object
    */
   @PostMapping("/parameter/set")
+  @PreAuthorize("@pms.hasPermission('')")
   public R set(@RequestBody ParameterDTO param) {
     GlobalParameter gp = globalParamService.getSystemParamByParamKey(param.getParamKey());
     if (gp == null) {

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,6 +69,7 @@ public class MailSendController {
    * @return
    */
   @GetMapping("/template/list")
+  @PreAuthorize("@pms.hasPermission('')")
   public R templateList(Long id, String category, String name, @RequestParam(
     defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize, @RequestParam(
     defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
@@ -82,6 +84,7 @@ public class MailSendController {
    * @return R
    */
   @PostMapping("/template/upload")
+  @PreAuthorize("@pms.hasPermission('')")
   public R templateUpload(@RequestParam MultipartFile file, @RequestParam String category,
                           @RequestParam String description) {
     try {
@@ -112,6 +115,7 @@ public class MailSendController {
    * @return
    */
   @PostMapping("/template/update")
+  @PreAuthorize("@pms.hasPermission('')")
   public R templateUpdate(MultipartFile file, @RequestParam Integer id, String category, String description) {
     try {
       MailTemplateDto mailTemplateDto = new MailTemplateDto();
@@ -149,6 +153,7 @@ public class MailSendController {
    * @throws Exception Exception
    */
   @GetMapping("/template/preview")
+  @PreAuthorize("@pms.hasPermission('')")
   public void templatePreview(String title, String toMail, String copyTo,
                               @RequestParam String tempName, String[] params,
                               String lang, HttpServletResponse response) throws Exception {
@@ -263,6 +268,7 @@ public class MailSendController {
    * @return Object
    */
   @PostMapping("/testSend")
+  @PreAuthorize("@pms.hasPermission('')")
   public R testMailSend(@RequestBody TestSendMailDTO testSendMailDTO) throws Exception {
     log.info("发送测试邮件【{}】", testSendMailDTO.getTitle());
     sendMail(testSendMailDTO.getTitle(), testSendMailDTO.getToMail(), null, testSendMailDTO.getTempName(),
