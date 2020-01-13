@@ -171,7 +171,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
       ParamConstant.setURL_SMS_SECRET(map.get("URL_SMS_SECRET"));
       ParamConstant.setSMS_SIGN_NAME(map.get("SMS_SIGN_NAME"));
       ParamConstant.setSYSTEM_NAME(StrUtil.equals(map.get("SYSTEM_NAME"), null) ? "威发系统有限公司" : map.get("SYSTEM_NAME"));
-      ParamConstant.setPHONE(StrUtil.equals(map.get("PHONE"), null) ? "400-685-3160" : map.get("PHONE"));
+      ParamConstant.setPHONE(StrUtil.equals(map.get("PHONE"), null) ? "" : map.get("PHONE"));
     }
   }
 
