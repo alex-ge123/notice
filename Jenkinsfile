@@ -16,6 +16,9 @@ pipeline {
 
     stages {
         stage('Clean') {
+            when {
+                environment name: 'checkcode', value: 'false'
+            }
             steps {
                 script {
                     GROUP_NAME = JOB_NAME.split("/")[0]
@@ -58,6 +61,9 @@ pipeline {
         }
 
         stage('Package') {
+            when {
+                environment name: 'checkcode', value: 'false'
+            }
             steps {
                 withMaven(jdk: 'oracle_jdk18', maven: 'maven', mavenSettingsConfig: 'e0af2237-7500-4e99-af21-60cc491267ec', options: [findbugsPublisher(disabled: true)]) {
                     sh 'mvn clean package -DskipTests'
@@ -68,6 +74,7 @@ pipeline {
         }
         stage('Deploy') {
             when {
+                environment name: 'checkcode', value: 'false'
                 expression {
                     currentBuild.result == null || currentBuild.result == 'SUCCESS'
                 }
