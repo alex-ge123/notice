@@ -51,7 +51,7 @@ pipeline {
             steps {
                 withMaven(jdk: 'oracle_jdk18', maven: 'maven', mavenSettingsConfig: 'e0af2237-7500-4e99-af21-60cc491267ec', options: [findbugsPublisher(disabled: true)]) {
                     sh 'mvn clean install -DskipTests'
-                    sh 'mvn compile checkstyle:checkstyle findbugs:findbugs pmd:pmd test sonar:sonar -P jacoco -Dmaven.test.failure.ignore=true'
+                    sh 'mvn compile checkstyle:checkstyle findbugs:findbugs pmd:pmd test jacoco:prepare-agent jacoco:report sonar:sonar -Dmaven.test.failure.ignore=true'
                 }
                 recordIssues(tools: [checkStyle(pattern: '**/checkstyle-result.xml'), findBugs(useRankAsPriority: true), pmdParser()])
             }
