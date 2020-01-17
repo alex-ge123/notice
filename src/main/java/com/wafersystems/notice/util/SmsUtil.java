@@ -21,6 +21,8 @@ import java.util.Map;
 
 /**
  * 短信工具类.
+ *
+ * @author wafer
  */
 @Slf4j
 public class SmsUtil {
@@ -44,14 +46,16 @@ public class SmsUtil {
     String secret = ParamConstant.getURL_SMS_SECRET();
     log.info("短信接口服务为:{}", url);
     url += '/' + clientId + '/' + secret;
+
     String prefix = "";
+    int areaCodeLength = 3;
     if (phoneNum.contains(SmsConstants.AREA_CODE_PREFIX)) {
-      if (!SmsConstants.CHINA_AREA_CODE.equals(phoneNum.substring(0, 3))) {
-        prefix = phoneNum.substring(0, 3);
+      if (!SmsConstants.CHINA_AREA_CODE.equals(phoneNum.substring(0, areaCodeLength))) {
+        prefix = phoneNum.substring(0, areaCodeLength);
       }
-      phoneNum = phoneNum.substring(3);
+      phoneNum = phoneNum.substring(areaCodeLength);
     }
-    Map<String, String> hashMap = new HashMap<>();
+    Map<String, String> hashMap = new HashMap<>(20);
     // 不支持带+86的
     hashMap.put("calleeNbr", phoneNum);
     hashMap.put("templetId", templetId);
@@ -84,6 +88,7 @@ public class SmsUtil {
     sign = SecurityUtils.calSignatureMap(hashMap);
     url = url + sign;
     log.info("发送短信的服务接口为:{}", url);
+
     HttpResponse response = null;
     CloseableHttpClient httpClient = null;
     try {
@@ -108,7 +113,6 @@ public class SmsUtil {
         }
       }
     }
-
     if (response != null) {
       if (response.getStatusLine() != null && response.getStatusLine().getStatusCode() == SmsConstants.SUCCESS_CODE) {
         return "0";

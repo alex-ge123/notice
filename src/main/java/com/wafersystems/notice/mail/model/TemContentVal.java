@@ -69,7 +69,9 @@ public class TemContentVal implements Serializable {
 
   private Locale locale;
   private transient ApplicationContext resource;
-  // 图片目录地址
+  /**
+   *  图片目录地址
+   */
   private String imageDirectory;
 
   public String getValue1() {

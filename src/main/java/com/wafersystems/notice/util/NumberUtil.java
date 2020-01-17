@@ -17,18 +17,6 @@ public class NumberUtil {
    * @return true/false
    */
   public static boolean isNumber(String number) {
-    if (null == number || "".equals(number.trim())) {
-      return false;
-    } else {
-      for (int i = 0; i < number.length(); i++) {
-        if (i == 0 && (number.charAt(i) == '-' || number.charAt(i) == '+')) {
-          continue;
-        }
-        if (number.charAt(i) < '0' || number.charAt(i) > '9') {
-          return false;
-        }
-      }
-      return true;
-    }
+    return cn.hutool.core.util.NumberUtil.isNumber(number);
   }
 }

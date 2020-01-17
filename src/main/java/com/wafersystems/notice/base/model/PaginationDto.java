@@ -15,19 +15,27 @@ import java.util.List;
 @Data
 public class PaginationDto<T> implements Serializable {
 
-  // 须要显示的数据集
+
   private List<T> rows;
 
-  // 每页多少条
+  /**
+   * 每页多少条
+   */
   private int limit = Integer.parseInt(ConfConstant.DATA_DEFAULT_LENGTH);
 
-  // 当前页码
+  /**
+   * 当前页码
+   */
   private int page;
 
-  // 数据总数
+  /**
+   * 数据总数
+   */
   private int records;
 
-  // 可显示的页数
+  /**
+   * 可显示的页数
+   */
   private int total;
 
   /**

@@ -259,8 +259,9 @@ public class ParamConstant {
    * @return String[] String[0] = userId, String[1] = domain
    */
   public static String[] sepDomainUser(String fullUserId) {
-    if (fullUserId.contains("@")) {
-      return fullUserId.split("@");
+    String str = "@";
+    if (fullUserId.contains(str)) {
+      return fullUserId.split(str);
     } else {
       return new String[]{fullUserId, ParamConstant.getDEFAULT_DOMAIN()};
     }

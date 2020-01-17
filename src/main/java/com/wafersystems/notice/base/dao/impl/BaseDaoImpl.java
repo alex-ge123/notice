@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/6/23 16:29 Company: wafersystems
+ *
+ * @author wafer
  */
 @Repository
 public class BaseDaoImpl<T> implements BaseDao<T> {

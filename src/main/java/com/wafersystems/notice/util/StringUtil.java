@@ -1,5 +1,6 @@
 package com.wafersystems.notice.util;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
  * 版本:wsm_v3.5
  * JDK:1.7.80
  * </pre>
+ *
+ * @author wafer
  */
 @Slf4j
 public class StringUtil {
@@ -28,10 +31,6 @@ public class StringUtil {
    * </pre>
    */
   public static boolean isEmptyStr(String str) {
-    if (null == str || "".equals(str.trim()) || "null".equals(str.trim().toLowerCase())) {
-      return true;
-    } else {
-      return false;
-    }
+    return StrUtil.isEmpty(str);
   }
 }

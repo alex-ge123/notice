@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created with Intellij IDEA. Description: 数据库操作基础类 Author: waferzy DateTime: 2016/6/23 16:29
  * Company: wafersystems
+ * @author wafer
  */
 public interface BaseDao<T> {
 

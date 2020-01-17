@@ -284,19 +284,26 @@ public class MailSendController {
    * @return 参数
    */
   private String[] getTestParams(String tempName, String[] params) {
+    String meetingStr = "meeting";
+    String virsicalStr = "virsical";
+    String time1 = "2018-11-02 20:30";
+    String time2 = "2018-11-02 21:30";
+    int i1 = 4;
+    int i2 = 30;
+    int i3 = 35;
     // 如果没传模板参数，自动创建参数
     if (params == null) {
       List<String> list = new ArrayList<>();
-      if ("meeting".equals(tempName)
-        || "virsical".equals(tempName)) {
-        list.add(DateUtil.formatDateTime("2018-11-02 20:30").getTime() + "");
-        list.add(DateUtil.formatDateTime("2018-11-02 21:30").getTime() + "");
+      if (meetingStr.equals(tempName)
+        || virsicalStr.equals(tempName)) {
+        list.add(DateUtil.formatDateTime(time1).getTime() + "");
+        list.add(DateUtil.formatDateTime(time2).getTime() + "");
         list.add("-1");
-        for (int i = 4; i < 30; i++) {
+        for (int i = i1; i < i2; i++) {
           list.add("参数" + i);
         }
       } else {
-        for (int i = 1; i < 35; i++) {
+        for (int i = 1; i < i3; i++) {
           list.add("参数" + i);
         }
       }

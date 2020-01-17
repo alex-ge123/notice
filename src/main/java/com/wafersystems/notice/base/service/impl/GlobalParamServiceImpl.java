@@ -19,6 +19,8 @@ import java.util.*;
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/14 11:27 Company:
  * wafersystems
+ *
+ * @author wafer
  */
 @Slf4j
 @Service
@@ -75,7 +77,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     log.debug("开始加载系统数据库配置相关参数");
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     List<GlobalParameter> list = baseDao.findByCriteria(criteria);
-    Map<String, String> map = new HashMap<>();
+    Map<String, String> map = new HashMap<>(30);
     // 清空系统全局参数缓存
     Optional.ofNullable(list).orElse(Arrays.asList()).forEach(globalParameter -> {
       if (StrUtil.isBlank(globalParameter.getParamValue())) {

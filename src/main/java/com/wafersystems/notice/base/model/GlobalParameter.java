@@ -8,6 +8,7 @@ import java.io.Serializable;
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/5/17 15:11 Company:
  * wafersystems
+ * @author wafer
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
 @Data

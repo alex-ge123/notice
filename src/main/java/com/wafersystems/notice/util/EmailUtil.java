@@ -60,7 +60,8 @@ public class EmailUtil {
   public void send(MailBean mailBean) throws Exception {
     try {
       Properties props = System.getProperties();
-      if (ParamConstant.getDEFAULT_MAIL_PORT() == 465) {
+      int i = 465;
+      if (ParamConstant.getDEFAULT_MAIL_PORT() == i) {
         // 发送SSL加密邮件
         Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
         props.put("mail.smtp.socketFactory.port", ParamConstant.getDEFAULT_MAIL_PORT());

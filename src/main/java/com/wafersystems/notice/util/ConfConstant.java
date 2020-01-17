@@ -3,6 +3,8 @@ package com.wafersystems.notice.util;
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/6/27 11:13 Company:
  * wafersystems
+ *
+ * @author wafer
  */
 public interface ConfConstant {
 
@@ -10,7 +12,12 @@ public interface ConfConstant {
    * Mail模版规则.
    */
   public enum TypeEnum {
-    DEF, VM, FM
+    /**
+     * DEF,VM,FM
+     */
+    DEF,
+    VM,
+    FM
   }
 
   /**

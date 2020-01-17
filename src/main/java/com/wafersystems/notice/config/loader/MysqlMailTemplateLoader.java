@@ -29,15 +29,6 @@ public class MysqlMailTemplateLoader implements TemplateLoader {
   @Override
   public Object findTemplateSource(String name) {
     try {
-      //freemarker 加载模板的时候会根据服务器语言环境查找多次，直到查找模板成功
-      //如： 模板文件为test  服务器语言环境为zh_CN
-      //则会匹配模板3次  1：test_zh_CN  2:test_zh  3:test
-      //我们模板名称没有语言环境，下面代码去掉语言环境，让第一次就查找成功
-//      Locale locale = configuration.getLocale();
-//      String localeStr = "_" + locale.toString();
-//      if (name.endsWith(localeStr)){
-//        name = name.replace(localeStr,"");
-//      }
       MailTemplateDto mailTemplateDto = mailNoticeService.getTempByName(name);
       return new StringTemplateSource(name, mailTemplateDto.getContent(), mailTemplateDto.getModtime().getTime());
     } catch (Exception e) {

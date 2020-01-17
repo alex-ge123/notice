@@ -49,16 +49,18 @@ public class DateUtil {
     if (StringUtil.isEmptyStr(dateTime)) {
       return null;
     }
+    String colon = ":";
+    int timeLength = 19;
     try {
       SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_FORMATE_DATE_TIME);
       if (NumberUtil.isNumber(dateTime)) {
         Date date = new Date(Long.parseLong(dateTime));
         dateTime = sdf.format(date);
       } else {
-        if (!dateTime.contains(":")) {
+        if (!dateTime.contains(colon)) {
           dateTime = dateTime + DEFAULT_TIME_HMS;
         } else {
-          if (dateTime.length() < 19) {
+          if (dateTime.length() < timeLength) {
             dateTime = dateTime + DEFAULT_TIME_S;
           }
         }
