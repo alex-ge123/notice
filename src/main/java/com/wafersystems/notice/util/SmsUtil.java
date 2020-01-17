@@ -89,6 +89,10 @@ public class SmsUtil {
     url = url + sign;
     log.info("发送短信的服务接口为:{}", url);
 
+    return send(url, privateKey, hashMap);
+  }
+
+  private static String send(String url, String privateKey, Map<String, String> hashMap) {
     HttpResponse response = null;
     CloseableHttpClient httpClient = null;
     try {
