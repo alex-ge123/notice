@@ -56,7 +56,7 @@ pipeline {
                     sh 'mvn clean install -DskipTests'
                     sh 'mvn clean compile checkstyle:checkstyle findbugs:findbugs pmd:pmd test jacoco:prepare-agent jacoco:report sonar:sonar -Dmaven.test.failure.ignore=true'
                 }
-                recordIssues(tools: [checkStyle(), findBugs(useRankAsPriority: true), pmdParser()])
+                recordIssues(tools: [checkStyle(pattern: '**/checkstyle-result.xml'), findBugs(useRankAsPriority: true), pmdParser()])
             }
         }
 
