@@ -1,7 +1,12 @@
 package com.wafersystems.notice.util;
 
+import com.alibaba.fastjson.JSON;
+import com.wafersystems.notice.config.SendInterceptProperties;
+import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.constants.SmsConstants;
+import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.security.SecurityUtils;
+import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -12,12 +17,17 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 短信工具类.
@@ -25,7 +35,17 @@ import java.util.Map;
  * @author wafer
  */
 @Slf4j
+@Service
 public class SmsUtil {
+  @Autowired
+  private SendIntercept sendIntercept;
+
+  @Autowired
+  private StringRedisTemplate redisTemplate;
+
+  @Autowired
+  private SendInterceptProperties properties;
+
   private SmsUtil() {
   }
 
@@ -37,10 +57,24 @@ public class SmsUtil {
    * @param params    参数
    * @throws IOException IOException
    */
-  public static String sendSms(String templetId, String phoneNum, List<String> params,
-                               String domain, String smsSign) {
+  public String sendSms(String templetId, String phoneNum, List<String> params,
+                        String domain, String smsSign) {
     log.debug("发短信信息.templetId={},phoneNum={},params={},domain={},smsSign={}",
       templetId, phoneNum, params, domain, smsSign);
+    //重复拦截
+    SmsDTO smsDto = new SmsDTO();
+    smsDto.setPhoneList(Arrays.asList(phoneNum));
+    smsDto.setParamList(params);
+    smsDto.setSmsSign(smsSign);
+    smsDto.setDomain(domain);
+    smsDto.setTemplateId(templetId);
+    String redisKey = String.format(RedisKeyConstants.SMS_KEY,
+      phoneNum, templetId, smsSign, smsDto.hashCode());
+    if (sendIntercept.SmsBoolIntercept(smsDto, redisKey)) {
+      log.error("拦截重复发送短信[{}]", smsDto.toString());
+      return "1";
+    }
+
     String url = ParamConstant.getURL_SMS_SERVER();
     String clientId = ParamConstant.getURL_SMS_CLIENTID();
     String secret = ParamConstant.getURL_SMS_SECRET();
@@ -89,7 +123,13 @@ public class SmsUtil {
     url = url + sign;
     log.info("发送短信的服务接口为:{}", url);
 
-    return send(url, privateKey, hashMap);
+    String result = send(url, privateKey, hashMap);
+    //记录发送信息
+    if (ConfConstant.RESULT_SUCCESS.toString().equals(result)) {
+      redisTemplate.opsForValue().set(
+        redisKey, JSON.toJSONString(smsDto), properties.getSmsTimeHorizon(), TimeUnit.MINUTES);
+    }
+    return result;
   }
 
   private static String send(String url, String privateKey, Map<String, String> hashMap) {

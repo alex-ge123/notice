@@ -29,6 +29,8 @@ public class SmsSendController {
   @Autowired
   private ApplicationContext resource;
 
+  @Autowired
+  private SmsUtil smsUtil;
   /**
    * 短信验证码缓存key
    */
@@ -65,12 +67,12 @@ public class SmsSendController {
     String result = "1";
     if (smsDTO.getPhoneList().size() > 1) {
       for (String phone : smsDTO.getPhoneList()) {
-        result = SmsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
+        result = smsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
           smsDTO.getSmsSign());
         log.debug("电话号码" + phone + "发送短信的结果为：" + result);
       }
     } else if (smsDTO.getPhoneList().size() == 1) {
-      result = SmsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
+      result = smsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
         smsDTO.getDomain(), smsDTO.getSmsSign());
       log.debug("电话号码" + smsDTO.getPhoneList().get(0) + "发送短信的结果为：" + result);
     }

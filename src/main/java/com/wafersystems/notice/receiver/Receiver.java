@@ -38,6 +38,9 @@ public class Receiver {
   @Autowired
   private ApplicationContext resource;
 
+  @Autowired
+  private SmsUtil smsUtil;
+
   /**
    * 监听邮件消息队列
    *
@@ -113,12 +116,12 @@ public class Receiver {
       String result;
       if (smsDTO.getPhoneList().size() > 1) {
         for (String phone : smsDTO.getPhoneList()) {
-          result = SmsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
+          result = smsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
             smsDTO.getSmsSign());
           log.info("电话号码" + phone + "发送短信的结果为：" + result);
         }
       } else if (smsDTO.getPhoneList().size() == 1) {
-        result = SmsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
+        result = smsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
           smsDTO.getDomain(), smsDTO.getSmsSign());
         log.info("电话号码" + smsDTO.getPhoneList().get(0) + "发送短信的结果为：" + result);
       }

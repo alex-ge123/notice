@@ -1,8 +1,12 @@
 package com.wafersystems.notice.util;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
+import com.wafersystems.notice.config.SendInterceptProperties;
 import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
+import com.wafersystems.notice.constants.RedisKeyConstants;
+import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.model.enums.MailScheduleStatusEnum;
@@ -15,6 +19,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -29,6 +34,7 @@ import java.io.StringWriter;
 import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 邮件工具类
@@ -51,6 +57,15 @@ public class EmailUtil {
   @Autowired
   private FreemarkerMacroMessage messageService;
 
+  @Autowired
+  private StringRedisTemplate redisTemplate;
+
+  @Autowired
+  private SendInterceptProperties properties;
+  
+  @Autowired
+  private SendIntercept sendIntercept;
+
   /**
    * 发送邮件
    *
@@ -58,6 +73,11 @@ public class EmailUtil {
    * @throws Exception Exception
    */
   public void send(MailBean mailBean) throws Exception {
+    //重复发送拦截
+    if (sendIntercept.MailBoolIntercept(mailBean)) {
+      log.error("拦截重复发送邮件[{}]", mailBean.toString());
+      return;
+    }
     try {
       Properties props = System.getProperties();
       int i = 465;
@@ -120,6 +140,11 @@ public class EmailUtil {
       transport.close();
       log.debug(
         "mail send success: Subject:" + mailBean.getSubject() + ", TO:" + mailBean.getToEmails());
+      //记录（拦截重复发送用）
+      String redisKey = String.format(RedisKeyConstants.MAIL_KEY,
+        mailBean.getToEmails(), mailBean.getTemplate(), mailBean.getSubject(), mailBean.hashCode());
+      redisTemplate.opsForValue().set(
+        redisKey, JSON.toJSONString(mailBean), properties.getMailTimeHorizon(), TimeUnit.MINUTES);
     } catch (Exception ex) {
       log.error("发送邮件异常【" + mailBean.getSubject() + "】", ex);
       throw ex;
