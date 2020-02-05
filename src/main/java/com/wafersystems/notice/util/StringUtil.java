@@ -19,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class StringUtil {
+  private StringUtil() {
+    throw new IllegalStateException("Utility class");
+  }
 
   /**
    * <pre>
