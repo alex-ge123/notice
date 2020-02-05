@@ -15,6 +15,10 @@ package com.wafersystems.notice.util;
  */
 public class StrUtil {
 
+  private StrUtil() {
+    throw new IllegalStateException("Utility class");
+  }
+  
   /**
    * Title: isEmptyStr. Description: 检查字符串是否空.
    *
@@ -22,7 +26,7 @@ public class StrUtil {
    * @return boolean
    */
   public static boolean isEmptyStr(String str) {
-    return null == str || "".equals(str.trim()) || "null".equals(str.trim().toLowerCase());
+    return null == str || "".equals(str.trim()) || "null".equalsIgnoreCase(str.trim());
   }
 
   /**
