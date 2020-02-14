@@ -121,7 +121,7 @@ public class SmsSendController {
    * @return 结果
    */
   @Inner
-  @PostMapping(value = "/checkCaptcha")
+  @GetMapping(value = "/checkCaptcha")
   public R checkCaptcha(@RequestParam String code, @RequestParam String phone, @RequestParam String business) {
     String str = stringRedisTemplate.opsForValue().get(SMS_CAPTCHA_KEY + business + ":" + phone);
     if (code.equals(str)) {
