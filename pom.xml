@@ -200,27 +200,26 @@
           <includeSystemScope>true</includeSystemScope>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.1.0</version>
         <configuration>
-          <configLocation>https://gitlab.rd.virsical.cn/wafer_public/document/raw/master/wafer_checks.xml</configLocation>
+          <configLocation>https://gitlab.rd.virsical.cn/wafer_public/document/raw/master/wafer_checks_v2.0.xml</configLocation>
         </configuration>
         <dependencies>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.18</version>
+            <version>8.29</version>
           </dependency>
         </dependencies>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>3.0.5</version>
-      </plugin>
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>3.1.12.2</version>
+			</plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
@@ -270,6 +269,12 @@
             </configuration>
           </execution>
         </executions>
+				<configuration>
+					<forkCount>3</forkCount>
+					<reuseForks>true</reuseForks>
+					<argLine>@{argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
+					<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

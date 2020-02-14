@@ -51,7 +51,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     criteria.add(Restrictions.eq("paramKey", paramKey));
     List<GlobalParameter> list = baseDao.findByCriteria(criteria);
-    if (list.size() > 0) {
+    if (!list.isEmpty()) {
       return list.get(0);
     }
     return null;
