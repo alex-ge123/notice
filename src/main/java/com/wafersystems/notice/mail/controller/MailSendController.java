@@ -3,7 +3,6 @@ package com.wafersystems.notice.mail.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.base.model.TestSendMailDTO;
-import com.wafersystems.notice.config.FreemarkerMacroMessage;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
@@ -17,7 +16,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,12 +47,6 @@ public class MailSendController {
   private TaskExecutor taskExecutor;
   @Autowired
   private ApplicationContext resource;
-  @Autowired
-  private FreemarkerMacroMessage fMessage;
-
-  @Value("${mail.template.path}")
-  String mailTemplatePath;
-
   @Autowired
   private EmailUtil mailUtil;
 
