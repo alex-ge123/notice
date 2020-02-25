@@ -74,7 +74,7 @@ public class EmailUtil {
    */
   public void send(MailBean mailBean) throws Exception {
     //重复发送拦截
-    if (sendIntercept.MailBoolIntercept(mailBean)) {
+    if (sendIntercept.mailBoolIntercept(mailBean)) {
       log.error("拦截重复发送邮件[{}]", mailBean.toString());
       return;
     }

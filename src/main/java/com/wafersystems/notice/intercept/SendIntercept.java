@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * 发送拦截
  *
@@ -33,14 +31,14 @@ public class SendIntercept {
   /**
    * 重复发送短信拦截
    *
-   * @param smsDTO
+   * @param smsDTO smsDTO
    * @return 是否拦截 false 不拦截，true 拦截
    */
-  public boolean SmsBoolIntercept(SmsDTO smsDTO, String redisKey) {
+  public boolean smsBoolIntercept(SmsDTO smsDTO, String redisKey) {
     if (!properties.isSmsEnabled()) {
       return false;
     }
-    if (redisTemplate.hasKey(redisKey)) {
+    if (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
       String redisDtoStr = redisTemplate.opsForValue().get(redisKey);
       SmsDTO redisDto = JSON.parseObject(redisDtoStr, SmsDTO.class);
       if (ObjectUtil.equal(smsDTO, redisDto)) {
@@ -53,16 +51,16 @@ public class SendIntercept {
   /**
    * 重复发送邮件拦截
    *
-   * @param mailBean
+   * @param mailBean mailBean
    * @return 是否拦截 false 不拦截，true 拦截
    */
-  public boolean MailBoolIntercept(MailBean mailBean) {
+  public boolean mailBoolIntercept(MailBean mailBean) {
     if (!properties.isMailEnabled()) {
       return false;
     }
     String redisKey = String.format(RedisKeyConstants.MAIL_KEY,
       mailBean.getToEmails(), mailBean.getTemplate(), mailBean.getSubject(), mailBean.hashCode());
-    if (redisTemplate.hasKey(redisKey)) {
+    if (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
       String redisDtoStr = redisTemplate.opsForValue().get(redisKey);
       String beanStr = JSON.toJSONString(mailBean);
       if (StrUtil.equals(redisDtoStr, beanStr)) {

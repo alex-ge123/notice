@@ -70,7 +70,7 @@ public class SmsUtil {
     smsDto.setTemplateId(templetId);
     String redisKey = String.format(RedisKeyConstants.SMS_KEY,
       phoneNum, templetId, smsSign, smsDto.hashCode());
-    if (sendIntercept.SmsBoolIntercept(smsDto, redisKey)) {
+    if (sendIntercept.smsBoolIntercept(smsDto, redisKey)) {
       log.error("拦截重复发送短信[{}]", smsDto.toString());
       return "1";
     }
