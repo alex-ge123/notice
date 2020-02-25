@@ -59,7 +59,7 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
     // Redis Mock
     try {
       // 默认地址 0.0.0.0
-      redisServer = RedisServer.newRedisServer(7491);
+      redisServer = RedisServer.newRedisServer(7007);
       redisServer.start();
     } catch (IOException e) {
       throw new RuntimeException(e);

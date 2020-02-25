@@ -1,5 +1,5 @@
 server:
-  port: 4001
+  port: 8007
 
 spring:
   application:
@@ -29,7 +29,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   redis:
     host: 0.0.0.0
-    port: 7491
+    port: 7007
   rabbitmq:
     host: 192.168.203.141
     port: 5672
