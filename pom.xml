@@ -17,13 +17,21 @@
     <version>2.0.7.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
+    <xmlFileName>testng.xml</xmlFileName>
+    <sonar.exclusions>
+      src/main/java/com/wafersystems/notice/base/model/**,
+      src/main/java/com/wafersystems/notice/constants/**,
+      src/main/java/com/wafersystems/notice/mail/model/**,
+      src/main/java/com/wafersystems/notice/util/**,
+      src/main/java/com/wafersystems/notice/NoticeApplication.java,
+      src/test/java/com/wafer/BaseTest.java,
+      pom.xml,
+    </sonar.exclusions>
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
