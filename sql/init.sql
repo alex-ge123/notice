@@ -64,24 +64,24 @@ CREATE TABLE `ntc_parameter`  (
 -- ----------------------------
 -- Records of ntc_parameter
 -- ----------------------------
-INSERT INTO `ntc_parameter` VALUES (1, '默认logo(Default logo)', 'LOGO_DEFALUT', 'http://www.virsical.cn/images/ico_wafer.png');
-INSERT INTO `ntc_parameter` VALUES (2, '短信接口服务地址(SMS interface service address)', 'URL_SMS_SERVER', 'https://work.virsical.cn/sms/ability');
-INSERT INTO `ntc_parameter` VALUES (3, '短信接口CLIENTID(SMS interface clientId)', 'URL_SMS_CLIENTID', 'meeting');
-INSERT INTO `ntc_parameter` VALUES (4, '短信接口SECRET(SMS interface secret)', 'URL_SMS_SECRET', '23cbf2b615184418');
-INSERT INTO `ntc_parameter` VALUES (5, '系统邮件地址(System email)', 'DEFAULT_MAIL_FROM', 'office_helper1@wafersystems.com');
-INSERT INTO `ntc_parameter` VALUES (6, '系统邮件服务(Email service)', 'DEFAULT_MAIL_HOST', 'smtp.263.net');
-INSERT INTO `ntc_parameter` VALUES (7, '系统邮件密码(Email password)', 'DEFAULT_MAIL_PASSWORD', 'WAffHe@2019');
-INSERT INTO `ntc_parameter` VALUES (8, '系统邮件认证(authentication)', 'DEFAULT_MAIL_AUTH', 'true');
-INSERT INTO `ntc_parameter` VALUES (9, '系统邮件超时时间(Timeout)', 'DEFAULT_MAIL_TIMEOUT', '25000');
-INSERT INTO `ntc_parameter` VALUES (10, '系统邮件编码(Mail encoding)', 'DEFAULT_MAIL_CHARSET', 'GBK');
-INSERT INTO `ntc_parameter` VALUES (11, '系统邮件显示名称(Mail name)', 'DEFAULT_MAIL_MAILNAME', '威思客');
-INSERT INTO `ntc_parameter` VALUES (12, '后台服务默认时区(Time zone)', 'DEFAULT_TIMEZONE', 'GMT+8');
-INSERT INTO `ntc_parameter` VALUES (13, '默认消息重发次数(Repeat count)', 'DEFAULT_REPEAT_COUNT', '5');
-INSERT INTO `ntc_parameter` VALUES (14, '系统默认域名(Domain)', 'DEFAULT_DOMAIN', 'wafersystems.com');
-INSERT INTO `ntc_parameter` VALUES (22, '系统邮件端口(Mail port)', 'DEFAULT_MAIL_PORT', '25');
-INSERT INTO `ntc_parameter` VALUES (24, '静态图片资源路径(Image directory)', 'IMAGE_DIRECTORY', 'https://work.virsical.cn/res/release/mail');
-INSERT INTO `ntc_parameter` VALUES (25, '系统名称(System name)', 'SYSTEM_NAME', '威发系统有限公司');
-INSERT INTO `ntc_parameter` VALUES (26, '电话(Phone)', 'PHONE', '400-685-3160');
+INSERT INTO `ntc_parameter` VALUES (1, '{"zh":"默认logo","en":"Default logo","tw":"默認logo"}', 'LOGO_DEFALUT', 'http://www.virsical.cn/images/ico_wafer.png');
+INSERT INTO `ntc_parameter` VALUES (2, '{"zh":"短信接口服务地址","en":"SMS interface service address","tw":"短信接口服務地址"}', 'URL_SMS_SERVER', 'https://work.virsical.cn/sms/ability');
+INSERT INTO `ntc_parameter` VALUES (3, '{"zh":"短信接口CLIENTID","en":"SMS interface clientId","tw":"短信接口CLIENTID"}', 'URL_SMS_CLIENTID', 'meeting');
+INSERT INTO `ntc_parameter` VALUES (4, '{"zh":"短信接口SECRET","en":"SMS interface secret","tw":"短信接口SEC​​RET"}', 'URL_SMS_SECRET', '23cbf2b615184418');
+INSERT INTO `ntc_parameter` VALUES (5, '{"zh":"系统邮件地址","en":"System email","tw":"系統郵件地址"}', 'DEFAULT_MAIL_FROM', 'office_helper1@wafersystems.com');
+INSERT INTO `ntc_parameter` VALUES (6, '{"zh":"系统邮件服务","en":"Email service","tw":"系統郵件服務"}', 'DEFAULT_MAIL_HOST', 'smtp.263.net');
+INSERT INTO `ntc_parameter` VALUES (7, '{"zh":"系统邮件密码","en":"Email password","tw":"系統郵件密碼"}', 'DEFAULT_MAIL_PASSWORD', 'WAffHe@2019');
+INSERT INTO `ntc_parameter` VALUES (8, '{"zh":"系统邮件认证","en":"authentication","tw":"系統郵件認證"}', 'DEFAULT_MAIL_AUTH', 'true');
+INSERT INTO `ntc_parameter` VALUES (9, '{"zh":"系统邮件超时时间","en":"Timeout","tw":"系統郵件超時時間"}', 'DEFAULT_MAIL_TIMEOUT', '25000');
+INSERT INTO `ntc_parameter` VALUES (10, '{"zh":"系统邮件编码","en":"Mail encoding","tw":"系統郵件編碼"}', 'DEFAULT_MAIL_CHARSET', 'GBK');
+INSERT INTO `ntc_parameter` VALUES (11, '{"zh":"系统邮件显示名称","en":"Mail name","tw":"系統郵件顯示名稱"}', 'DEFAULT_MAIL_MAILNAME', '威思客');
+INSERT INTO `ntc_parameter` VALUES (12, '{"zh":"后台服务默认时区","en":"Time zone","tw":"後台服務默認時區"}', 'DEFAULT_TIMEZONE', 'GMT+8');
+INSERT INTO `ntc_parameter` VALUES (13, '{"zh":"默认消息重发次数","en":"Repeat count","tw":"默認消息重發次數"}', 'DEFAULT_REPEAT_COUNT', '5');
+INSERT INTO `ntc_parameter` VALUES (14, '{"zh":"系统默认域名","en":"Domain","tw":"系統默認域名"}', 'DEFAULT_DOMAIN', 'wafersystems.com');
+INSERT INTO `ntc_parameter` VALUES (22, '{"zh":"系统邮件端口","en":"Mail Service port","tw":"系統郵件端口"}', 'DEFAULT_MAIL_PORT', '25');
+INSERT INTO `ntc_parameter` VALUES (24, '{"zh":"静态图片资源路径","en":"Image directory","tw":"靜態圖片資源路徑"}', 'IMAGE_DIRECTORY', 'https://work.virsical.cn/res/release/mail');
+INSERT INTO `ntc_parameter` VALUES (25, '{"zh":"系统名称","en":"System name","tw":"系統名稱"}', 'SYSTEM_NAME', '威发系统有限公司');
+INSERT INTO `ntc_parameter` VALUES (26, '{"zh":"电话","en":"Phone","tw":"電話"}', 'PHONE', '400-685-3160');
 
 -- ----------------------------
 -- Table structure for ntc_weather
