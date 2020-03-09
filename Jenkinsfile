@@ -105,16 +105,16 @@ pipeline {
                             serverUrl: "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}") {
                         if (params.reserveDBData == 'No') {
                             MYSQL_POD = sh(
-                                    script: "kubectl get pod -l app=${RD_ENV},tier=mysql -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | head -1",
+                                    script: "kubectl get pod -l app=${RD_ENV},tier=mysql8 -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | head -1",
                                     returnStdout: true
                             ).trim()
 
                             RET = sh(
-                                    script: "kubectl get pvc sql --no-headers=true -o custom-columns=pv:.spec.volumeName -n ${RD_ENV}",
+                                    script: "kubectl get pvc sql8 --no-headers=true -o custom-columns=pv:.spec.volumeName -n ${RD_ENV}",
                                     returnStdout: true
                             ).trim()
 
-                            SQL_PATH = "${RD_ENV}-sql-" + RET
+                            SQL_PATH = "${RD_ENV}-sql8-" + RET
 
                             ftpPublisher failOnError: true,
                                     publishers: [
