@@ -15,39 +15,6 @@ CREATE TABLE `hibernate_sequence`  (
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 INSERT INTO `hibernate_sequence` VALUES (100);
--- ----------------------------
--- Table structure for ntc_message_to_user
--- ----------------------------
-DROP TABLE IF EXISTS `ntc_message_to_user`;
-CREATE TABLE `ntc_message_to_user`  (
-  `id` bigint(20) NOT NULL,
-  `domain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `state` int(11) NULL DEFAULT NULL,
-  `userId` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `message_id` bigint(20) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `FKkpus0cseco0x4w1h08si632fn`(`message_id`) USING BTREE,
-  CONSTRAINT `FKkpus0cseco0x4w1h08si632fn` FOREIGN KEY (`message_id`) REFERENCES `ntc_messages` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `ntc_message_to_user_ibfk_1` FOREIGN KEY (`message_id`) REFERENCES `ntc_messages` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ntc_messages
--- ----------------------------
-DROP TABLE IF EXISTS `ntc_messages`;
-CREATE TABLE `ntc_messages`  (
-  `id` bigint(20) NOT NULL,
-  `urls` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `content` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `contentType` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `senderId` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `senderName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `timeStamp` bigint(20) NULL DEFAULT NULL,
-  `type` int(11) NULL DEFAULT NULL,
-  `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ntc_parameter
@@ -82,19 +49,6 @@ INSERT INTO `ntc_parameter` VALUES (22, '{"zh":"系统邮件端口","en":"Mail S
 INSERT INTO `ntc_parameter` VALUES (24, '{"zh":"静态图片资源路径","en":"Image directory","tw":"靜態圖片資源路徑"}', 'IMAGE_DIRECTORY', 'https://work.virsical.cn/res/release/mail');
 INSERT INTO `ntc_parameter` VALUES (25, '{"zh":"系统名称","en":"System name","tw":"系統名稱"}', 'SYSTEM_NAME', '威发系统有限公司');
 INSERT INTO `ntc_parameter` VALUES (26, '{"zh":"电话","en":"Phone","tw":"電話"}', 'PHONE', '400-685-3160');
-
--- ----------------------------
--- Table structure for ntc_weather
--- ----------------------------
-DROP TABLE IF EXISTS `ntc_weather`;
-CREATE TABLE `ntc_weather`  (
-  `id` int(11) NOT NULL,
-  `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `createTime` bigint(20) NULL DEFAULT NULL,
-  `info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mail_template
