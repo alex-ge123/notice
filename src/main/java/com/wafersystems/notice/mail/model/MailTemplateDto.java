@@ -2,6 +2,8 @@ package com.wafersystems.notice.mail.model;
 
 import lombok.Data;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -43,6 +45,8 @@ public class MailTemplateDto implements Serializable {
   /**
    * 修改时间
    */
+  @UpdateTimestamp
+  @Column(nullable = false)
   private Date modtime;
 
   /**
@@ -53,6 +57,7 @@ public class MailTemplateDto implements Serializable {
   /**
    * 创建时间
    */
-  @Column(updatable = false)
+  @CreationTimestamp
+  @Column(nullable = false, updatable = false)
   private Date createtime;
 }
