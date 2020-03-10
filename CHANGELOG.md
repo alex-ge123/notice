@@ -13,6 +13,7 @@
 ## [v5.1.3.100] 
 ### Removed
   - 删除冗余表ntc_message_to_user,ntc_messages,ntc_weather 
+  - 删除冗余表hibernate_sequence 
 ### Security
   - 统一处理接口参数无效异常，解决安全扫描问题：JSON 中反映的未清理用户输入
   

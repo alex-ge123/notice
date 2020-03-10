@@ -7,16 +7,6 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for hibernate_sequence
--- ----------------------------
-DROP TABLE IF EXISTS `hibernate_sequence`;
-CREATE TABLE `hibernate_sequence`  (
-  `next_val` bigint(20) NULL DEFAULT NULL
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-
-INSERT INTO `hibernate_sequence` VALUES (100);
-
--- ----------------------------
 -- Table structure for ntc_parameter
 -- ----------------------------
 DROP TABLE IF EXISTS `ntc_parameter`;
