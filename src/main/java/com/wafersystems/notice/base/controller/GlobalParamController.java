@@ -1,5 +1,7 @@
 package com.wafersystems.notice.base.controller;
 
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.base.model.ParameterDTO;
 import com.wafersystems.notice.base.service.GlobalParamService;
@@ -14,11 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/7/14 11:30 Company:
  * wafersystems
+ *
  * @author wafer
  */
 @Slf4j
@@ -28,6 +32,9 @@ public class GlobalParamController {
   private GlobalParamService globalParamService;
   @Autowired
   private StringEncryptor stringEncryptor;
+
+  private final static String DEFAULT_MAIL_PORT = "DEFAULT_MAIL_PORT";
+  private final static String DEFAULT_REPEAT_COUNT = "DEFAULT_REPEAT_COUNT";
 
   /**
    * 更新系统配置信息到缓存.
@@ -73,10 +80,14 @@ public class GlobalParamController {
    */
   @PostMapping("/parameter/set")
   @PreAuthorize("@pms.hasPermission('')")
-  public R set(@RequestBody ParameterDTO param) {
+  public R set(@RequestBody @Valid ParameterDTO param) {
     GlobalParameter gp = globalParamService.getSystemParamByParamKey(param.getParamKey());
     if (gp == null) {
       return R.fail("当前配置参数key不存在：" + param.getParamKey());
+    }
+    if (StrUtil.equalsAnyIgnoreCase(param.getParamKey(), DEFAULT_MAIL_PORT, DEFAULT_REPEAT_COUNT)
+      && !NumberUtil.isNumber(param.getParamValue())) {
+      return R.fail("数字类型参数请输入正确数字");
     }
     gp.setParamValue(stringEncryptor.encrypt(param.getParamValue()));
     globalParamService.save(gp);

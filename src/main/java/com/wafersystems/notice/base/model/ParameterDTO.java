@@ -2,6 +2,7 @@ package com.wafersystems.notice.base.model;
 
 import lombok.Data;
 
+import javax.validation.constraints.Max;
 import java.io.Serializable;
 
 /**
@@ -14,6 +15,8 @@ import java.io.Serializable;
 public class ParameterDTO implements Serializable {
 
   private String paramKey;
+
+  @Max(value = 250)
   private String paramValue;
   private String lang;
 }
