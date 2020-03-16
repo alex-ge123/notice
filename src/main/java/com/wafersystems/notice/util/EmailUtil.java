@@ -10,7 +10,12 @@ import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.model.enums.MailScheduleStatusEnum;
+import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
+import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
+import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
+import com.wafersystems.virsical.common.core.dto.MailResultDTO;
 import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
+import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import freemarker.template.Configuration;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +23,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -62,9 +68,12 @@ public class EmailUtil {
 
   @Autowired
   private SendInterceptProperties properties;
-  
+
   @Autowired
   private SendIntercept sendIntercept;
+
+  @Autowired
+  private AmqpTemplate rabbitTemplate;
 
   /**
    * 发送邮件
@@ -145,9 +154,28 @@ public class EmailUtil {
         mailBean.getToEmails(), mailBean.getTemplate(), mailBean.getSubject(), mailBean.hashCode());
       redisTemplate.opsForValue().set(
         redisKey, JSON.toJSONString(mailBean), properties.getMailTimeHorizon(), TimeUnit.MINUTES);
+      //发送 发送结果(成功)
+      sendResult(mailBean.getUuid(), mailBean.getRouterKey(), true);
     } catch (Exception ex) {
       log.error("发送邮件异常【" + mailBean.getSubject() + "】", ex);
+      //发送 发送结果(失败)
+      sendResult(mailBean.getUuid(), mailBean.getRouterKey(), false);
       throw ex;
+    }
+  }
+
+  /**
+   * 邮件发送结果通知
+   *
+   * @param uuid      uuid
+   * @param routerKey 路由键
+   * @param result    邮件发送结果
+   */
+  private void sendResult(String uuid, String routerKey, boolean result) {
+    if (!StrUtil.isEmptyStr(uuid) && !StrUtil.isEmptyStr(routerKey)) {
+      MessageDTO dto = new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.SHOW.name(), new MailResultDTO(uuid, result));
+      rabbitTemplate.convertAndSend(NoticeMqConstants.EXCHANGE_DIRECT_NOTICE_RESULT_MAIL, routerKey, JSON.toJSONString(dto));
+      log.debug("发送邮件发送结果uuid={}，result={}", uuid, result);
     }
   }
 
@@ -165,14 +193,14 @@ public class EmailUtil {
     try {
       TemContentVal temVal = mailBean.getTemVal();
       //格式化时间日程日期
-      MailScheduleDto mailScheduleDo = temVal.getMailScheduleDto();
-      log.debug("mailScheduleDo:{}", mailScheduleDo);
-      final String startStr = formatDate(mailScheduleDo.getStartDate());
-      final String endStr = formatDate(mailScheduleDo.getEndDate());
-      String enventType = mailScheduleDo.getEnventType();
+      MailScheduleDto mailScheduleDto = temVal.getMailScheduleDto();
+      log.debug("mailScheduleDo:{}", mailScheduleDto);
+      final String startStr = formatDate(mailScheduleDto.getStartDate());
+      final String endStr = formatDate(mailScheduleDto.getEndDate());
+      String enventType = mailScheduleDto.getEnventType();
       MailScheduleStatusEnum statusEnum = MailScheduleStatusEnum.valueOf(enventType);
       String method = statusEnum.getEventType();
-      int squenceCode = statusEnum.getSquence();
+      int squenceCode = mailScheduleDto.getSquence();
       // Exchange发送邮件时，要求正文部分必须放在附件部分的前面，不然会把正文也作为附件一起发送
       bodyPart.setDataHandler(new DataHandler(
         new ByteArrayDataSource(this.getMessage(mailBean), "text/html;charset=UTF-8")));
@@ -197,9 +225,9 @@ public class EmailUtil {
         //结束时间
         .append("Z\nDTEND:").append(endStr)
         //地址
-        .append("Z\nLOCATION:").append(mailScheduleDo.getLocation())
+        .append("Z\nLOCATION:").append(mailScheduleDto.getLocation())
         //uuid 会议唯一标识
-        .append("\nUID:").append(mailScheduleDo.getUuid())
+        .append("\nUID:").append(mailScheduleDto.getUuid())
         //设置优先级 其中cancel>update>create
         .append("\nSEQUENCE:").append(squenceCode)
         .append("\nCATEGORIES:SuccessCentral Reminder\nDESCRIPTION:\n\nSUMMARY:")

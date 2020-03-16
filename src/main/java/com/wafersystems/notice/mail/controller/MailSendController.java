@@ -151,12 +151,6 @@ public class MailSendController {
                               String lang, HttpServletResponse response) throws Exception {
     Locale locale = ParamConstant.getLocaleByStr(lang != null ? lang : "zh_CN");
     // 创建邮件对象
-    MailBean mailBean = new MailBean();
-    mailBean.setSubject("这是一个邮件标题");
-    mailBean.setToEmails("收件人");
-    mailBean.setCopyTo("抄送人");
-    mailBean.setType(ConfConstant.TypeEnum.FM);
-    mailBean.setTemplate(tempName);
     params = getTestParams(tempName, params);
     TemContentVal con = getTemContentVal(params);
     con.setLocale(locale);
@@ -165,11 +159,16 @@ public class MailSendController {
     con.setPhone(ParamConstant.getPHONE());
     con.setSystemName(ParamConstant.getSYSTEM_NAME());
     con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
-    mailBean.setTemVal(con);
     response.setCharacterEncoding("UTF-8");
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
-      out.append(mailUtil.getMessage(mailBean));
+      out.append(mailUtil.getMessage(MailBean.builder()
+        .subject("这是一个邮件标题")
+        .toEmails("收件人")
+        .copyTo("抄送人")
+        .type(ConfConstant.TypeEnum.FM)
+        .template(tempName)
+        .temVal(con).build()));
     } catch (IOException e) {
       log.error(e.getMessage(), e);
     }
@@ -244,8 +243,14 @@ public class MailSendController {
     @Override
     public void run() {
       try {
-        mailNoticeService.sendMail(subject, toMail, copyTo, ConfConstant.TypeEnum.FM,
-          tempName, con, 0);
+        mailNoticeService.sendMail(MailBean.builder()
+          .subject(subject)
+          .toEmails(toMail)
+          .copyTo(copyTo)
+          .type(ConfConstant.TypeEnum.FM)
+          .template(tempName)
+          .temVal(con)
+          .build(), 0);
       } catch (Exception ex) {
         throw new RuntimeException();
       }

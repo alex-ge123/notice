@@ -2,6 +2,7 @@ package com.wafersystems.notice.receiver;
 
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.RabbitMqConfig;
+import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.ConfConstant;
@@ -77,11 +78,18 @@ public class Receiver {
         con.setLocale(cn.hutool.core.util.StrUtil.isBlank(mailDTO.getLang()) ? null : locale);
         con.setResource(resource);
         con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
+
         try {
-          mailNoticeService.sendMail(StrUtil.regStr(mailDTO.getSubject()),
-            mailDTO.getToMail(), mailDTO.getCopyTo(),
-            ConfConstant.TypeEnum.FM,
-            mailDTO.getTempName(), con, 0);
+          mailNoticeService.sendMail(MailBean.builder()
+            .uuid(mailDTO.getUuid())
+            .routerKey(mailDTO.getRouterKey())
+            .subject(mailDTO.getSubject())
+            .toEmails(mailDTO.getToMail())
+            .copyTo(mailDTO.getCopyTo())
+            .type(ConfConstant.TypeEnum.FM)
+            .template(mailDTO.getTempName())
+            .temVal(con)
+            .build(), 0);
         } catch (Exception e) {
           log.error("发送邮件失败：", e);
         }

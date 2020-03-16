@@ -1,6 +1,7 @@
 package com.wafersystems.notice.mail.model;
 
 import com.wafersystems.notice.util.ConfConstant;
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,8 +13,11 @@ import java.util.Map;
  * @author wafer
  */
 @Data
+@Builder
 public class MailBean implements Serializable {
 
+  private String uuid;
+  private String routerKey;
   private String toEmails;
   private String copyTo;
   private String subject;
