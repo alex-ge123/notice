@@ -22,7 +22,7 @@ public class MailTemplateSearchListDto implements Serializable {
   private static final long serialVersionUID = -4136234528141345715L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   /**
