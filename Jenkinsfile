@@ -52,7 +52,7 @@ pipeline {
                 environment name: 'checkcode', value: 'true'
             }
             steps {
-                withMaven(jdk: 'oracle_jdk18', maven: 'maven', mavenSettingsConfig: 'e0af2237-7500-4e99-af21-60cc491267ec') {
+                withMaven(maven: 'maven', mavenSettingsConfig: 'e0af2237-7500-4e99-af21-60cc491267ec') {
                     sh 'mvn clean compile checkstyle:checkstyle spotbugs:spotbugs pmd:pmd test jacoco:report sonar:sonar'
                 }
                 recordIssues(tools: [checkStyle(pattern: '**/checkstyle-result.xml'), spotBugs(useRankAsPriority: true), pmdParser()])
