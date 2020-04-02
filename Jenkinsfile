@@ -35,10 +35,7 @@ pipeline {
                             sh "kubectl delete -f k8s.yml -n ${RD_ENV} --ignore-not-found"
                         }
 
-                        try {
-                            sh "kubectl create -f pvc.yml -n ${RD_ENV}"
-                        } catch (ex) {
-                        }
+                        sh "kubectl apply -f pvc.yml -n ${RD_ENV}"
                     }
                 }
             }
@@ -76,7 +73,21 @@ pipeline {
 
                 sh "cp sql/init.sql tmp_sql/${JOB_NAME}"
 
+                sh "wget https://gitlab.rd.virsical.cn/wafer_public/document/raw/master/pinpoint-agent-2.0.1.tar.gz -O pinpoint-agent-2.0.1.tar.gz"
+                sh "tar xzf pinpoint-agent-2.0.1.tar.gz"
+                sh "rm -f pinpoint-agent-2.0.1.tar.gz"
+                sh "mv pinpoint-agent-2.0.1 tmp/"
+                sh "sed -i s@127.0.0.1@pinpoint-collector.kube-public@g tmp/pinpoint-agent-2.0.1/profiles/release/pinpoint-env.config"
+
                 script {
+                    if (SERVICE_NAME.length() > 24) {
+                        APP_NAME = SERVICE_NAME.substring(0, 24)
+                    } else {
+                        APP_NAME = SERVICE_NAME
+                    }
+
+                    sh "sed -i s@__PINPOINT_APPNAME__@${APP_NAME}@g k8s.yml"
+
                     withKubeConfig(clusterName: "${K8S_CLUSTER_NAME}",
                             credentialsId: "k8s-${RD_ENV}",
                             serverUrl: "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}") {
