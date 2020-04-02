@@ -3,7 +3,6 @@ pipeline {
 
     parameters {
         booleanParam(name: 'checkcode', defaultValue: false, description: '是否执行代码检查？')
-        choice(name: 'reserveDBData', choices: 'Yes\nNo', description: '是否需要保留之前部署的数据库数据？')
     }
 
     environment {
@@ -16,9 +15,6 @@ pipeline {
 
     stages {
         stage('Clean') {
-            when {
-                environment name: 'checkcode', value: 'false'
-            }
             steps {
                 script {
                     GROUP_NAME = JOB_NAME.split("/")[0]
@@ -47,33 +43,15 @@ pipeline {
                 }
             }
         }
-        stage('Check Code') {
-            when {
-                environment name: 'checkcode', value: 'true'
-            }
-            steps {
-                withMaven(maven: 'maven', mavenSettingsConfig: 'e0af2237-7500-4e99-af21-60cc491267ec') {
-                    sh 'mvn clean compile checkstyle:checkstyle spotbugs:spotbugs pmd:pmd test jacoco:report sonar:sonar'
-                }
-                recordIssues(tools: [checkStyle(pattern: '**/checkstyle-result.xml'), spotBugs(useRankAsPriority: true), pmdParser()])
-            }
-        }
-
         stage('Package') {
-            when {
-                environment name: 'checkcode', value: 'false'
-            }
             steps {
                 withMaven(jdk: 'oracle_jdk18', maven: 'maven', mavenSettingsConfig: 'e0af2237-7500-4e99-af21-60cc491267ec') {
                     sh 'mvn clean package -DskipTests'
                 }
-                // stash includes: '**/target/*.jar', name: 'app'
-                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
         stage('Deploy') {
             when {
-                environment name: 'checkcode', value: 'false'
                 expression {
                     currentBuild.result == null || currentBuild.result == 'SUCCESS'
                 }
@@ -97,7 +75,6 @@ pipeline {
                 sh "sed -i s@__ARTIFACT_ID__@${readMavenPom().getArtifactId()}@g k8s.yml"
 
                 sh "cp sql/init.sql tmp_sql/${JOB_NAME}"
-                sh "sed -i s@\\`virsical_notice\\`@${GROUP_NAME}_notice@g tmp_sql/${JOB_NAME}/*"
 
                 script {
                     withKubeConfig(clusterName: "${K8S_CLUSTER_NAME}",
@@ -105,16 +82,16 @@ pipeline {
                             serverUrl: "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}") {
                         if (params.reserveDBData == 'No') {
                             MYSQL_POD = sh(
-                                    script: "kubectl get pod -l app=${RD_ENV},tier=mysql8 -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | head -1",
+                                    script: "kubectl get pod -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | grep ${GROUP_NAME}-mysql | head -1",
                                     returnStdout: true
                             ).trim()
 
                             RET = sh(
-                                    script: "kubectl get pvc sql8 --no-headers=true -o custom-columns=pv:.spec.volumeName -n ${RD_ENV}",
+                                    script: "kubectl get pvc ${GROUP_NAME}-sql --no-headers=true -o custom-columns=pv:.spec.volumeName -n ${RD_ENV}",
                                     returnStdout: true
                             ).trim()
 
-                            SQL_PATH = "${RD_ENV}-sql8-" + RET
+                            SQL_PATH = "${RD_ENV}-${GROUP_NAME}-sql-" + RET
 
                             ftpPublisher failOnError: true,
                                     publishers: [
