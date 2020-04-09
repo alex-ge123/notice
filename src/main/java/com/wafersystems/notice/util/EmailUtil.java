@@ -294,7 +294,7 @@ public class EmailUtil {
         //配置共享变量
         configuration.setSharedVariable("loccalMessage", messageService);
         //加载模板
-        freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate());
+        freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate(), mailBean.getTemVal().getLocale());
         //模板渲染
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, mailBean.getTemVal());
       } else {
