@@ -184,7 +184,6 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     TemContentVal val = mailBean.getTemVal();
     val.setLogo(StrUtil.isEmptyStr(val.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : val.getLogo());
     val.setSystemName(ParamConstant.getSYSTEM_NAME());
-    val.setPhone(ParamConstant.getPHONE());
     if (ObjectUtil.isNotNull(val.getTenantId())) {
       R<TenantDTO> tenantByIdForInner = tenantService.getTenantByIdForInner(val.getTenantId(), SecurityConstants.FROM_IN);
       if (ObjectUtil.isNotNull(tenantByIdForInner)) {
