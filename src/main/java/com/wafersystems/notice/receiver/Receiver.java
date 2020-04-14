@@ -121,18 +121,8 @@ public class Receiver {
         log.warn("接收短信的手机号不能为空！");
         return;
       }
-      String result;
-      if (smsDTO.getPhoneList().size() > 1) {
-        for (String phone : smsDTO.getPhoneList()) {
-          result = smsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
-            smsDTO.getSmsSign());
-          log.info("电话号码" + phone + "发送短信的结果为：" + result);
-        }
-      } else if (smsDTO.getPhoneList().size() == 1) {
-        result = smsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
-          smsDTO.getDomain(), smsDTO.getSmsSign());
-        log.info("电话号码" + smsDTO.getPhoneList().get(0) + "发送短信的结果为：" + result);
-      }
+      smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
+        smsDTO.getDomain(), smsDTO.getSmsSign());
     } catch (Exception e) {
       log.info("消息监听处理异常", e);
     }

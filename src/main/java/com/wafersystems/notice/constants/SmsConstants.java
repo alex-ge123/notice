@@ -30,4 +30,9 @@ public class SmsConstants {
    */
   public static final Integer SUCCESS_CODE = 200;
 
+  /**
+   * 短信数量缓存key
+   */
+  public static final String SMS_NUM_KEY = "sms_num:";
+
 }
