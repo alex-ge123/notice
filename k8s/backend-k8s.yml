@@ -6,7 +6,7 @@ metadata:
   labels:
     app: __PROJECT__
 spec:
-  replicas: 1
+  replicas: __REPLICAS_NUM__
   selector:
     matchLabels:
       app: __PROJECT__
