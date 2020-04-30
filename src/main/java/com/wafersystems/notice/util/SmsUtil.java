@@ -66,12 +66,20 @@ public class SmsUtil {
    */
   public void batchSendSms(String templetId, List<String> phoneList, List<String> params,
                            String domain, String smsSign) {
-    int smsNum = getSmsNum(domain);
-    if (smsNum <= 0) {
-      log.info("短信可发送数量[{}]不足，不发短信", smsNum);
-      return;
+    int smsNumFromCache = getSmsNumFromCache(domain);
+    if (smsNumFromCache <= 0) {
+      int num = cacheSmsNumFromSmsService(domain);
+      if (num <= 0) {
+        log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache);
+        return;
+      }
     }
     for (String phone : phoneList) {
+      int smsNumFromCache1 = getSmsNumFromCache(domain);
+      if (smsNumFromCache1 <= 0) {
+        log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache1);
+        return;
+      }
       String result = sendSms(templetId, phone, params, domain, smsSign);
       log.info("电话号码" + phone + "发送短信的结果为：" + result);
     }
@@ -210,12 +218,21 @@ public class SmsUtil {
    * @param domain 域名
    * @return 短信数量
    */
-  private int getSmsNum(String domain) {
+  private int getSmsNumFromCache(String domain) {
     // 查询缓存可发数量
     String o = redisTemplate.opsForValue().get(SmsConstants.SMS_NUM_KEY + domain);
     if (o != null) {
       return Integer.parseInt(o);
     }
+    return -1;
+  }
+
+  /**
+   * 缓存短信服务获取可发数量，
+   *
+   * @param domain 域名
+   */
+  private int cacheSmsNumFromSmsService(String domain) {
     HttpResponse response = null;
     CloseableHttpClient httpClient = null;
     try {
@@ -240,7 +257,7 @@ public class SmsUtil {
     if (response != null) {
       if (response.getStatusLine() != null && response.getStatusLine().getStatusCode() == SmsConstants.SUCCESS_CODE) {
         // 解析返回内容中剩余短信数量并更新缓存
-        parseSmsBalanceCacheRedis(domain, response);
+        return parseSmsBalanceCacheRedis(domain, response);
       }
     }
     return -1;
@@ -252,13 +269,15 @@ public class SmsUtil {
    * @param domain   域名
    * @param response 响应
    */
-  private void parseSmsBalanceCacheRedis(String domain, HttpResponse response) {
+  private int parseSmsBalanceCacheRedis(String domain, HttpResponse response) {
     try {
       String json = EntityUtils.toString(response.getEntity());
       SmsRecordVo smsRecordVo = JSON.parseObject(json, SmsRecordVo.class);
       redisTemplate.opsForValue().set(SmsConstants.SMS_NUM_KEY + domain, smsRecordVo.getSmsBalance() + "");
+      return (int) smsRecordVo.getSmsBalance();
     } catch (IOException e) {
       log.error("解析返回对象异常:{}", e);
     }
+    return -1;
   }
 }
