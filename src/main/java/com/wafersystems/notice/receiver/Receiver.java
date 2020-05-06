@@ -21,7 +21,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -112,42 +111,21 @@ public class Receiver {
     log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, message);
     try {
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
+      if (!ParamConstant.isSMS_SWITCH()) {
+        log.warn("未配置短信服务调用地址！");
+        return;
+      }
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
         SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
-        sendSms(smsDTO);
+        smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
+          smsDTO.getDomain(), smsDTO.getSmsSign());
       } else if (MsgTypeEnum.BATCH.name().equals(messageDTO.getMsgType())) {
         final List<SmsDTO> dtoList = JSON.parseArray(messageDTO.getData().toString(), SmsDTO.class);
-        dtoList.forEach(this::sendSms);
+        dtoList.forEach(smsDTO ->
+          smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(), smsDTO.getDomain(), smsDTO.getSmsSign())
+        );
       } else {
         log.info("消息类型未识别，无法发送短信");
       }
-    } catch (Exception e) {
-      log.info("消息监听处理异常", e);
     }
   }
-
-  private void sendSms(SmsDTO smsDTO) {
-    log.info("短信消息：[{}]", smsDTO.toString());
-    if (!ParamConstant.isSMS_SWITCH()) {
-      log.warn("未配置短信服务调用地址！");
-      return;
-    }
-    if (smsDTO.getPhoneList().isEmpty()) {
-      log.warn("接收短信的手机号不能为空！");
-      return;
-    }
-    String result;
-    if (smsDTO.getPhoneList().size() > 1) {
-      for (String phone : smsDTO.getPhoneList()) {
-        result = smsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
-          smsDTO.getSmsSign());
-        log.info("电话号码" + phone + "发送短信的结果为：" + result);
-      }
-    } else if (smsDTO.getPhoneList().size() == 1) {
-      result = smsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
-        smsDTO.getDomain(), smsDTO.getSmsSign());
-      log.info("电话号码" + smsDTO.getPhoneList().get(0) + "发送短信的结果为：" + result);
-    }
-  }
-
-}
