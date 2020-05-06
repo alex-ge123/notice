@@ -2,6 +2,7 @@ package com.wafersystems.notice.util;
 
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.SendInterceptProperties;
+import com.wafersystems.notice.config.SystemProperties;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.constants.SmsConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
@@ -49,6 +50,9 @@ public class SmsUtil {
   @Autowired
   private SendInterceptProperties properties;
 
+  @Autowired
+  private SystemProperties systemProperties;
+
   @Value("${sms-num-search-url}")
   private String searchUrl;
 
@@ -66,19 +70,23 @@ public class SmsUtil {
    */
   public void batchSendSms(String templetId, List<String> phoneList, List<String> params,
                            String domain, String smsSign) {
-    int smsNumFromCache = getSmsNumFromCache(domain);
-    if (smsNumFromCache <= 0) {
-      int num = cacheSmsNumFromSmsService(domain);
-      if (num <= 0) {
-        log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache);
-        return;
+    if (systemProperties.isCloudService()) {
+      int smsNumFromCache = getSmsNumFromCache(domain);
+      if (smsNumFromCache <= 0) {
+        int num = cacheSmsNumFromSmsService(domain);
+        if (num <= 0) {
+          log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache);
+          return;
+        }
       }
     }
     for (String phone : phoneList) {
-      int smsNumFromCache1 = getSmsNumFromCache(domain);
-      if (smsNumFromCache1 <= 0) {
-        log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache1);
-        return;
+      if (systemProperties.isCloudService()) {
+        int smsNumFromCache1 = getSmsNumFromCache(domain);
+        if (smsNumFromCache1 <= 0) {
+          log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache1);
+          return;
+        }
       }
       String result = sendSms(templetId, phone, params, domain, smsSign);
       log.info("电话号码" + phone + "发送短信的结果为：" + result);
