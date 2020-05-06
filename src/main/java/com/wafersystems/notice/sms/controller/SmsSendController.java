@@ -64,22 +64,9 @@ public class SmsSendController {
       return R.fail(resource.getMessage("msg.msg.recipientIdNull", null,
         ParamConstant.getLocaleByStr(lang)));
     }
-    String result = "1";
-    if (smsDTO.getPhoneList().size() > 1) {
-      for (String phone : smsDTO.getPhoneList()) {
-        result = smsUtil.sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(),
-          smsDTO.getSmsSign());
-        log.debug("电话号码" + phone + "发送短信的结果为：" + result);
-      }
-    } else if (smsDTO.getPhoneList().size() == 1) {
-      result = smsUtil.sendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList().get(0), smsDTO.getParamList(),
-        smsDTO.getDomain(), smsDTO.getSmsSign());
-      log.debug("电话号码" + smsDTO.getPhoneList().get(0) + "发送短信的结果为：" + result);
-    }
-    if (ConfConstant.RESULT_SUCCESS.toString().equals(result)) {
-      return R.ok();
-    }
-    return R.fail(resource.getMessage("msg.sms.sendError", null, ParamConstant.getLocaleByStr(lang)));
+    smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
+      smsDTO.getDomain(), smsDTO.getSmsSign());
+    return R.ok();
   }
 
   /**

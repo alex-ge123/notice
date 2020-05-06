@@ -2,15 +2,18 @@ package com.wafersystems.notice.util;
 
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.SendInterceptProperties;
+import com.wafersystems.notice.config.SystemProperties;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.constants.SmsConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
+import com.wafersystems.notice.sms.model.SmsRecordVo;
 import com.wafersystems.security.SecurityUtils;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -18,6 +21,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +50,47 @@ public class SmsUtil {
   @Autowired
   private SendInterceptProperties properties;
 
+  @Autowired
+  private SystemProperties systemProperties;
+
+  @Value("${sms-num-search-url}")
+  private String searchUrl;
+
   private SmsUtil() {
+  }
+
+  /**
+   * 批量发送短信
+   *
+   * @param templetId 模板id
+   * @param phoneList 电话集合
+   * @param params    参数集合
+   * @param domain    域名
+   * @param smsSign   短信签名
+   */
+  public void batchSendSms(String templetId, List<String> phoneList, List<String> params,
+                           String domain, String smsSign) {
+    if (systemProperties.isCloudService()) {
+      int smsNumFromCache = getSmsNumFromCache(domain);
+      if (smsNumFromCache <= 0) {
+        int num = cacheSmsNumFromSmsService(domain);
+        if (num <= 0) {
+          log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache);
+          return;
+        }
+      }
+    }
+    for (String phone : phoneList) {
+      if (systemProperties.isCloudService()) {
+        int smsNumFromCache1 = getSmsNumFromCache(domain);
+        if (smsNumFromCache1 <= 0) {
+          log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache1);
+          return;
+        }
+      }
+      String result = sendSms(templetId, phone, params, domain, smsSign);
+      log.info("电话号码" + phone + "发送短信的结果为：" + result);
+    }
   }
 
   /**
@@ -59,7 +103,7 @@ public class SmsUtil {
    */
   public String sendSms(String templetId, String phoneNum, List<String> params,
                         String domain, String smsSign) {
-    log.debug("发短信信息.templetId={},phoneNum={},params={},domain={},smsSign={}",
+    log.info("开始发送短信：templetId={},phoneNum={},params={},domain={},smsSign={}",
       templetId, phoneNum, params, domain, smsSign);
     //重复拦截
     SmsDTO smsDto = new SmsDTO();
@@ -118,12 +162,12 @@ public class SmsUtil {
     } else {
       url += "/send?sign=";
     }
-    log.debug("短信参数为{}", hashMap);
+    log.info("短信参数为{}", hashMap);
     sign = SecurityUtils.calSignatureMap(hashMap);
     url = url + sign;
     log.info("发送短信的服务接口为:{}", url);
 
-    String result = send(url, privateKey, hashMap);
+    String result = send(url, privateKey, hashMap, domain);
     //记录发送信息
     if (ConfConstant.RESULT_SUCCESS.toString().equals(result)) {
       redisTemplate.opsForValue().set(
@@ -132,7 +176,7 @@ public class SmsUtil {
     return result;
   }
 
-  private static String send(String url, String privateKey, Map<String, String> hashMap) {
+  private String send(String url, String privateKey, Map<String, String> hashMap, String domain) {
     HttpResponse response = null;
     CloseableHttpClient httpClient = null;
     try {
@@ -157,23 +201,91 @@ public class SmsUtil {
         }
       }
     }
-    if (response != null) {
-      if (response.getStatusLine() != null && response.getStatusLine().getStatusCode() == SmsConstants.SUCCESS_CODE) {
+    if (response != null && response.getStatusLine() != null) {
+      if (response.getStatusLine().getStatusCode() == SmsConstants.SUCCESS_CODE) {
+        // 解析返回内容中剩余短信数量并更新缓存
+        parseSmsBalanceCacheRedis(domain, response);
         return "0";
       } else {
         // 失败
         log.error(response.getStatusLine().getStatusCode() + "");
         try {
           log.error(EntityUtils.toString(response.getEntity()));
-        } catch (ParseException pe) {
+        } catch (ParseException | IOException pe) {
           // 异常信息
           log.info("发送短信异常:{}", pe);
-        } catch (IOException io) {
-          // 异常信息
-          log.info("发送短信异常:{}", io);
         }
       }
     }
     return "1";
+  }
+
+  /**
+   * 获取短信可发数量
+   *
+   * @param domain 域名
+   * @return 短信数量
+   */
+  private int getSmsNumFromCache(String domain) {
+    // 查询缓存可发数量
+    String o = redisTemplate.opsForValue().get(SmsConstants.SMS_NUM_KEY + domain);
+    if (o != null) {
+      return Integer.parseInt(o);
+    }
+    return -1;
+  }
+
+  /**
+   * 缓存短信服务获取可发数量，
+   *
+   * @param domain 域名
+   */
+  private int cacheSmsNumFromSmsService(String domain) {
+    HttpResponse response = null;
+    CloseableHttpClient httpClient = null;
+    try {
+      searchUrl = searchUrl + "?domain=" + domain;
+      HttpGet method = new HttpGet(searchUrl);
+      method.addHeader("Content-type", "application/json; charset=utf-8");
+      method.setHeader("Accept", "application/json");
+      httpClient = HttpClientBuilder.create().build();
+      response = httpClient.execute(method);
+    } catch (Exception ex) {
+      // 异常信息
+      log.info("查询短信数量异常:{}", ex);
+    } finally {
+      if (null != httpClient) {
+        try {
+          httpClient.close();
+        } catch (IOException e) {
+          log.error("关闭httpClient异常！", e);
+        }
+      }
+    }
+    if (response != null) {
+      if (response.getStatusLine() != null && response.getStatusLine().getStatusCode() == SmsConstants.SUCCESS_CODE) {
+        // 解析返回内容中剩余短信数量并更新缓存
+        return parseSmsBalanceCacheRedis(domain, response);
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * 解析返回内容中剩余短信数量并更新缓存
+   *
+   * @param domain   域名
+   * @param response 响应
+   */
+  private int parseSmsBalanceCacheRedis(String domain, HttpResponse response) {
+    try {
+      String json = EntityUtils.toString(response.getEntity());
+      SmsRecordVo smsRecordVo = JSON.parseObject(json, SmsRecordVo.class);
+      redisTemplate.opsForValue().set(SmsConstants.SMS_NUM_KEY + domain, smsRecordVo.getSmsBalance() + "");
+      return (int) smsRecordVo.getSmsBalance();
+    } catch (IOException e) {
+      log.error("解析返回对象异常:{}", e);
+    }
+    return -1;
   }
 }
