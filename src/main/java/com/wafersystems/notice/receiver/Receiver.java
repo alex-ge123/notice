@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -110,11 +111,11 @@ public class Receiver {
   public void sms(@Payload String message) {
     log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, message);
     try {
-      MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
       if (!ParamConstant.isSMS_SWITCH()) {
         log.warn("未配置短信服务调用地址！");
         return;
       }
+      MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
         SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
         smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
@@ -122,10 +123,14 @@ public class Receiver {
       } else if (MsgTypeEnum.BATCH.name().equals(messageDTO.getMsgType())) {
         final List<SmsDTO> dtoList = JSON.parseArray(messageDTO.getData().toString(), SmsDTO.class);
         dtoList.forEach(smsDTO ->
-          smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(), smsDTO.getDomain(), smsDTO.getSmsSign())
+          smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(),
+            smsDTO.getParamList(), smsDTO.getDomain(), smsDTO.getSmsSign())
         );
       } else {
         log.info("消息类型未识别，无法发送短信");
       }
+    } catch (Exception e) {
+      log.info("消息监听处理异常", e);
     }
   }
+}

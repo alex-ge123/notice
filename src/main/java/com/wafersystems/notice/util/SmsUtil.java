@@ -27,10 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -70,6 +67,10 @@ public class SmsUtil {
    */
   public void batchSendSms(String templetId, List<String> phoneList, List<String> params,
                            String domain, String smsSign) {
+    if (phoneList.isEmpty()) {
+      log.warn("接收短信的手机号不能为空！");
+      return;
+    }
     if (systemProperties.isCloudService()) {
       int smsNumFromCache = getSmsNumFromCache(domain);
       if (smsNumFromCache <= 0) {
@@ -99,15 +100,14 @@ public class SmsUtil {
    * @param templetId 模板ID
    * @param phoneNum  短信号码
    * @param params    参数
-   * @throws IOException IOException
    */
-  public String sendSms(String templetId, String phoneNum, List<String> params,
+  private String sendSms(String templetId, String phoneNum, List<String> params,
                         String domain, String smsSign) {
     log.info("开始发送短信：templetId={},phoneNum={},params={},domain={},smsSign={}",
       templetId, phoneNum, params, domain, smsSign);
     //重复拦截
     SmsDTO smsDto = new SmsDTO();
-    smsDto.setPhoneList(Arrays.asList(phoneNum));
+    smsDto.setPhoneList(Collections.singletonList(phoneNum));
     smsDto.setParamList(params);
     smsDto.setSmsSign(smsSign);
     smsDto.setDomain(domain);
@@ -191,7 +191,7 @@ public class SmsUtil {
       response = httpClient.execute(method);
     } catch (Exception ex) {
       // 异常信息
-      log.info("发送https短信异常:{}", ex);
+      log.info("发送https短信异常:", ex);
     } finally {
       if (null != httpClient) {
         try {
@@ -213,7 +213,7 @@ public class SmsUtil {
           log.error(EntityUtils.toString(response.getEntity()));
         } catch (ParseException | IOException pe) {
           // 异常信息
-          log.info("发送短信异常:{}", pe);
+          log.info("发送短信异常:", pe);
         }
       }
     }
@@ -252,7 +252,7 @@ public class SmsUtil {
       response = httpClient.execute(method);
     } catch (Exception ex) {
       // 异常信息
-      log.info("查询短信数量异常:{}", ex);
+      log.info("查询短信数量异常:", ex);
     } finally {
       if (null != httpClient) {
         try {
@@ -284,7 +284,7 @@ public class SmsUtil {
       redisTemplate.opsForValue().set(SmsConstants.SMS_NUM_KEY + domain, smsRecordVo.getSmsBalance() + "");
       return (int) smsRecordVo.getSmsBalance();
     } catch (IOException e) {
-      log.error("解析返回对象异常:{}", e);
+      log.error("解析返回对象异常:", e);
     }
     return -1;
   }
