@@ -33,6 +33,6 @@ public class SmsConstants {
   /**
    * 短信数量缓存key
    */
-  public static final String SMS_NUM_KEY = "sms_num:";
+  public static final String SMS_NUM_KEY = "base:sms_num:";
 
 }
