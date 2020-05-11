@@ -62,13 +62,13 @@ public class SmsUtil {
   /**
    * 批量发送短信
    *
-   * @param templetId 模板id
-   * @param phoneList 电话集合
-   * @param params    参数集合
-   * @param domain    域名
-   * @param smsSign   短信签名
+   * @param templateId 模板id
+   * @param phoneList  电话集合
+   * @param params     参数集合
+   * @param domain     域名
+   * @param smsSign    短信签名
    */
-  public void batchSendSms(String templetId, List<String> phoneList, List<String> params,
+  public void batchSendSms(String templateId, List<String> phoneList, List<String> params,
                            String domain, String smsSign) {
     if (systemProperties.isCloudService()) {
       int smsNumFromCache = getSmsNumFromCache(domain);
@@ -88,7 +88,7 @@ public class SmsUtil {
           return;
         }
       }
-      String result = sendSms(templetId, phone, params, domain, smsSign);
+      String result = sendSms(templateId, phone, params, domain, smsSign);
       log.info("电话号码" + phone + "发送短信的结果为：" + result);
     }
   }
@@ -179,6 +179,10 @@ public class SmsUtil {
   private String send(String url, String privateKey, Map<String, String> hashMap, String domain) {
     HttpResponse response = null;
     CloseableHttpClient httpClient = null;
+    // 响应码
+    int responseStatusCode = 0;
+    // 响应结果
+    String responseResult = "";
     try {
       HttpPost method = new HttpPost(url);
       method.addHeader("Content-type", "application/json; charset=utf-8");
@@ -189,6 +193,11 @@ public class SmsUtil {
         StandardCharsets.UTF_8));
       httpClient = HttpClientBuilder.create().build();
       response = httpClient.execute(method);
+      if (response != null && response.getStatusLine() != null) {
+        responseStatusCode = response.getStatusLine().getStatusCode();
+        responseResult = EntityUtils.toString(response.getEntity());
+        log.info("发送https短信结果：状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
+      }
     } catch (Exception ex) {
       // 异常信息
       log.info("发送https短信异常:{}", ex);
@@ -197,24 +206,19 @@ public class SmsUtil {
         try {
           httpClient.close();
         } catch (IOException e) {
-          log.error("关闭httpClient异常！", e);
+          log.error("发送https短信关闭httpClient异常！", e);
         }
       }
     }
-    if (response != null && response.getStatusLine() != null) {
-      if (response.getStatusLine().getStatusCode() == SmsConstants.SUCCESS_CODE) {
-        // 解析返回内容中剩余短信数量并更新缓存
-        parseSmsBalanceCacheRedis(domain, response);
+    if (responseStatusCode != 0) {
+      if (responseStatusCode == SmsConstants.SUCCESS_CODE) {
+        if (systemProperties.isCloudService()) {
+          // 解析返回内容中剩余短信数量并更新缓存
+          parseSmsBalanceCacheRedis(domain, responseResult);
+        }
         return "0";
       } else {
-        // 失败
-        log.error(response.getStatusLine().getStatusCode() + "");
-        try {
-          log.error(EntityUtils.toString(response.getEntity()));
-        } catch (ParseException | IOException pe) {
-          // 异常信息
-          log.info("发送短信异常:{}", pe);
-        }
+        log.error("发送短信失败，状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
       }
     }
     return "1";
@@ -243,6 +247,10 @@ public class SmsUtil {
   private int cacheSmsNumFromSmsService(String domain) {
     HttpResponse response = null;
     CloseableHttpClient httpClient = null;
+    // 响应码
+    int responseStatusCode = 0;
+    // 响应结果
+    String responseResult = "";
     try {
       searchUrl = searchUrl + "?domain=" + domain;
       HttpGet method = new HttpGet(searchUrl);
@@ -250,22 +258,29 @@ public class SmsUtil {
       method.setHeader("Accept", "application/json");
       httpClient = HttpClientBuilder.create().build();
       response = httpClient.execute(method);
+      if (response != null && response.getStatusLine() != null) {
+        responseStatusCode = response.getStatusLine().getStatusCode();
+        responseResult = EntityUtils.toString(response.getEntity());
+        log.info("查询短信可发数量结果：状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
+      }
     } catch (Exception ex) {
       // 异常信息
-      log.info("查询短信数量异常:{}", ex);
+      log.warn("查询短信数量异常:{}", ex);
     } finally {
       if (null != httpClient) {
         try {
           httpClient.close();
         } catch (IOException e) {
-          log.error("关闭httpClient异常！", e);
+          log.error("查询短信数量关闭httpClient异常！", e);
         }
       }
     }
-    if (response != null) {
-      if (response.getStatusLine() != null && response.getStatusLine().getStatusCode() == SmsConstants.SUCCESS_CODE) {
+    if (responseStatusCode != 0) {
+      if (responseStatusCode == SmsConstants.SUCCESS_CODE) {
         // 解析返回内容中剩余短信数量并更新缓存
-        return parseSmsBalanceCacheRedis(domain, response);
+        return parseSmsBalanceCacheRedis(domain, responseResult);
+      } else {
+        log.error("查询短信可发数量失败，状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
       }
     }
     return -1;
@@ -274,16 +289,15 @@ public class SmsUtil {
   /**
    * 解析返回内容中剩余短信数量并更新缓存
    *
-   * @param domain   域名
-   * @param response 响应
+   * @param domain         域名
+   * @param responseResult 响应内容
    */
-  private int parseSmsBalanceCacheRedis(String domain, HttpResponse response) {
+  private int parseSmsBalanceCacheRedis(String domain, String responseResult) {
     try {
-      String json = EntityUtils.toString(response.getEntity());
-      SmsRecordVo smsRecordVo = JSON.parseObject(json, SmsRecordVo.class);
+      SmsRecordVo smsRecordVo = JSON.parseObject(responseResult, SmsRecordVo.class);
       redisTemplate.opsForValue().set(SmsConstants.SMS_NUM_KEY + domain, smsRecordVo.getSmsBalance() + "");
       return (int) smsRecordVo.getSmsBalance();
-    } catch (IOException e) {
+    } catch (Exception e) {
       log.error("解析返回对象异常:{}", e);
     }
     return -1;
