@@ -1,6 +1,7 @@
 package com.wafersystems.notice.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.config.SendInterceptProperties;
 import com.wafersystems.notice.config.SystemProperties;
 import com.wafersystems.notice.constants.RedisKeyConstants;
@@ -12,7 +13,6 @@ import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -214,7 +214,7 @@ public class SmsUtil {
       if (responseStatusCode == SmsConstants.SUCCESS_CODE) {
         if (systemProperties.isCloudService()) {
           // 解析返回内容中剩余短信数量并更新缓存
-          parseSmsBalanceCacheRedis(domain, responseResult);
+          parseSmsBalanceCacheRedis(domain, responseResult, true);
         }
         return "0";
       } else {
@@ -252,8 +252,8 @@ public class SmsUtil {
     // 响应结果
     String responseResult = "";
     try {
-      searchUrl = searchUrl + "?domain=" + domain;
-      HttpGet method = new HttpGet(searchUrl);
+      String url = searchUrl + "?domain=" + domain;
+      HttpGet method = new HttpGet(url);
       method.addHeader("Content-type", "application/json; charset=utf-8");
       method.setHeader("Accept", "application/json");
       httpClient = HttpClientBuilder.create().build();
@@ -278,7 +278,7 @@ public class SmsUtil {
     if (responseStatusCode != 0) {
       if (responseStatusCode == SmsConstants.SUCCESS_CODE) {
         // 解析返回内容中剩余短信数量并更新缓存
-        return parseSmsBalanceCacheRedis(domain, responseResult);
+        return parseSmsBalanceCacheRedis(domain, responseResult, false);
       } else {
         log.error("查询短信可发数量失败，状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
       }
@@ -292,9 +292,16 @@ public class SmsUtil {
    * @param domain         域名
    * @param responseResult 响应内容
    */
-  private int parseSmsBalanceCacheRedis(String domain, String responseResult) {
+  private int parseSmsBalanceCacheRedis(String domain, String responseResult, boolean isParseSmsSend) {
     try {
-      SmsRecordVo smsRecordVo = JSON.parseObject(responseResult, SmsRecordVo.class);
+      SmsRecordVo smsRecordVo;
+      if (isParseSmsSend) {
+        smsRecordVo = JSON.parseObject(responseResult, SmsRecordVo.class);
+      } else {
+        JSONObject jsonObject = JSON.parseObject(responseResult);
+        Object msg = jsonObject.get("msg");
+        smsRecordVo = JSON.parseObject(msg.toString(), SmsRecordVo.class);
+      }
       redisTemplate.opsForValue().set(SmsConstants.SMS_NUM_KEY + domain, smsRecordVo.getSmsBalance() + "");
       return (int) smsRecordVo.getSmsBalance();
     } catch (Exception e) {
