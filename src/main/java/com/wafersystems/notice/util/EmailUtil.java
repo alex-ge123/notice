@@ -244,11 +244,11 @@ public class EmailUtil {
       MimeBodyPart icalAttachment = new MimeBodyPart();
       icalAttachment
         .setDataHandler(new DataHandler(new ByteArrayDataSource(buffer.toString(), contentType)));
-      icalAttachment
-        .setFileName(MimeUtility.encodeText(mailBean.getSubject() + ".ics", "UTF-8", null));
+//      icalAttachment
+//        .setFileName(MimeUtility.encodeText(mailBean.getSubject() + ".ics", "UTF-8", null));
       multipart.addBodyPart(icalAttachment);
       // 以附件形式显示
-      multipart.setSubType("related");
+//      multipart.setSubType("related");
     } catch (Exception ex) {
       log.error("事件邮件发送失败!", ex);
       throw ex;
