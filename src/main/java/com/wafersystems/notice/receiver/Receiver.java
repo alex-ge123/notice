@@ -3,7 +3,6 @@ package com.wafersystems.notice.receiver;
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.RabbitMqConfig;
 import com.wafersystems.notice.mail.model.MailBean;
-import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.ConfConstant;
 import com.wafersystems.notice.util.ParamConstant;
@@ -15,7 +14,6 @@ import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -74,12 +72,11 @@ public class Receiver {
           log.warn("邮件模板名称不能为空");
           return;
         }
-        TemContentVal con = new TemContentVal();
-        BeanUtils.copyProperties(mailDTO, con);
-        con.setLocale(cn.hutool.core.util.StrUtil.isBlank(mailDTO.getLang()) ? null : locale);
-        con.setResource(resource);
-        con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
-
+        mailDTO.setLocale(cn.hutool.core.util.StrUtil.isBlank(mailDTO.getLang()) ? null : locale);
+        mailDTO.setResource(resource);
+        mailDTO.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
+        mailDTO.setImgPathBanner(ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg");
+        mailDTO.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
         try {
           mailNoticeService.sendMail(MailBean.builder()
             .uuid(mailDTO.getUuid())
@@ -89,7 +86,7 @@ public class Receiver {
             .copyTo(mailDTO.getCopyTo())
             .type(ConfConstant.TypeEnum.FM)
             .template(mailDTO.getTempName())
-            .temVal(con)
+            .mailDTO(mailDTO)
             .build(), 0);
         } catch (Exception e) {
           log.error("发送邮件失败：", e);

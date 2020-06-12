@@ -8,7 +8,6 @@ import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
-import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.ParamConstant;
@@ -17,6 +16,7 @@ import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SecurityConstants;
 import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
+import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.entity.TenantDTO;
@@ -181,36 +181,36 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   @Override
   public MailBean fillTenantInfo(MailBean mailBean) {
     //填充系统默认参数
-    TemContentVal val = mailBean.getTemVal();
-    val.setLogo(StrUtil.isEmptyStr(val.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : val.getLogo());
-    val.setSystemName(ParamConstant.getSYSTEM_NAME());
-    if (ObjectUtil.isNotNull(val.getTenantId())) {
-      R<TenantDTO> tenantByIdForInner = tenantService.getTenantByIdForInner(val.getTenantId(), SecurityConstants.FROM_IN);
+    MailDTO mailDTO = mailBean.getMailDTO();
+    mailDTO.setLogo(StrUtil.isEmptyStr(mailDTO.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : mailDTO.getLogo());
+    mailDTO.setSystemName(ParamConstant.getSYSTEM_NAME());
+    if (ObjectUtil.isNotNull(mailDTO.getTenantId())) {
+      R<TenantDTO> tenantByIdForInner = tenantService.getTenantByIdForInner(mailDTO.getTenantId(), SecurityConstants.FROM_IN);
       if (ObjectUtil.isNotNull(tenantByIdForInner)) {
         TenantDTO tenant = tenantByIdForInner.getData();
         //设置租户logo
         if (!StrUtil.isEmptyStr(tenant.getLogo())) {
-          val.setLogo(tenant.getLogo());
+          mailDTO.setLogo(tenant.getLogo());
         }
         //设置租户系统名
         if (!StrUtil.isEmptyStr(tenant.getName())) {
-          val.setSystemName(tenant.getName());
+          mailDTO.setSystemName(tenant.getName());
         }
         //设置租户电话号
         if (!StrUtil.isEmptyStr(tenant.getContactNumber())) {
-          val.setPhone(tenant.getContactNumber());
+          mailDTO.setPhone(tenant.getContactNumber());
         }
         //设置环境编码
-        if (ObjectUtil.isNull(val.getLocale()) && !StrUtil.isEmptyStr(tenant.getLang())) {
-          val.setLocale(ParamConstant.getLocaleByStr(tenant.getLang()));
+        if (ObjectUtil.isNull(mailDTO.getLocale()) && !StrUtil.isEmptyStr(tenant.getLang())) {
+          mailDTO.setLocale(ParamConstant.getLocaleByStr(tenant.getLang()));
         }
       }
     }
-    if (ObjectUtil.isNull(val.getLocale())) {
-      val.setLocale(ParamConstant.getLocaleByStr("zh_CN"));
+    if (ObjectUtil.isNull(mailDTO.getLocale())) {
+      mailDTO.setLocale(ParamConstant.getLocaleByStr("zh_CN"));
     }
-    mailBean.setTemVal(val);
-    log.debug("发送邮件logo地址为{}，系统名称为{}，电话号码为{}" + val.getLogo(), val.getSystemName(), val.getPhone());
+    mailBean.setMailDTO(mailDTO);
+    log.debug("发送邮件logo地址为{}，系统名称为{}，电话号码为{}" + mailDTO.getLogo(), mailDTO.getSystemName(), mailDTO.getPhone());
     return mailBean;
   }
 }

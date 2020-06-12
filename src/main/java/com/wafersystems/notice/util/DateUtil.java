@@ -1,5 +1,7 @@
 package com.wafersystems.notice.util;
 
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
@@ -46,7 +48,7 @@ public class DateUtil {
    * @return 日期
    */
   public static Date formatDateTime(String dateTime) {
-    if (StringUtil.isEmptyStr(dateTime)) {
+    if (StrUtil.isBlank(dateTime)) {
       return null;
     }
     String colon = ":";

@@ -6,9 +6,9 @@ import com.wafersystems.notice.base.model.TestSendMailDTO;
 import com.wafersystems.notice.mail.model.MailBean;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
-import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.service.MailNoticeService;
 import com.wafersystems.notice.util.*;
+import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.AllArgsConstructor;
@@ -152,13 +152,15 @@ public class MailSendController {
     Locale locale = ParamConstant.getLocaleByStr(lang != null ? lang : "zh_CN");
     // 创建邮件对象
     params = getTestParams(tempName, params);
-    TemContentVal con = getTemContentVal(params);
-    con.setLocale(locale);
-    con.setResource(resource);
-    con.setLogo(ParamConstant.getLOGO_DEFALUT());
-    con.setPhone(ParamConstant.getPHONE());
-    con.setSystemName(ParamConstant.getSYSTEM_NAME());
-    con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
+    MailDTO mailDto = getTemContentVal(params);
+    mailDto.setLocale(locale);
+    mailDto.setResource(resource);
+    mailDto.setLogo(ParamConstant.getLOGO_DEFALUT());
+    mailDto.setPhone(ParamConstant.getPHONE());
+    mailDto.setSystemName(ParamConstant.getSYSTEM_NAME());
+    mailDto.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
+    mailDto.setImgPathBanner(ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg");
+    mailDto.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
     response.setCharacterEncoding("UTF-8");
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
@@ -168,7 +170,7 @@ public class MailSendController {
         .copyTo("抄送人")
         .type(ConfConstant.TypeEnum.FM)
         .template(tempName)
-        .temVal(con).build()));
+        .mailDTO(mailDto).build()));
     } catch (IOException e) {
       log.error(e.getMessage(), e);
     }
@@ -181,7 +183,7 @@ public class MailSendController {
    * @param toMail   接收人
    * @param copyTo   抄送人
    * @param tempName 模版名称
-   * @param con      内容
+   * @param mailDto      内容
    * @param lang     语言
    * @return -
    */
@@ -189,7 +191,7 @@ public class MailSendController {
   @PostMapping(value = "/sendMail")
   public R sendMail(@RequestParam String subject, @RequestParam String toMail, String copyTo,
                     @RequestParam String tempName,
-                    @RequestBody TemContentVal con, String lang) {
+                    @RequestBody MailDTO mailDto, String lang) {
     Locale locale = ParamConstant.getLocaleByStr(lang);
     if (!ParamConstant.isEMAIL_SWITCH()) {
       log.warn("邮件服务参数未配置，将忽略主题【" + subject + "】的邮件发送");
@@ -202,15 +204,17 @@ public class MailSendController {
     } else if (StrUtil.isEmptyStr(tempName)) {
       return R.fail(resource.getMessage("msg.email.temNull", null, locale));
     }
-    if (StrUtil.isNullObject(con)) {
-      con = new TemContentVal();
+    if (StrUtil.isNullObject(mailDto)) {
+      mailDto = new MailDTO();
     }
-    con.setLocale(cn.hutool.core.util.StrUtil.isBlank(lang) ? null : locale);
-    con.setResource(resource);
-    con.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
+    mailDto.setLocale(cn.hutool.core.util.StrUtil.isBlank(lang) ? null : locale);
+    mailDto.setResource(resource);
+    mailDto.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
+    mailDto.setImgPathBanner(ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg");
+    mailDto.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
     try {
       taskExecutor.execute(new MailTask(mailNoticeService, StrUtil.regStr(subject), toMail, copyTo,
-        tempName, con, lang));
+        tempName, mailDto, lang));
       return R.ok();
     } catch (Exception ex) {
       log.error("发送邮件失败：", ex);
@@ -227,7 +231,7 @@ public class MailSendController {
     private String toMail;
     private String copyTo;
     private String tempName;
-    private TemContentVal con;
+    private MailDTO con;
     private String lang;
 
     /**
@@ -249,7 +253,7 @@ public class MailSendController {
           .copyTo(copyTo)
           .type(ConfConstant.TypeEnum.FM)
           .template(tempName)
-          .temVal(con)
+          .mailDTO(con)
           .build(), 0);
       } catch (Exception ex) {
         throw new RuntimeException();
@@ -321,10 +325,10 @@ public class MailSendController {
    * @throws InvocationTargetException InvocationTargetException
    * @throws NoSuchMethodException     NoSuchMethodException
    */
-  private TemContentVal getTemContentVal(String[] params) throws ClassNotFoundException, InstantiationException,
+  private MailDTO getTemContentVal(String[] params) throws ClassNotFoundException, InstantiationException,
     IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    Class<?> clazz = Class.forName("com.wafersystems.notice.mail.model.TemContentVal");
-    TemContentVal con = (TemContentVal) clazz.newInstance();
+    Class<?> clazz = Class.forName("com.wafersystems.notice.mail.model.MailDTO");
+    MailDTO con = (MailDTO) clazz.newInstance();
     for (int i = 1; i <= params.length; i++) {
       clazz.getDeclaredMethod("setValue" + i, String.class).invoke(con, params[i - 1]);
     }

@@ -1,6 +1,7 @@
 package com.wafersystems.notice.util;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
 import com.wafersystems.notice.config.SendInterceptProperties;
@@ -8,11 +9,11 @@ import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.mail.model.MailBean;
-import com.wafersystems.notice.mail.model.TemContentVal;
 import com.wafersystems.notice.mail.model.enums.MailScheduleStatusEnum;
 import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
+import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MailResultDTO;
 import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
@@ -31,11 +32,17 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.activation.DataHandler;
 import javax.mail.*;
-import javax.mail.internet.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.security.Security;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -113,27 +120,27 @@ public class EmailUtil {
       message.addRecipients(Message.RecipientType.TO,
         InternetAddress.parse(mailBean.getToEmails()));
       // 多个抄送地址
-      if (!StrUtil.isEmptyStr(mailBean.getCopyTo())) {
+      if (StrUtil.isNotBlank(mailBean.getCopyTo())) {
         message.addRecipients(Message.RecipientType.CC,
           InternetAddress.parse(mailBean.getCopyTo()));
       }
       // 邮件主题
       message.setSubject(mailBean.getSubject());
-      // 邮件正文
-      Multipart multipart = new MimeMultipart();
-      // 第一个为文本内容。
-      BodyPart bodyPart = new MimeBodyPart();
-      if (checkMailBean(mailBean)) {
-        String mailMessage = this.getMessage(mailBean);
-        bodyPart.setContent(mailMessage, "text/html;charset=UTF-8");
-      }
-      // 添加第一个body内容
-      multipart.addBodyPart(bodyPart);
       // 使用多个body体填充邮件内容。
-      if (ObjectUtil.isNotNull(mailBean.getTemVal().getMailScheduleDto())) {
+      if (ObjectUtil.isNotNull(mailBean.getMailDTO().getMailScheduleDto())) {
         //事件（日程）邮件
         message.setContent(this.sendEventEmail(mailBean));
       } else {
+        // 邮件正文
+        Multipart multipart = new MimeMultipart();
+        // 第一个为文本内容。
+        BodyPart bodyPart = new MimeBodyPart();
+        if (checkMailBean(mailBean)) {
+          String mailMessage = this.getMessage(mailBean);
+          bodyPart.setContent(mailMessage, "text/html;charset=UTF-8");
+        }
+        // 添加第一个body内容
+        multipart.addBodyPart(bodyPart);
         message.setContent(multipart);
       }
       // 使用认证模式发送邮件。
@@ -169,7 +176,7 @@ public class EmailUtil {
    * @param result    邮件发送结果
    */
   private void sendResult(String uuid, String routerKey, boolean result) {
-    if (!StrUtil.isEmptyStr(uuid) && !StrUtil.isEmptyStr(routerKey)) {
+    if (StrUtil.isNotBlank(uuid) && StrUtil.isNotBlank(routerKey)) {
       MessageDTO dto = new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.SHOW.name(), new MailResultDTO(uuid, result));
       rabbitTemplate.convertAndSend(NoticeMqConstants.EXCHANGE_DIRECT_NOTICE_RESULT_MAIL, routerKey, JSON.toJSONString(dto));
       log.debug("发送邮件发送结果uuid={}，result={}", uuid, result);
@@ -188,7 +195,7 @@ public class EmailUtil {
     MimeMultipart multipart = new MimeMultipart();
     BodyPart bodyPart = new MimeBodyPart();
     try {
-      TemContentVal temVal = mailBean.getTemVal();
+      MailDTO temVal = mailBean.getMailDTO();
       //格式化时间日程日期
       MailScheduleDto mailScheduleDto = temVal.getMailScheduleDto();
       log.debug("mailScheduleDo:{}", mailScheduleDto);
@@ -283,7 +290,7 @@ public class EmailUtil {
       if (ConfConstant.TypeEnum.VM.equals(mailBean.getType())) {
         log.debug("使用模版" + mailBean.getTemplate());
         context = new VelocityContext();
-        context.put("TemVal", mailBean.getTemVal());
+        context.put("TemVal", mailBean.getMailDTO());
         Template temple = velocityEngine.getTemplate(mailBean.getTemplate(), "UTF-8");
         temple.merge(context, writer);
         return writer.toString();
@@ -295,9 +302,9 @@ public class EmailUtil {
         //配置共享变量
         configuration.setSharedVariable("loccalMessage", messageService);
         //加载模板
-        freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate(), mailBean.getTemVal().getLocale());
+        freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate(), mailBean.getMailDTO().getLocale());
         //模板渲染
-        return FreeMarkerTemplateUtils.processTemplateIntoString(template, mailBean.getTemVal());
+        return FreeMarkerTemplateUtils.processTemplateIntoString(template, this.attributeToMap(mailBean));
       } else {
         log.debug("使用html模版" + mailBean.getTemplate());
         context = new VelocityContext(mailBean.getData());
@@ -318,7 +325,7 @@ public class EmailUtil {
       log.warn("Warn mailBean is null (Thread name=" + Thread.currentThread().getName() + ") ");
       return false;
     }
-    if (StrUtil.isEmptyStr(mailBean.getSubject())) {
+    if (StrUtil.isBlank(mailBean.getSubject())) {
       log.warn("Warn mailBean.getSubject() is null (Thread name=" + Thread.currentThread().getName()
         + ") ");
       return false;
@@ -328,11 +335,44 @@ public class EmailUtil {
         + Thread.currentThread().getName() + ") ");
       return false;
     }
-    if (StrUtil.isEmptyStr(mailBean.getTemplate()) && StrUtil.isNullObject(mailBean.getData())) {
+    if (StrUtil.isBlank(mailBean.getTemplate()) && ObjectUtil.isNull(mailBean.getData())) {
       log.warn("Warn mailBean.getTemplate() is null (Thread name="
         + Thread.currentThread().getName() + ") ");
       return false;
     }
     return true;
+  }
+
+  /**
+   * 将mailDto中所有参数转至data（map）
+   *
+   * @param mailBean
+   * @return
+   */
+  private Map<String, String> attributeToMap(MailBean mailBean) {
+    int dtoValueCount = 50;
+    final MailDTO mailDTO = mailBean.getMailDTO();
+    Map<String, String> data = mailDTO.getData();
+    if (ObjectUtil.isNull(data)) {
+      data = new HashMap<>(dtoValueCount);
+    }
+    final Method[] declaredMethods = mailDTO.getClass().getDeclaredMethods();
+    for (Method method : declaredMethods) {
+      final String name = method.getName();
+      try {
+
+        if (method.getReturnType().getName().contains("String")
+          && StrUtil.startWith(name, "get")
+          && !StrUtil.equals("getData", name)) {
+          String value = (String) method.invoke(mailDTO);
+          if (StrUtil.isNotBlank(value)) {
+            data.put(StrUtil.removePreAndLowerFirst(name, "get"), value);
+          }
+        }
+      } catch (Exception e) {
+        log.warn("反射获取值[{}]失败", name);
+      }
+    }
+    return data;
   }
 }

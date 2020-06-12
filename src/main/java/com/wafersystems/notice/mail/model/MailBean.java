@@ -1,6 +1,7 @@
 package com.wafersystems.notice.mail.model;
 
 import com.wafersystems.notice.util.ConfConstant;
+import com.wafersystems.virsical.common.core.dto.MailDTO;
 import lombok.Builder;
 import lombok.Data;
 
@@ -30,7 +31,7 @@ public class MailBean implements Serializable {
   /**
    * 邮件数据(模版形式)
    */
-  private TemContentVal temVal;
+  private MailDTO mailDTO;
 
   /**
    * 邮件传入模板
