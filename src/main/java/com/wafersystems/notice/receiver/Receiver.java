@@ -92,10 +92,10 @@ public class Receiver {
           log.error("发送邮件失败：", e);
         }
       } else {
-        log.info("消息类型未识别，无法发送邮件");
+        log.warn("消息类型未识别，无法发送邮件");
       }
     } catch (Exception e) {
-      log.info("消息监听处理异常", e);
+      log.error("消息监听处理异常", e);
     }
   }
 
@@ -124,10 +124,10 @@ public class Receiver {
             smsDTO.getParamList(), smsDTO.getDomain(), smsDTO.getSmsSign())
         );
       } else {
-        log.info("消息类型未识别，无法发送短信");
+        log.warn("消息类型未识别，无法发送短信");
       }
     } catch (Exception e) {
-      log.info("消息监听处理异常", e);
+      log.error("消息监听处理异常", e);
     }
   }
 }
