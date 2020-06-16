@@ -349,7 +349,7 @@ public class EmailUtil {
    * @param mailBean
    * @return
    */
-  private Map<String, String> attributeToMap(MailBean mailBean) {
+  private Map<String, Object> attributeToMap(MailBean mailBean) {
     int dtoValueCount = 50;
     final MailDTO mailDTO = mailBean.getMailDTO();
     Map<String, String> data = mailDTO.getData();
@@ -373,6 +373,10 @@ public class EmailUtil {
         log.warn("反射获取值[{}]失败", name);
       }
     }
-    return data;
+
+    final HashMap<String, Object> resultMap = new HashMap<>();
+    resultMap.put("locale", mailDTO.getLocale());
+    resultMap.putAll(data);
+    return resultMap;
   }
 }
