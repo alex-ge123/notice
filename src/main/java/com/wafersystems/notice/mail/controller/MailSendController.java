@@ -327,7 +327,7 @@ public class MailSendController {
    */
   private MailDTO getTemContentVal(String[] params) throws ClassNotFoundException, InstantiationException,
     IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    Class<?> clazz = Class.forName("com.wafersystems.notice.mail.model.MailDTO");
+    Class<?> clazz = Class.forName("com.wafersystems.virsical.common.core.dto.MailDTO");
     MailDTO con = (MailDTO) clazz.newInstance();
     for (int i = 1; i <= params.length; i++) {
       clazz.getDeclaredMethod("setValue" + i, String.class).invoke(con, params[i - 1]);
