@@ -48,12 +48,11 @@ public class Receiver {
    */
   @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_MAIL)
   public void mail(@Payload String message) {
-    log.info("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, message);
+    log.debug("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, message);
     try {
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
         MailDTO mailDTO = JSON.parseObject(messageDTO.getData().toString(), MailDTO.class);
-        log.info("邮件消息：[{}]", mailDTO.toString());
 
         Locale locale = ParamConstant.getLocaleByStr(mailDTO.getLang());
         if (!ParamConstant.isEMAIL_SWITCH()) {
@@ -106,7 +105,7 @@ public class Receiver {
    */
   @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_SMS)
   public void sms(@Payload String message) {
-    log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, message);
+    log.debug("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, message);
     try {
       if (!ParamConstant.isSMS_SWITCH()) {
         log.warn("未配置短信服务调用地址！");
