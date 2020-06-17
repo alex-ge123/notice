@@ -21,7 +21,7 @@ CREATE TABLE `ntc_parameter`  (
 -- ----------------------------
 -- Records of ntc_parameter
 -- ----------------------------
-INSERT INTO `ntc_parameter` VALUES (1, '{"zh":"默认logo","en":"Default logo","tw":"默認logo"}', 'LOGO_DEFALUT', 'http://www.virsical.cn/images/ico_wafer.png');
+INSERT INTO `ntc_parameter` VALUES (1, '{"zh":"默认logo","en":"Default logo","tw":"默認logo"}', 'LOGO_DEFALUT', 'https://cloud.virsical.cn/res/virsical-logo.png');
 INSERT INTO `ntc_parameter` VALUES (2, '{"zh":"短信接口服务地址","en":"SMS interface service address","tw":"短信接口服務地址"}', 'URL_SMS_SERVER', 'https://work.virsical.cn/sms/ability');
 INSERT INTO `ntc_parameter` VALUES (3, '{"zh":"短信接口CLIENTID","en":"SMS interface clientId","tw":"短信接口CLIENTID"}', 'URL_SMS_CLIENTID', 'meeting');
 INSERT INTO `ntc_parameter` VALUES (4, '{"zh":"短信接口SECRET","en":"SMS interface secret","tw":"短信接口SEC​​RET"}', 'URL_SMS_SECRET', '23cbf2b615184418');
