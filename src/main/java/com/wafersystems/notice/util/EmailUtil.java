@@ -141,7 +141,8 @@ public class EmailUtil {
       //设置端口
       transport.connect(ParamConstant.getDEFAULT_MAIL_HOST(), ParamConstant.getDEFAULT_MAIL_PORT(),
         ParamConstant.getDEFAULT_MAIL_FROM(),
-        ParamConstant.getDEFAULT_MAIL_PASSWORD());
+        "true".equals(ParamConstant.getDEFAULT_MAIL_AUTH())
+          ? ParamConstant.getDEFAULT_MAIL_PASSWORD() : null);
       transport.sendMessage(message, message.getAllRecipients());
       transport.close();
       log.debug(
