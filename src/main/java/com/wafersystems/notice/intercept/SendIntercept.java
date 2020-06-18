@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.SendInterceptProperties;
 import com.wafersystems.notice.constants.RedisKeyConstants;
-import com.wafersystems.notice.mail.model.MailBean;
+import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

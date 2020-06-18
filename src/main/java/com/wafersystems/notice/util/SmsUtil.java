@@ -7,7 +7,7 @@ import com.wafersystems.notice.config.SystemProperties;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.constants.SmsConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
-import com.wafersystems.notice.sms.model.SmsRecordVo;
+import com.wafersystems.notice.model.SmsRecordVo;
 import com.wafersystems.security.SecurityUtils;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;

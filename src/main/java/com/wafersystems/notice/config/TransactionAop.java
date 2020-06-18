@@ -21,7 +21,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 @Aspect
 @Configuration
 public class TransactionAop {
-  private static final String AOP_POINTCUT_EXPRESSION = "execution (* com.wafersystems.*.*.service..*(..))";
+  private static final String AOP_POINTCUT_EXPRESSION = "execution (* com.wafersystems.notice.service..*(..))";
   @Autowired
   private PlatformTransactionManager transactionManager;
 
