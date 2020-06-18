@@ -1,7 +1,7 @@
 package com.wafersystems.notice.controller;
 
 import cn.hutool.core.util.RandomUtil;
-import com.wafersystems.notice.util.ParamConstant;
+import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import com.wafersystems.virsical.common.core.util.R;

@@ -1,6 +1,6 @@
 package com.wafersystems.notice.model;
 
-import com.wafersystems.notice.util.ConfConstant;
+import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import lombok.Builder;
 import lombok.Data;

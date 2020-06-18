@@ -1,7 +1,7 @@
 package com.wafersystems.notice.receiver;
 
 import com.wafersystems.notice.BaseTest;
-import com.wafersystems.notice.util.ParamConstant;
+import com.wafersystems.notice.constants.ParamConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;

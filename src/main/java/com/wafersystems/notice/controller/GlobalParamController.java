@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.model.GlobalParameter;
 import com.wafersystems.notice.model.ParameterDTO;
 import com.wafersystems.notice.service.GlobalParamService;
-import com.wafersystems.notice.util.ConfConstant;
+import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -66,7 +66,7 @@ public class GlobalParamController {
       try {
         globalParameter.setParamValue(stringEncryptor.decrypt(globalParameter.getParamValue()));
       } catch (Exception e) {
-        log.info("参数值解密异常：key[{}]，value[{}]", globalParameter.getParamKey(), globalParameter.getParamValue());
+        log.debug("参数值解密异常：key[{}]，value[{}]", globalParameter.getParamKey(), globalParameter.getParamValue());
       }
     });
     return R.ok(systemParamList);

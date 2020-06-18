@@ -1,6 +1,6 @@
 package com.wafersystems.notice.model;
 
-import com.wafersystems.notice.util.ConfConstant;
+import com.wafersystems.notice.constants.ConfConstant;
 import lombok.Data;
 
 import java.io.Serializable;

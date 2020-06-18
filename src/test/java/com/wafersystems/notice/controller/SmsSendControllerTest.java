@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.wafersystems.notice.BaseTest;
-import com.wafersystems.notice.util.ParamConstant;
+import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import org.springframework.beans.factory.annotation.Autowired;

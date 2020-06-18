@@ -1,4 +1,4 @@
-package com.wafersystems.notice.util;
+package com.wafersystems.notice.constants;
 
 /**
  * Created with Intellij IDEA. Description: Author: waferzy DateTime: 2016/6/27 11:13 Company:

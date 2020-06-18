@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
 import com.wafersystems.notice.config.SendInterceptProperties;
 import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
+import com.wafersystems.notice.constants.ConfConstant;
+import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.model.MailBean;

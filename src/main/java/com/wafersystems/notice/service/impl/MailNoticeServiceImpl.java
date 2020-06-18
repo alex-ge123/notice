@@ -10,7 +10,7 @@ import com.wafersystems.notice.model.MailTemplateDto;
 import com.wafersystems.notice.model.MailTemplateSearchListDto;
 import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.notice.util.EmailUtil;
-import com.wafersystems.notice.util.ParamConstant;
+import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SecurityConstants;
