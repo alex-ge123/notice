@@ -2,10 +2,10 @@ package com.wafersystems.notice.receiver;
 
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.RabbitMqConfig;
-import com.wafersystems.notice.mail.model.MailBean;
-import com.wafersystems.notice.mail.service.MailNoticeService;
-import com.wafersystems.notice.util.ConfConstant;
-import com.wafersystems.notice.util.ParamConstant;
+import com.wafersystems.notice.model.MailBean;
+import com.wafersystems.notice.service.MailNoticeService;
+import com.wafersystems.notice.constants.ConfConstant;
+import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;

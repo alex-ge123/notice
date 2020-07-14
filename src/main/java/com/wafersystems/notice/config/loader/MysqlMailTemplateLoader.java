@@ -1,7 +1,7 @@
 package com.wafersystems.notice.config.loader;
 
-import com.wafersystems.notice.mail.model.MailTemplateDto;
-import com.wafersystems.notice.mail.service.MailNoticeService;
+import com.wafersystems.notice.model.MailTemplateDto;
+import com.wafersystems.notice.service.MailNoticeService;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import lombok.Data;

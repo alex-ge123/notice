@@ -5,7 +5,7 @@
 
   <groupId>com.wafersystems</groupId>
   <artifactId>virsical-notice</artifactId>
-  <version>5.1.6.100</version>
+  <version>5.1.7.100</version>
   <packaging>jar</packaging>
 
   <name>notice</name>
@@ -146,7 +146,7 @@
     <dependency>
       <groupId>com.wafersystems</groupId>
       <artifactId>virsical-common-security</artifactId>
-      <version>5.1.6.106</version>
+      <version>5.1.7.102</version>
     </dependency>
     <!--jasypt配置文件加解密-->
     <dependency>
