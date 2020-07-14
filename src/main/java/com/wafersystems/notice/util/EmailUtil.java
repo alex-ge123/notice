@@ -103,6 +103,11 @@ public class EmailUtil {
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");
       }
+      int j = 587;
+      if (ParamConstant.getDEFAULT_MAIL_PORT() == j){
+        // TLS加密
+        props.put("mail.smtp.starttls.enable", "true");
+      }
       // 设置SMTP服务器地址
       props.put("mail.smtp.host", ParamConstant.getDEFAULT_MAIL_HOST());
       // 设置端口
