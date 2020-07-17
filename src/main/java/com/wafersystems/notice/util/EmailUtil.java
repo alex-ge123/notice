@@ -281,11 +281,7 @@ public class EmailUtil {
    */
   private String formatDate(String date, String timeZone) {
     SimpleDateFormat sim = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    if (StrUtil.isNotBlank(timeZone)) {
-      sim.setTimeZone(TimeZone.getTimeZone(timeZone));
-    } else {
-      sim.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-    }
+    sim.setTimeZone(TimeZone.getTimeZone("UTC"));
     return sim.format(Long.valueOf(date));
   }
 
