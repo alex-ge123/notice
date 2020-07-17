@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -104,7 +105,7 @@ public class EmailUtil {
         props.put("mail.smtp.socketFactory.fallback", "false");
       }
       int j = 587;
-      if (ParamConstant.getDEFAULT_MAIL_PORT() == j){
+      if (ParamConstant.getDEFAULT_MAIL_PORT() == j) {
         // TLS加密
         props.put("mail.smtp.starttls.enable", "true");
       }
@@ -207,8 +208,8 @@ public class EmailUtil {
       //格式化时间日程日期
       MailScheduleDto mailScheduleDto = temVal.getMailScheduleDto();
       log.debug("mailScheduleDo:{}", mailScheduleDto);
-      final String startStr = formatDate(mailScheduleDto.getStartDate());
-      final String endStr = formatDate(mailScheduleDto.getEndDate());
+      final String startStr = formatDate(mailScheduleDto.getStartDate(), mailScheduleDto.getTimeZone());
+      final String endStr = formatDate(mailScheduleDto.getEndDate(), mailScheduleDto.getTimeZone());
       String enventType = mailScheduleDto.getEnventType();
       MailScheduleStatusEnum statusEnum = MailScheduleStatusEnum.valueOf(enventType);
       String method = statusEnum.getEventType();
@@ -274,16 +275,18 @@ public class EmailUtil {
   /**
    * 格式化日期
    *
-   * @param date 日期
+   * @param date     日期
+   * @param timeZone 时区
    * @return 格式化后的日期串
    */
-  private String formatDate(String date) {
-    java.util.Calendar cal;
-    cal = java.util.Calendar.getInstance();
-    cal.setTime(DateUtil.formatDateTime(date));
-    cal.add(java.util.Calendar.HOUR, -8);
+  private String formatDate(String date, String timeZone) {
     SimpleDateFormat sim = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    return sim.format(cal.getTime());
+    if (StrUtil.isNotBlank(timeZone)) {
+      sim.setTimeZone(TimeZone.getTimeZone(timeZone));
+    } else {
+      sim.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+    }
+    return sim.format(Long.valueOf(date));
   }
 
   /**
