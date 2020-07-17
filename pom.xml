@@ -146,7 +146,7 @@
     <dependency>
       <groupId>com.wafersystems</groupId>
       <artifactId>virsical-common-security</artifactId>
-      <version>5.1.7.102</version>
+      <version>5.1.7.107</version>
     </dependency>
     <!--jasypt配置文件加解密-->
     <dependency>
