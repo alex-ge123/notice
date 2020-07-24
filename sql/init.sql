@@ -33,7 +33,7 @@ INSERT INTO `ntc_parameter` VALUES (9, '{"zh":"系统邮件超时时间","en":"T
 INSERT INTO `ntc_parameter` VALUES (10, '{"zh":"系统邮件编码","en":"Email encoding","tw":"系統郵件編碼"}', 'DEFAULT_MAIL_CHARSET', 'GBK');
 INSERT INTO `ntc_parameter` VALUES (11, '{"zh":"系统邮件显示名称","en":"Email name","tw":"系統郵件顯示名稱"}', 'DEFAULT_MAIL_MAILNAME', '威思客');
 INSERT INTO `ntc_parameter` VALUES (12, '{"zh":"后台服务默认时区","en":"Time zone","tw":"後台服務默認時區"}', 'DEFAULT_TIMEZONE', 'GMT+8');
-INSERT INTO `ntc_parameter` VALUES (13, '{"zh":"默认消息重发次数","en":"Repeat count","tw":"默認消息重發次數"}', 'DEFAULT_REPEAT_COUNT', '5');
+INSERT INTO `ntc_parameter` VALUES (13, '{"zh":"默认消息重发次数","en":"Repeat times","tw":"默認消息重發次數"}', 'DEFAULT_REPEAT_COUNT', '5');
 INSERT INTO `ntc_parameter` VALUES (14, '{"zh":"系统默认域名","en":"Domain","tw":"系統默認域名"}', 'DEFAULT_DOMAIN', 'wafersystems.com');
 INSERT INTO `ntc_parameter` VALUES (22, '{"zh":"系统邮件端口","en":"Email Service port","tw":"系統郵件端口"}', 'DEFAULT_MAIL_PORT', '25');
 INSERT INTO `ntc_parameter` VALUES (24, '{"zh":"静态图片资源路径","en":"Image directory","tw":"靜態圖片資源路徑"}', 'IMAGE_DIRECTORY', 'https://work.virsical.cn/res/release/mail');
