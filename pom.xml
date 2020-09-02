@@ -5,7 +5,7 @@
 
   <groupId>com.wafersystems</groupId>
   <artifactId>virsical-notice</artifactId>
-  <version>5.1.8.100</version>
+  <version>5.1.9.100</version>
   <packaging>jar</packaging>
 
   <name>notice</name>
@@ -21,6 +21,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
+    <virsical-common-security.version>5.1.9.103</virsical-common-security.version>
     <xmlFileName>testng.xml</xmlFileName>
     <sonar.exclusions>
       src/main/java/com/wafersystems/notice/base/model/**,
@@ -146,7 +147,7 @@
     <dependency>
       <groupId>com.wafersystems</groupId>
       <artifactId>virsical-common-security</artifactId>
-      <version>5.1.8.103</version>
+      <version>${virsical-common-security.version}</version>
     </dependency>
     <!--jasypt配置文件加解密-->
     <dependency>
