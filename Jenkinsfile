@@ -92,7 +92,7 @@ pipeline {
                             serverUrl: "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}") {
                         if (params.reserveDBData == 'No') {
                             MYSQL_POD = sh(
-                                    script: "kubectl get pod -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | grep ${GROUP_NAME}-mysql | head -1",
+                                    script: "kubectl get pod -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | grep ^${GROUP_NAME}-mysql | head -1",
                                     returnStdout: true
                             ).trim()
 
