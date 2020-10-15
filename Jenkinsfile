@@ -62,9 +62,6 @@ pipeline {
                 sh "mkdir -p tmp/config"
                 sh "mkdir -p tmp/vms"
 
-                sh "rm -rf tmp_sql"
-                sh "mkdir -p  tmp_sql/${JOB_NAME}"
-
                 sh "cp target/*.jar tmp"
 
                 sh "cp k8s/backend-k8s.yml k8s.yml"
@@ -75,8 +72,6 @@ pipeline {
                 sh "sed -i s@__GROUP_NAME__@${GROUP_NAME}@g k8s.yml"
                 sh "sed -i s@__ARTIFACT_ID__@${readMavenPom().getArtifactId()}@g k8s.yml"
                 sh "sed -i s@__REPLICAS_NUM__@${REPLICAS_NUM}@g k8s.yml"
-
-                sh "cp sql/init.sql tmp_sql/${JOB_NAME}"
 
                 script {
                     if (SERVICE_NAME.length() > 24) {
@@ -96,24 +91,8 @@ pipeline {
                                     returnStdout: true
                             ).trim()
 
-                            RET = sh(
-                                    script: "kubectl get pvc ${GROUP_NAME}-sql --no-headers=true -o custom-columns=pv:.spec.volumeName -n ${RD_ENV}",
-                                    returnStdout: true
-                            ).trim()
-
-                            SQL_PATH = "${RD_ENV}-${GROUP_NAME}-sql-" + RET
-
-                            ftpPublisher failOnError: true,
-                                    publishers: [
-                                            [configName: 'ftp_ds1819_dev', transfers: [
-                                                    [cleanRemote: true,
-                                                     remoteDirectory: "${SQL_PATH}",
-                                                     sourceFiles    : "tmp_sql/",
-                                                     removePrefix   : "tmp_sql"]
-                                            ]]
-                                    ]
-
-                            sh "kubectl exec ${MYSQL_POD} -n ${RD_ENV} -- mysql -uwafer -pwafer -e 'source /sql/${JOB_NAME}/init.sql'"
+                            sh "kubectl exec ${MYSQL_POD} -n ${RD_ENV} -- mysql -uwafer -pwafer -e 'DROP DATABASE IF EXISTS virsical_notice'"
+                            sh "kubectl exec ${MYSQL_POD} -n ${RD_ENV} -- mysql -uwafer -pwafer -e 'CREATE DATABASE virsical_notice'"
                         }
 
 
