@@ -51,6 +51,7 @@ public class Receiver {
     log.debug("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, message);
     try {
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
+      log.info("监听到邮件消息，MsgId:{}", messageDTO.getMsgId());
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
         MailDTO mailDTO = JSON.parseObject(messageDTO.getData().toString(), MailDTO.class);
 
@@ -87,6 +88,7 @@ public class Receiver {
             .template(mailDTO.getTempName())
             .mailDTO(mailDTO)
             .build(), 0);
+          log.info("邮件消息发送成功，MsgId:{}", messageDTO.getMsgId());
         } catch (Exception e) {
           log.error("发送邮件失败：", e);
         }
@@ -112,6 +114,7 @@ public class Receiver {
         return;
       }
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
+      log.info("监听到短信消息，msgId:{}",messageDTO.getMsgId());
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
         SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
         smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
@@ -125,6 +128,7 @@ public class Receiver {
       } else {
         log.warn("消息类型未识别，无法发送短信");
       }
+      log.info("短信消息发送成功，msgId:{}",messageDTO.getMsgId());
     } catch (Exception e) {
       log.error("消息监听处理异常", e);
     }
