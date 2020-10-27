@@ -7,6 +7,7 @@ import com.wafersystems.virsical.common.core.constant.SecurityConstants;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.flywaydb.core.Flyway;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -64,6 +65,12 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    // 使用flyway清理数据库，系统启动时会初始化数据库
+    String datasourceUrl = "jdbc:mysql://192.168.203.20:20000/virsical_notice?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=Asia/Shanghai";
+    String datasourceUsername = "wafer";
+    String datasourcePassword = "wafer";
+    Flyway flyway = Flyway.configure().dataSource(datasourceUrl, datasourceUsername, datasourcePassword).load();
+    flyway.clean();
     MockitoAnnotations.initMocks(this);
   }
 

@@ -6,6 +6,29 @@ spring:
     name: virsical-notice
   profiles:
     active: testcase
+  flyway:
+    # 是否启用flyway
+    enabled: true
+    # 升级脚本位置，可以配置多个，英文逗号分隔
+    locations: classpath:db/migration
+    # 检测迁移脚本的路径是否存在，如不存在，则抛出异常
+    check-location: true
+    # 在迁移时，是否校验已迁移过的脚本，是否有改动
+    validate-on-migrate: true
+    # 新的环境中数据库中有数据，且没有flyway_schema_history表时，是否执行迁移操作（默认为false）
+    # false:在启动时会报错，并停止迁移; true:则生成history表并完成所有的迁移，要根据实际情况设置;
+    # 如果数据库是新部署，请配置false
+    baseline-on-migrate: false
+    # 升级脚本基础版本，与 baseline-on-migrate: true 搭配使用（默认为1）
+    baseline-version: 1
+    # 基础版本执行时描述， 默认为<<Flyway Baseline>>
+    baseline-description: <<Flyway Baseline>>
+    # 占位符是否要被替换，默认true.
+    placeholder-replacementplaceholders: false
+    # 设置每个占位符的前缀，默认${.
+    placeholder-prefix: '#{{'
+    # 设置每个占位符的后缀，默认}.
+    placeholder-suffix: '}}'
   # 配置中心
   cloud:
     config:
@@ -22,7 +45,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL5Dialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
   datasource:
-    url: jdbc:mysql://192.168.203.20:20000/virsical_notice_testcase?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.203.20:20000/virsical_notice?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useSSL=false&serverTimezone=Asia/Shanghai
     username: wafer
     password: wafer
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -164,8 +187,16 @@ sms:
     # 验证码有效期，单位秒
     timeout: 300
 
-# 邮件模板路径
-mail:
-  template:
-    path: d:/vms/
+#短信邮件重复发送拦截
+intercept:
+  # 短信拦截是否开启
+  smsEnabled: true
+  # 短信拦截时间范围（多少分钟内）
+  smsTimeHorizon: 3
+  # 邮件拦截是否开启
+  mailEnabled: true
+  # 邮件拦截时间范围（多少分钟内）
+  mailTimeHorizon: 3
 
+# 短信数量查询url
+sms-num-search-url: https://work.virsical.cn/sms/search/balance
