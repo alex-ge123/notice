@@ -3,7 +3,7 @@ package com.wafersystems.notice.model;
 import lombok.Data;
 
 @Data
-public class SmsRecordVo {
+public class SmsRecordVO {
     private String callee;
 
     private String domain;

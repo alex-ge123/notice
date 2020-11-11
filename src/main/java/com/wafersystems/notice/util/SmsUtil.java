@@ -9,7 +9,7 @@ import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.constants.SmsConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
-import com.wafersystems.notice.model.SmsRecordVo;
+import com.wafersystems.notice.model.SmsRecordVO;
 import com.wafersystems.security.SecurityUtils;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -296,13 +296,13 @@ public class SmsUtil {
    */
   private int parseSmsBalanceCacheRedis(String domain, String responseResult, boolean isParseSmsSend) {
     try {
-      SmsRecordVo smsRecordVo;
+      SmsRecordVO smsRecordVo;
       if (isParseSmsSend) {
-        smsRecordVo = JSON.parseObject(responseResult, SmsRecordVo.class);
+        smsRecordVo = JSON.parseObject(responseResult, SmsRecordVO.class);
       } else {
         JSONObject jsonObject = JSON.parseObject(responseResult);
         Object msg = jsonObject.get("msg");
-        smsRecordVo = JSON.parseObject(msg.toString(), SmsRecordVo.class);
+        smsRecordVo = JSON.parseObject(msg.toString(), SmsRecordVO.class);
       }
       redisTemplate.opsForValue().set(SmsConstants.SMS_NUM_KEY + domain, smsRecordVo.getSmsBalance() + "");
       return (int) smsRecordVo.getSmsBalance();

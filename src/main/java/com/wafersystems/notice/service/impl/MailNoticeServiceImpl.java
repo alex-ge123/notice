@@ -2,15 +2,12 @@ package com.wafersystems.notice.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.wafersystems.notice.dao.BaseDao;
-import com.wafersystems.notice.model.PaginationDto;
 import com.wafersystems.notice.config.AsyncTaskManager;
-import com.wafersystems.notice.model.MailBean;
-import com.wafersystems.notice.model.MailTemplateDto;
-import com.wafersystems.notice.model.MailTemplateSearchListDto;
+import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.dao.impl.BaseDaoImpl;
+import com.wafersystems.notice.model.*;
 import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.notice.util.EmailUtil;
-import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SecurityConstants;
@@ -41,7 +38,7 @@ import java.util.List;
 public class MailNoticeServiceImpl implements MailNoticeService {
 
   @Autowired
-  private BaseDao baseDao;
+  private BaseDaoImpl baseDao;
 
   @Autowired
   private EmailUtil mailUtil;
@@ -79,25 +76,25 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   }
 
   @Override
-  public void saveTemp(MailTemplateDto mailTemplateDto) {
-    MailTemplateDto dto = getTempByName(mailTemplateDto.getName());
+  public void saveTemp(MailTemplateDTO mailTemplateDto) {
+    MailTemplateDTO dto = getTempByName(mailTemplateDto.getName());
     if (null == dto) {
       baseDao.save(mailTemplateDto);
-      sendLog(mailTemplateDto, "模板:[" + mailTemplateDto.getName() + "]新增。");
+      sendLog(mailTemplateDto.getName(), "模板:[" + mailTemplateDto.getName() + "]新增。");
     } else {
       dto.setDescription(mailTemplateDto.getDescription());
       dto.setCategory(mailTemplateDto.getCategory());
       dto.setContent(mailTemplateDto.getContent());
       dto.setModtime(null);
       baseDao.update(dto);
-      sendLog(mailTemplateDto, "模板:[" + mailTemplateDto.getName() + "]更新。");
+      sendLog(mailTemplateDto.getName(), "模板:[" + mailTemplateDto.getName() + "]更新。");
     }
     log.debug("新增/修改{}模板成功！", mailTemplateDto.getName());
   }
 
   @Override
-  public void updateTemp(MailTemplateDto mailTemplateDto) {
-    MailTemplateDto dto = getTempById(mailTemplateDto.getId());
+  public void updateTemp(MailTemplateDTO mailTemplateDto) {
+    MailTemplateDTO dto = getTempById(mailTemplateDto.getId());
     if (null != dto) {
       if (!StrUtil.isEmptyStr(mailTemplateDto.getName())) {
         dto.setName(mailTemplateDto.getName());
@@ -113,7 +110,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       }
       dto.setModtime(null);
       baseDao.update(dto);
-      sendLog(mailTemplateDto, "模板:[" + dto.getName() + "]更新。");
+      sendLog(mailTemplateDto.getName(), "模板:[" + dto.getName() + "]更新。");
       log.debug("修改{}模板成功！", mailTemplateDto.getName());
     } else {
       throw new RuntimeException("未查询到id为[" + mailTemplateDto.getId() + "]的邮件模板");
@@ -122,8 +119,8 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   }
 
   @Override
-  public PaginationDto<MailTemplateSearchListDto> getTemp(Long id, String category, String name, Integer pageSize, Integer startIndex) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateSearchListDto.class);
+  public PaginationDTO<MailTemplateSearchListDTO> getTemp(Long id, String category, String name, Integer pageSize, Integer startIndex) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateSearchListDTO.class);
     if (null != id) {
       criteria.add(Restrictions.eq("id", id));
     }
@@ -138,10 +135,10 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   }
 
   @Override
-  public MailTemplateDto getTempById(Long id) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDto.class);
+  public MailTemplateDTO getTempById(Long id) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDTO.class);
     criteria.add(Restrictions.eq("id", id));
-    List<MailTemplateDto> list = baseDao.findByCriteria(criteria);
+    List<MailTemplateDTO> list = baseDao.findByCriteria(criteria);
     if (CollUtil.isNotEmpty(list)) {
       return list.get(0);
     }
@@ -149,10 +146,10 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   }
 
   @Override
-  public MailTemplateDto getTempByName(String name) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDto.class);
+  public MailTemplateDTO getTempByName(String name) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDTO.class);
     criteria.add(Restrictions.eq("name", name));
-    List<MailTemplateDto> list = baseDao.findByCriteria(criteria);
+    List<MailTemplateDTO> list = baseDao.findByCriteria(criteria);
     if (CollUtil.isNotEmpty(list)) {
       return list.get(0);
     }
@@ -162,9 +159,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   /**
    * 记录日志
    *
-   * @param mailTemplateDto
+   * @param name
    */
-  public void sendLog(MailTemplateDto mailTemplateDto, String content) {
+  private void sendLog(String name, String content) {
     LogDTO logDTO = new LogDTO();
     logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
     logDTO.setTitle("邮件模板更新");
@@ -172,7 +169,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setType("template-update");
     logDTO.setResult(CommonConstants.SUCCESS);
     logDTO.setUserId(TenantContextHolder.getUserId());
-    logDTO.setObjectId(mailTemplateDto.getName());
+    logDTO.setObjectId(name);
     logDTO.setTenantId(TenantContextHolder.getTenantId());
     logDTO.setUsername(TenantContextHolder.getUsername());
     asyncTaskManager.asyncSendLogMessage(logDTO);
@@ -212,5 +209,21 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     mailBean.setMailDTO(mailDTO);
     log.debug("发送邮件logo地址为{}，系统名称为{}，电话号码为{}" + mailDTO.getLogo(), mailDTO.getSystemName(), mailDTO.getPhone());
     return mailBean;
+  }
+
+  @Override
+  public boolean updateTempState(TemplateStateUpdateDTO dto) {
+    if (dto.isUpdateAll()) {
+      //全部修改
+      baseDao.updateBySql("update MailTemplateSearchListDTO as m set m.state = " + dto.getState() + " where m.category != 'common'");
+      sendLog("all", "修改全部邮件模板状态为：" + dto.getState());
+      log.debug("修改邮件模板状态：{}", dto.getState());
+    } else {
+      //通过id修改
+      baseDao.updateBySql("update MailTemplateSearchListDTO as m set m.state = " + dto.getState() + " where  m.category != 'common' and m.id = " + dto.getId());
+      sendLog(dto.getId(), "修改邮件模板状态为：" + dto.getState());
+      log.debug("修改邮件模板:{}状态：{}", dto.getId(), dto.getState());
+    }
+    return true;
   }
 }

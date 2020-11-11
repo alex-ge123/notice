@@ -1,9 +1,6 @@
 package com.wafersystems.notice.service;
 
-import com.wafersystems.notice.model.PaginationDto;
-import com.wafersystems.notice.model.MailBean;
-import com.wafersystems.notice.model.MailTemplateDto;
-import com.wafersystems.notice.model.MailTemplateSearchListDto;
+import com.wafersystems.notice.model.*;
 
 /**
  * 邮件接口
@@ -15,8 +12,8 @@ public interface MailNoticeService {
   /**
    * 邮件发送 author waferzy DateTime 2016-3-10 下午2:37:55.
    *
-   * @param mailBean    邮件填充内容
-   * @param count   邮件重发次数
+   * @param mailBean 邮件填充内容
+   * @param count    邮件重发次数
    * @throws Exception
    */
   void sendMail(MailBean mailBean, Integer count) throws Exception;
@@ -27,14 +24,14 @@ public interface MailNoticeService {
    *
    * @param mailTemplateDto
    */
-  void saveTemp(MailTemplateDto mailTemplateDto);
+  void saveTemp(MailTemplateDTO mailTemplateDto);
 
   /**
    * 修改邮件模板
    *
    * @param mailTemplateDto
    */
-  void updateTemp(MailTemplateDto mailTemplateDto);
+  void updateTemp(MailTemplateDTO mailTemplateDto);
 
   /**
    * 查询邮件模板列表(不包含content)
@@ -46,7 +43,7 @@ public interface MailNoticeService {
    * @param row
    * @return
    */
-  PaginationDto<MailTemplateSearchListDto> getTemp(Long id, String category, String name, Integer page, Integer row);
+  PaginationDTO<MailTemplateSearchListDTO> getTemp(Long id, String category, String name, Integer page, Integer row);
 
   /**
    * 通过id查询邮件模板详细信息
@@ -54,7 +51,7 @@ public interface MailNoticeService {
    * @param id
    * @return
    */
-  MailTemplateDto getTempById(Long id);
+  MailTemplateDTO getTempById(Long id);
 
   /**
    * 查询name邮件模板详细信息
@@ -62,7 +59,7 @@ public interface MailNoticeService {
    * @param name
    * @return
    */
-  MailTemplateDto getTempByName(String name);
+  MailTemplateDTO getTempByName(String name);
 
   /**
    * 填充租户信息
@@ -71,4 +68,12 @@ public interface MailNoticeService {
    * @return
    */
   MailBean fillTenantInfo(MailBean mailBean);
+
+  /**
+   * 修改模板状态
+   *
+   * @param dto dto
+   * @return boolean
+   */
+  boolean updateTempState(TemplateStateUpdateDTO dto);
 }

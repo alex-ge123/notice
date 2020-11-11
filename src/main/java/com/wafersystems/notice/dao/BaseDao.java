@@ -1,6 +1,6 @@
 package com.wafersystems.notice.dao;
 
-import com.wafersystems.notice.model.PaginationDto;
+import com.wafersystems.notice.model.PaginationDTO;
 import org.hibernate.criterion.DetachedCriteria;
 
 import java.io.Serializable;
@@ -97,5 +97,5 @@ public interface BaseDao<T> {
    * @param startIndex 起始页
    * @return PaginationDTO
    */
-  PaginationDto<T> selectPage(DetachedCriteria detachedCriteria, int pageSize, int startIndex);
+  PaginationDTO<T> selectPage(DetachedCriteria detachedCriteria, int pageSize, int startIndex);
 }

@@ -13,7 +13,7 @@ import java.util.List;
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
 @Data
-public class PaginationDto<T> implements Serializable {
+public class PaginationDTO<T> implements Serializable {
 
 
   private List<T> rows;

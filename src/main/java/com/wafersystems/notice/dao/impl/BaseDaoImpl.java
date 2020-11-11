@@ -1,7 +1,7 @@
 package com.wafersystems.notice.dao.impl;
 
 import com.wafersystems.notice.dao.BaseDao;
-import com.wafersystems.notice.model.PaginationDto;
+import com.wafersystems.notice.model.PaginationDTO;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -164,12 +164,12 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
    */
   @SuppressWarnings("unchecked")
   @Override
-  public PaginationDto<T> selectPage(DetachedCriteria detachedCriteria, int pageSize, int startIndex) {
+  public PaginationDTO<T> selectPage(DetachedCriteria detachedCriteria, int pageSize, int startIndex) {
     // 如果翻页则只在第一次计算总页数，总记录数需要页面回传。
     Criteria criteria = getCriteria(detachedCriteria);
     Long tempTotalCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
     int totalCount = Integer.parseInt(String.valueOf(tempTotalCount));
-    PaginationDto<T> paginationDto = new PaginationDto<>();
+    PaginationDTO<T> paginationDto = new PaginationDTO<>();
     paginationDto.setRecords(totalCount);
     criteria.setProjection(null);
     criteria.setFirstResult((startIndex - 1) * pageSize);

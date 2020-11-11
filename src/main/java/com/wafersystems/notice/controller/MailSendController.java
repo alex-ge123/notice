@@ -3,13 +3,11 @@ package com.wafersystems.notice.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
-import com.wafersystems.notice.model.PaginationDto;
-import com.wafersystems.notice.model.TestSendMailDTO;
-import com.wafersystems.notice.model.MailBean;
-import com.wafersystems.notice.model.MailTemplateDto;
-import com.wafersystems.notice.model.MailTemplateSearchListDto;
+import com.wafersystems.notice.model.*;
 import com.wafersystems.notice.service.MailNoticeService;
-import com.wafersystems.notice.util.*;
+import com.wafersystems.notice.util.DateUtil;
+import com.wafersystems.notice.util.EmailUtil;
+import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.annotation.Inner;
@@ -67,7 +65,7 @@ public class MailSendController {
   public R templateList(Long id, String category, String name, @RequestParam(
     defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize, @RequestParam(
     defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
-    PaginationDto<MailTemplateSearchListDto> list = mailNoticeService.getTemp(id, category, name, pageSize, startIndex);
+    PaginationDTO<MailTemplateSearchListDTO> list = mailNoticeService.getTemp(id, category, name, pageSize, startIndex);
     return R.ok(list);
   }
 
@@ -86,7 +84,7 @@ public class MailSendController {
       log.info("上传的文件名为：" + fileName);
       byte[] bytes = file.getBytes();
       String content = new String(bytes);
-      MailTemplateDto mailTemplateDto = new MailTemplateDto();
+      MailTemplateDTO mailTemplateDto = new MailTemplateDTO();
       mailTemplateDto.setName(fileName);
       mailTemplateDto.setContent(content);
       mailTemplateDto.setCategory(new String(category.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
@@ -112,7 +110,7 @@ public class MailSendController {
   @PreAuthorize("@pms.hasPermission('')")
   public R templateUpdate(MultipartFile file, @RequestParam Integer id, String category, String description) {
     try {
-      MailTemplateDto mailTemplateDto = new MailTemplateDto();
+      MailTemplateDTO mailTemplateDto = new MailTemplateDTO();
       mailTemplateDto.setId(id.longValue());
       if (ObjectUtil.isNotNull(file)) {
         String fileName = StrUtil.getFileNameNoEx(file.getOriginalFilename());
@@ -134,6 +132,12 @@ public class MailSendController {
       return R.fail(e.getMessage());
     }
     return R.ok();
+  }
+
+  @PostMapping("/template/update/state")
+  @PreAuthorize("@pms.hasPermission('')")
+  public R templateUpdateState(@RequestBody TemplateStateUpdateDTO dto) {
+    return mailNoticeService.updateTempState(dto) ? R.ok() : R.fail();
   }
 
   /**
@@ -185,7 +189,7 @@ public class MailSendController {
    * @param toMail   接收人
    * @param copyTo   抄送人
    * @param tempName 模版名称
-   * @param mailDto      内容
+   * @param mailDto  内容
    * @param lang     语言
    * @return -
    */

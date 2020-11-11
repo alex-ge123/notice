@@ -2,8 +2,6 @@ package com.wafersystems.notice.model;
 
 import lombok.Data;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,12 +14,12 @@ import java.util.Date;
 @ToString
 @Entity
 @Table(name = "mail_template")
-public class MailTemplateDto implements Serializable {
+public class MailTemplateSearchListDTO implements Serializable {
 
   /**
    *
    */
-  private static final long serialVersionUID = -4136244528141345715L;
+  private static final long serialVersionUID = -4136234528141345715L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,11 +31,6 @@ public class MailTemplateDto implements Serializable {
   private String name;
 
   /**
-   * 模板内容
-   */
-  private String content;
-
-  /**
    * 描述
    */
   private String description;
@@ -45,8 +38,6 @@ public class MailTemplateDto implements Serializable {
   /**
    * 修改时间
    */
-  @UpdateTimestamp
-  @Column(nullable = false)
   private Date modtime;
 
   /**
@@ -55,9 +46,13 @@ public class MailTemplateDto implements Serializable {
   private String category;
 
   /**
+   * 模板状态：0-正常，1-停用
+   */
+  private Integer state = 0;
+
+  /**
    * 创建时间
    */
-  @CreationTimestamp
-  @Column(nullable = false, updatable = false)
+  @Column(updatable = false)
   private Date createtime;
 }

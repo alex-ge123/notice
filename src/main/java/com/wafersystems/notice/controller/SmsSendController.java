@@ -1,7 +1,11 @@
 package com.wafersystems.notice.controller;
-
 import cn.hutool.core.util.RandomUtil;
+import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.model.PaginationDTO;
+import com.wafersystems.notice.model.SmsTemplateDTO;
+import com.wafersystems.notice.model.TemplateStateUpdateDTO;
+import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import com.wafersystems.virsical.common.core.util.R;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.TimeUnit;
@@ -30,6 +35,9 @@ public class SmsSendController {
 
   @Autowired
   private SmsUtil smsUtil;
+
+  @Autowired
+  private SmsService smsService;
   /**
    * 短信验证码缓存key
    */
@@ -117,5 +125,57 @@ public class SmsSendController {
       return R.ok();
     }
     return R.fail();
+  }
+
+  /**
+   * 分页查询短信模板列表
+   *
+   * @param id         id
+   * @param category   category
+   * @param name       name
+   * @param pageSize   分页大小
+   * @param startIndex 起始页
+   * @return
+   */
+  @GetMapping("/template/page")
+  @PreAuthorize("@pms.hasPermission('')")
+  public R templatePage(String id, String category, String name,
+                        @RequestParam(defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize,
+                        @RequestParam(defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
+    PaginationDTO<SmsTemplateDTO> list = smsService.getTemp(id, category, name, pageSize, startIndex);
+    return R.ok(list);
+  }
+
+  /**
+   * 添加/修改短信模板
+   *
+   * @param dto 邮件模板
+   * @return R
+   */
+  @PostMapping("/template/add")
+  @PreAuthorize("@pms.hasPermission('')")
+  public R templateAdd(@RequestBody SmsTemplateDTO dto) {
+    smsService.saveTemp(dto);
+    return R.ok();
+  }
+
+  /**
+   * 删除短信模板
+   *
+   * @param id id
+   * @return R
+   */
+  @GetMapping("/template/del/{id}")
+  @PreAuthorize("@pms.hasPermission('')")
+  public R templateAdd(@PathVariable("id") String id) {
+    smsService.delTemp(id);
+    return R.ok();
+  }
+
+
+  @PostMapping("/template/update/state")
+  @PreAuthorize("@pms.hasPermission('')")
+  public R templateUpdateState(@RequestBody TemplateStateUpdateDTO dto) {
+    return smsService.updateTempState(dto) ? R.ok() : R.fail();
   }
 }
