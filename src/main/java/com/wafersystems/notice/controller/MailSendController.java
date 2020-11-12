@@ -87,8 +87,8 @@ public class MailSendController {
       MailTemplateDTO mailTemplateDto = new MailTemplateDTO();
       mailTemplateDto.setName(fileName);
       mailTemplateDto.setContent(content);
-      mailTemplateDto.setCategory(new String(category.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
-      mailTemplateDto.setDescription(new String(description.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+      mailTemplateDto.setCategory(new String(category.getBytes(), StandardCharsets.UTF_8));
+      mailTemplateDto.setDescription(new String(description.getBytes(), StandardCharsets.UTF_8));
       mailNoticeService.saveTemp(mailTemplateDto);
     } catch (Exception e) {
       log.error("上传邮件模板失败", e);
@@ -121,10 +121,10 @@ public class MailSendController {
         mailTemplateDto.setName(fileName);
       }
       if (!cn.hutool.core.util.StrUtil.isEmpty(category)) {
-        mailTemplateDto.setCategory(new String(category.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+        mailTemplateDto.setCategory(new String(category.getBytes(), StandardCharsets.UTF_8));
       }
       if (!cn.hutool.core.util.StrUtil.isEmpty(description)) {
-        mailTemplateDto.setDescription(new String(description.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+        mailTemplateDto.setDescription(new String(description.getBytes(), StandardCharsets.UTF_8));
       }
       mailNoticeService.updateTemp(mailTemplateDto);
     } catch (Exception e) {

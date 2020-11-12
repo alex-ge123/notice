@@ -1,9 +1,11 @@
 package com.wafersystems.notice.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
+import com.wafersystems.notice.config.MailProperties;
 import com.wafersystems.notice.config.SendInterceptProperties;
 import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
 import com.wafersystems.notice.constants.ConfConstant;
@@ -11,7 +13,9 @@ import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.model.MailBean;
+import com.wafersystems.notice.model.MailTemplateDTO;
 import com.wafersystems.notice.model.enums.MailScheduleStatusEnum;
+import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
@@ -82,6 +86,12 @@ public class EmailUtil {
   @Autowired
   private AmqpTemplate rabbitTemplate;
 
+  @Autowired
+  private MailProperties mailProperties;
+
+  @Autowired
+  private MailNoticeService mailService;
+
   /**
    * 发送邮件
    *
@@ -89,6 +99,11 @@ public class EmailUtil {
    * @throws Exception Exception
    */
   public void send(MailBean mailBean) throws Exception {
+    final MailTemplateDTO template = mailService.getTempByName(mailBean.getTemplate());
+    if (ObjectUtil.isNotNull(template) && ObjectUtil.equal(template.getState(), 1)) {
+      log.warn("邮件模板[{}]禁用，邮件[{}]不发送！", mailBean.getTemplate(), mailBean.getSubject());
+      return;
+    }
     //重复发送拦截
     if (sendIntercept.mailBoolIntercept(mailBean)) {
       log.error("拦截重复发送邮件[{}]", mailBean.toString());
@@ -117,6 +132,11 @@ public class EmailUtil {
       props.put("mail.mime.charset", ParamConstant.getDEFAULT_MAIL_CHARSET());
       // 设置认证模式
       props.put("mail.smtp.auth", ParamConstant.getDEFAULT_MAIL_AUTH());
+      // 设置配置参数
+      final Map<String, Object> propsMap = mailProperties.getProps();
+      if (CollUtil.isNotEmpty(propsMap)) {
+        props.putAll(propsMap);
+      }
       // 获取会话信息
       Session session = Session.getDefaultInstance(props, null);
       // 构造邮件消息对象

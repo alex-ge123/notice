@@ -1,5 +1,6 @@
 package com.wafersystems.notice.util;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.config.SendInterceptProperties;
@@ -10,6 +11,8 @@ import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.constants.SmsConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.model.SmsRecordVO;
+import com.wafersystems.notice.model.SmsTemplateDTO;
+import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.security.SecurityUtils;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +54,9 @@ public class SmsUtil {
 
   @Autowired
   private SystemProperties systemProperties;
+
+  @Autowired
+  private SmsService smsService;
 
   @Value("${sms-num-search-url}")
   private String searchUrl;
@@ -104,7 +110,13 @@ public class SmsUtil {
    * @param params    参数
    */
   private String sendSms(String templetId, String phoneNum, List<String> params,
-                        String domain, String smsSign) {
+                         String domain, String smsSign) {
+    final SmsTemplateDTO template = smsService.getTempById(templetId);
+    if (ObjectUtil.isNotNull(template) && ObjectUtil.equal(template.getState(), 1)) {
+      log.warn("短信模板[{}]禁用，将不向电话[{}]发送短信！", templetId, phoneNum);
+      return "1";
+    }
+
     log.info("开始发送短信：templetId={},phoneNum={},params={},domain={},smsSign={}",
       templetId, phoneNum, params, domain, smsSign);
     //重复拦截
