@@ -1,5 +1,3 @@
-USE `virsical_notice`;
-
 -- 邮件模板添加状态字段
 alter table `mail_template` add `state` tinyint(2) NOT NULL DEFAULT 0  COMMENT '状态：0-正常，1-停用';
 
