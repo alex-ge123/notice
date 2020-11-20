@@ -13,6 +13,7 @@ import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -41,6 +42,9 @@ public class Receiver {
   @Autowired
   private SmsUtil smsUtil;
 
+  @Autowired
+  private StringEncryptor stringEncryptor;
+
   /**
    * 监听邮件消息队列
    *
@@ -48,7 +52,7 @@ public class Receiver {
    */
   @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_MAIL)
   public void mail(@Payload String message) {
-    log.debug("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, message);
+    log.info("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, stringEncryptor.encrypt(message));
     try {
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
       log.info("监听到邮件消息，MsgId:{}", messageDTO.getMsgId());
@@ -107,7 +111,7 @@ public class Receiver {
    */
   @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_SMS)
   public void sms(@Payload String message) {
-    log.debug("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, message);
+    log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, stringEncryptor.encrypt(message));
     try {
       if (!ParamConstant.isSMS_SWITCH()) {
         log.warn("未配置短信服务调用地址！");
