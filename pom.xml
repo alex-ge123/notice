@@ -24,9 +24,9 @@
     <virsical-common-security.version>5.1.12.102</virsical-common-security.version>
     <xmlFileName>testng.xml</xmlFileName>
     <sonar.exclusions>
-      src/main/java/com/wafersystems/notice/base/model/**,
+      src/main/java/com/wafersystems/notice/config/**,
+      src/main/java/com/wafersystems/notice/model/**,
       src/main/java/com/wafersystems/notice/constants/**,
-      src/main/java/com/wafersystems/notice/mail/model/**,
       src/main/java/com/wafersystems/notice/util/**,
       src/main/java/com/wafersystems/notice/NoticeApplication.java,
       src/test/java/com/wafer/BaseTest.java,
