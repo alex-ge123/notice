@@ -9,6 +9,7 @@ import com.wafersystems.notice.model.*;
 import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.StrUtil;
+import com.wafersystems.virsical.common.core.config.AesKeyProperties;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SecurityConstants;
 import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
@@ -18,6 +19,7 @@ import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.entity.TenantDTO;
 import com.wafersystems.virsical.common.feign.RemoteTenantService;
+import com.wafersystems.virsical.common.util.AesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
@@ -27,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 邮件接口实现
@@ -49,6 +53,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   @Autowired
   private AsyncTaskManager asyncTaskManager;
 
+  @Autowired
+  private AesKeyProperties aesKeyProperties;
+
   /**
    * Description: 邮件发送 author waferzy DateTime 2016-3-10 下午2:37:55.
    *
@@ -58,6 +65,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   @Override
   public void sendMail(MailBean mailBean, Integer count) throws Exception {
     log.debug("开始发送邮件。");
+    //邮箱解密
+    mailBean.setToEmails(this.mailsDecrypt(mailBean.getToEmails()));
+    mailBean.setCopyTo(this.mailsDecrypt(mailBean.getCopyTo()));
     //填充租户信息
     mailBean = this.fillTenantInfo(mailBean);
     // 发送邮件
@@ -226,4 +236,26 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     }
     return true;
   }
+
+  private String mailsDecrypt(String mails) {
+    if (cn.hutool.core.util.StrUtil.isNotBlank(mails)) {
+      //多个收件人/抄送人
+      final String[] split = mails.split(CommonConstants.COMMA);
+      if (split.length > 0) {
+        return Stream.of(split).map(mail ->
+          {
+            try {
+              //解密
+              return AesUtils.decryptAes(mail, aesKeyProperties.getKey());
+            } catch (Exception e) {
+              //明文，不需要解密
+              return mail;
+            }
+          }
+        ).collect(Collectors.joining(CommonConstants.COMMA));
+      }
+    }
+    return mails;
+  }
+
 }

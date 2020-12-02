@@ -3,8 +3,8 @@ package com.wafersystems.notice.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.BaseTest;
-import com.wafersystems.notice.model.TestSendMailDTO;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.model.TestSendMailDTO;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.dto.TemContentVal;
 import com.wafersystems.virsical.common.core.util.FileUtils;
@@ -152,7 +152,7 @@ public class MailSendControllerTest extends BaseTest {
 //      (Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     TestSendMailDTO testSendMailDTO = new TestSendMailDTO();
     testSendMailDTO.setTitle("测试");
-    testSendMailDTO.setToMail("shennan@wafersystems.com");
+    testSendMailDTO.setToMail("p+2E+KqcXhB10K+4b6Qv674HlsqXiEm4B7sIrrEuXxE=,378191876@qq.com");
     testSendMailDTO.setTempName("commonForgetPwd");
     testSendMailDTO.setLang("zh_CN");
     String url = "/mail/testSend";

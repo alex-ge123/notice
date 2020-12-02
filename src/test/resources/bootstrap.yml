@@ -90,7 +90,7 @@ jasypt:
     password: wafer
 aes:
   # 前端密码密钥，必须16位
-  key: 'XDH206VF30Nf9q7t'
+  key: ENC(P99o76/qZUsXdVIUeQnWCZOX/d8xspy1xKczV0uc9yA=)
 
 # 系统参数配置
 system:

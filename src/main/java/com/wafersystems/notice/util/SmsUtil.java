@@ -14,7 +14,9 @@ import com.wafersystems.notice.model.SmsRecordVO;
 import com.wafersystems.notice.model.SmsTemplateDTO;
 import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.security.SecurityUtils;
+import com.wafersystems.virsical.common.core.config.AesKeyProperties;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
+import com.wafersystems.virsical.common.util.AesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -32,7 +34,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,6 +62,9 @@ public class SmsUtil {
 
   @Autowired
   private SmsService smsService;
+
+  @Autowired
+  private AesKeyProperties aesKeyProperties;
 
   @Value("${sms-num-search-url}")
   private String searchUrl;
@@ -96,6 +104,11 @@ public class SmsUtil {
           log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache1);
           return;
         }
+      }
+      //手机号解密
+      try {
+        phone = AesUtils.decryptAes(phone, aesKeyProperties.getKey());
+      } catch (Exception ignore) {
       }
       String result = sendSms(templateId, phone, params, domain, smsSign);
       log.info("电话号码" + phone + "发送短信的结果为：" + result);
