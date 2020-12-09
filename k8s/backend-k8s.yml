@@ -28,9 +28,7 @@ spec:
         args:
           - >-
             cd /work && java
-            -javaagent:/work/pinpoint-agent-2.0.1/pinpoint-bootstrap-2.0.1.jar
-            -Dpinpoint.agentId=${HOSTNAME#*-*-}
-            -Dpinpoint.applicationName=__PINPOINT_APPNAME__ -jar __ARTIFACT_ID__.jar --spring.profiles.active=k8s
+            -jar __ARTIFACT_ID__.jar --spring.profiles.active=k8s
         ports:
         - containerPort: 8080
           name: http
