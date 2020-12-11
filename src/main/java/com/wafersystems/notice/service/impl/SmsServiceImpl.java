@@ -121,7 +121,7 @@ public class SmsServiceImpl implements SmsService {
       log.debug("修改全部短信模板状态：{}", dto.getState());
     } else {
       //通过id修改
-      baseDao.updateBySql("update SmsTemplateDTO as m set m.state = " + dto.getState() + " where m.id = " + dto.getId());
+      baseDao.updateBySql("update SmsTemplateDTO as m set m.state = " + dto.getState() + " where m.id = '" + dto.getId() + "'");
       sendLog(dto.getId(), "修改短信模板状态为：" + dto.getState());
       log.debug("修改短信模板:{}状态：{}", dto.getId(), dto.getState());
     }
