@@ -141,6 +141,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       criteria.add(Restrictions.eq("category", category.trim()));
     }
     criteria.addOrder(Order.desc("modtime"));
+    criteria.addOrder(Order.asc("id"));
     return baseDao.selectPage(criteria, pageSize, startIndex);
   }
 
