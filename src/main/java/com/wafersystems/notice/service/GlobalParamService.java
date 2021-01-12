@@ -1,6 +1,7 @@
 package com.wafersystems.notice.service;
 
 import com.wafersystems.notice.model.GlobalParameter;
+import com.wafersystems.notice.model.ParameterDTO;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface GlobalParamService {
   GlobalParameter getSystemParamByParamKey(String paramKey);
 
   /**
-   * 获取所有配置参数
+   * 查询租户配置参数
    *
    * @return list
    */
@@ -38,4 +39,11 @@ public interface GlobalParamService {
    * @param gp
    */
   void save(GlobalParameter gp);
+
+  /**
+   * 批量保存SystemParam
+   *
+   * @param list 参数集合
+   */
+  void saveBatch(List<ParameterDTO> list);
 }

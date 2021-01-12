@@ -1,18 +1,27 @@
 package com.wafersystems.notice.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.dao.BaseDao;
 import com.wafersystems.notice.model.GlobalParameter;
+import com.wafersystems.notice.model.ParameterDTO;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.virsical.common.core.config.AesKeyProperties;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
+import com.wafersystems.virsical.common.core.util.R;
+import com.wafersystems.virsical.common.security.util.AesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.jasypt.encryption.StringEncryptor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -32,12 +41,33 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   @Autowired
   private StringEncryptor stringEncryptor;
 
+  @Autowired
+  private AesKeyProperties aesKeyProperties;
+
   /**
    * 保存SystemParam
    */
   @Override
   public void save(GlobalParameter gp) {
     baseDao.update(gp);
+  }
+
+  /**
+   * 批量保存SystemParam
+   *
+   * @param list 参数集合
+   */
+  @Override
+  public void saveBatch(List<ParameterDTO> list) {
+    list.forEach(dto -> {
+      GlobalParameter globalParameter = new GlobalParameter();
+      BeanUtils.copyProperties(dto, globalParameter);
+      globalParameter.setTenantId(TenantContextHolder.getTenantId());
+      String value = AesUtils.decryptAes(dto.getParamValue(),
+        aesKeyProperties.getKey());
+      globalParameter.setParamValue(stringEncryptor.encrypt(value));
+      baseDao.update(globalParameter);
+    });
   }
 
   /**
@@ -50,6 +80,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   public GlobalParameter getSystemParamByParamKey(String paramKey) {
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     criteria.add(Restrictions.eq("paramKey", paramKey));
+    criteria.add(Restrictions.eq("tenantId", TenantContextHolder.getTenantId()));
     List<GlobalParameter> list = baseDao.findByCriteria(criteria);
     if (!list.isEmpty()) {
       return list.get(0);
@@ -58,13 +89,15 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   }
 
   /**
-   * 获取所有配置参数
+   * 查询租户配置参数
    *
    * @return list
    */
   @Override
   public List<GlobalParameter> getSystemParamList() {
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
+    // 查询全局配置
+    criteria.add(Restrictions.eq("tenantId", TenantContextHolder.getTenantId()));
     return baseDao.findByCriteria(criteria);
   }
 
@@ -76,6 +109,8 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   public void initSystemParam() {
     log.debug("开始加载系统数据库配置相关参数");
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
+    // 查询全局配置
+    criteria.add(Restrictions.eq("tenantId", CommonConstants.PLATFORM_ADMIN_TENANT_ID));
     List<GlobalParameter> list = baseDao.findByCriteria(criteria);
     Map<String, String> map = new HashMap<>(30);
     // 清空系统全局参数缓存
@@ -88,14 +123,14 @@ public class GlobalParamServiceImpl implements GlobalParamService {
         try {
           value = stringEncryptor.decrypt(value);
         } catch (Exception e) {
-          log.debug("参数值解密异常：key[{}]，value[{}]", globalParameter.getParamKey(), globalParameter.getParamValue());
+          log.warn("参数值解密异常：key[{}]，value[{}]", globalParameter.getParamKey(), globalParameter.getParamValue());
         }
         map.put(globalParameter.getParamKey(), value);
       }
     });
     this.setValue(map);
     this.checkValue();
-    log.debug("系统数据库配置相关参数加载完毕");
+    log.info("系统数据库配置相关参数初始化加载完毕");
   }
 
   private void checkValue() {

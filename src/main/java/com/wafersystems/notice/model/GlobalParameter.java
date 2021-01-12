@@ -25,4 +25,6 @@ public class GlobalParameter implements Serializable {
   private String paramValue;
   @Column(name = "param_desc")
   private String paramDesc;
+  @Column(name = "tenant_id")
+  private Integer tenantId;
 }
