@@ -66,8 +66,9 @@ public class GlobalParamController {
    */
   @GetMapping("/get")
   @PreAuthorize("@pms.hasPermission('')")
-  public R get() {
-    List<GlobalParameter> systemParamList = globalParamService.getSystemParamList();
+  public R get(String type) {
+    List<GlobalParameter> systemParamList = globalParamService.getSystemParamList(TenantContextHolder.getTenantId(),
+      type);
     systemParamList.forEach(globalParameter -> {
       String value = globalParameter.getParamValue();
       try {
@@ -121,6 +122,22 @@ public class GlobalParamController {
       if (CommonConstants.PLATFORM_ADMIN_TENANT_ID.equals(TenantContextHolder.getTenantId())) {
         initSysParam();
       }
+      return R.ok();
+    }
+    return R.fail(NoticeMsgConstants.PARAM_ERROR);
+  }
+
+  /**
+   * 删除参数
+   *
+   * @param id id
+   * @return R
+   */
+  @PostMapping("/del")
+  @PreAuthorize("@pms.hasPermission('')")
+  public R del(@RequestParam Integer id) {
+    if (id != null) {
+      globalParamService.del(id);
       return R.ok();
     }
     return R.fail(NoticeMsgConstants.PARAM_ERROR);

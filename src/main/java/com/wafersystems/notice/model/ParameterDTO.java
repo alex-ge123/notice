@@ -25,4 +25,5 @@ public class ParameterDTO implements Serializable {
 
   private String paramDesc;
   private String lang;
+  private String type;
 }

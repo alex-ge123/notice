@@ -4,11 +4,14 @@ import cn.hutool.core.util.ObjectUtil;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.model.*;
+import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.notice.util.DateUtil;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.StrUtil;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
+import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.AllArgsConstructor;
@@ -43,6 +46,8 @@ public class MailSendController {
 
   @Autowired
   private MailNoticeService mailNoticeService;
+  @Autowired
+  private GlobalParamService globalParamService;
   @Autowired
   private TaskExecutor taskExecutor;
   @Autowired
@@ -191,13 +196,14 @@ public class MailSendController {
    * @param tempName 模版名称
    * @param mailDto  内容
    * @param lang     语言
+   * @param tenantId 租户id
    * @return -
    */
   @Inner
   @PostMapping(value = "/sendMail")
   public R sendMail(@RequestParam String subject, @RequestParam String toMail, String copyTo,
                     @RequestParam String tempName,
-                    @RequestBody MailDTO mailDto, String lang) {
+                    @RequestBody MailDTO mailDto, String lang, Integer tenantId) {
     Locale locale = ParamConstant.getLocaleByStr(lang);
     if (!ParamConstant.isEMAIL_SWITCH()) {
       log.warn("邮件服务参数未配置，将忽略主题【" + subject + "】的邮件发送");
@@ -220,7 +226,7 @@ public class MailSendController {
     mailDto.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
     try {
       taskExecutor.execute(new MailTask(mailNoticeService, StrUtil.regStr(subject), toMail, copyTo,
-        tempName, mailDto, lang));
+        tempName, mailDto, lang, globalParamService.getMailServerConf(tenantId)));
       return R.ok();
     } catch (Exception ex) {
       log.error("发送邮件失败：", ex);
@@ -239,6 +245,7 @@ public class MailSendController {
     private String tempName;
     private MailDTO con;
     private String lang;
+    private MailServerConf mailServerConf;
 
     /**
      * When an object implementing interface <code>Runnable</code> is used to create a thread,
@@ -260,7 +267,7 @@ public class MailSendController {
           .type(ConfConstant.TypeEnum.FM)
           .template(tempName)
           .mailDTO(con)
-          .build(), 0);
+          .build(), 0, mailServerConf);
       } catch (Exception ex) {
         throw new RuntimeException();
       }
@@ -279,7 +286,8 @@ public class MailSendController {
   public R testMailSend(@RequestBody TestSendMailDTO testSendMailDTO) throws Exception {
     log.info("发送测试邮件【{}】", testSendMailDTO.getTitle());
     sendMail(testSendMailDTO.getTitle(), testSendMailDTO.getToMail(), null, testSendMailDTO.getTempName(),
-      getTemContentVal(getTestParams(testSendMailDTO.getTempName(), null)), testSendMailDTO.getLang());
+      getTemContentVal(getTestParams(testSendMailDTO.getTempName(), null)), testSendMailDTO.getLang(),
+      TenantContextHolder.getTenantId());
     return R.ok();
   }
 

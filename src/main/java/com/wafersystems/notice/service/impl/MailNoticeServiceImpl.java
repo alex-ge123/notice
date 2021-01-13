@@ -57,13 +57,15 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   private AesKeyProperties aesKeyProperties;
 
   /**
-   * Description: 邮件发送 author waferzy DateTime 2016-3-10 下午2:37:55.
+   * 邮件发送
    *
-   * @param mailBean 邮件填充内容
-   * @param count    邮件重发次数
+   * @param mailBean       邮件填充内容
+   * @param count          邮件重发次数
+   * @param mailServerConf 邮件服务器配置参数
+   * @throws Exception Exception
    */
   @Override
-  public void sendMail(MailBean mailBean, Integer count) throws Exception {
+  public void sendMail(MailBean mailBean, Integer count, MailServerConf mailServerConf) throws Exception {
     log.debug("开始发送邮件。");
     //邮箱解密
     mailBean.setToEmails(this.mailsDecrypt(mailBean.getToEmails()));
@@ -72,12 +74,12 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     mailBean = this.fillTenantInfo(mailBean);
     // 发送邮件
     try {
-      mailUtil.send(mailBean);
+      mailUtil.send(mailBean, mailServerConf);
     } catch (Exception exception) {
       count++;
       if (count < ParamConstant.getDEFAULT_REPEAT_COUNT()) {
         log.debug("主题[" + mailBean.getSubject() + "],发往[" + mailBean.getToEmails() + "]的邮件第" + count + "次重发......");
-        this.sendMail(mailBean, count);
+        this.sendMail(mailBean, count, mailServerConf);
       } else {
         log.error("邮件发送失败：", exception);
         throw exception;

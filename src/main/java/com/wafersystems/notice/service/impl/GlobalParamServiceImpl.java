@@ -1,16 +1,17 @@
 package com.wafersystems.notice.service.impl;
 
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import com.wafersystems.notice.config.MailProperties;
+import com.wafersystems.notice.constants.MailConstants;
+import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.dao.BaseDao;
 import com.wafersystems.notice.model.GlobalParameter;
+import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.ParameterDTO;
 import com.wafersystems.notice.service.GlobalParamService;
-import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.virsical.common.core.config.AesKeyProperties;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
-import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.util.AesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
@@ -21,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -43,6 +43,9 @@ public class GlobalParamServiceImpl implements GlobalParamService {
 
   @Autowired
   private AesKeyProperties aesKeyProperties;
+
+  @Autowired
+  private MailProperties mailProperties;
 
   /**
    * 保存SystemParam
@@ -71,6 +74,16 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   }
 
   /**
+   * 删除单个参数
+   *
+   * @param id id
+   */
+  @Override
+  public void del(Integer id) {
+    baseDao.delete(GlobalParameter.class, id);
+  }
+
+  /**
    * 根据paramKey获取SystemParam
    *
    * @param paramKey
@@ -91,13 +104,18 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   /**
    * 查询租户配置参数
    *
+   * @param tenantId 租户id
+   * @param type     类型
    * @return list
    */
   @Override
-  public List<GlobalParameter> getSystemParamList() {
+  public List<GlobalParameter> getSystemParamList(int tenantId, String type) {
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     // 查询全局配置
-    criteria.add(Restrictions.eq("tenantId", TenantContextHolder.getTenantId()));
+    criteria.add(Restrictions.eq("tenantId", tenantId));
+    if (StrUtil.isNotBlank(type)) {
+      criteria.add(Restrictions.eq("type", type));
+    }
     return baseDao.findByCriteria(criteria);
   }
 
@@ -184,4 +202,58 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     }
   }
 
+
+  /**
+   * 根据租户获取租户邮件配置，租户未配置，使用系统默认邮件配置
+   *
+   * @return MailServerConf
+   */
+  @Override
+  public MailServerConf getMailServerConf(Integer tenantId) {
+    // 查询租户邮件配置
+    List<GlobalParameter> systemParamList = getSystemParamList(tenantId, MailConstants.TYPE);
+    MailServerConf conf = new MailServerConf();
+    // 其它参数
+    Map<String, Object> props = new HashMap<>(10);
+    if (systemParamList != null && !systemParamList.isEmpty()) {
+      for (GlobalParameter p : systemParamList) {
+        if (MailConstants.MAIL_HOST.equals(p.getParamKey())) {
+          conf.setHost(p.getParamValue());
+        } else if (MailConstants.MAIL_FROM.equals(p.getParamKey())) {
+          conf.setFrom(p.getParamValue());
+        } else if (MailConstants.MAIL_PASSWORD.equals(p.getParamKey())) {
+          conf.setPassword(p.getParamValue());
+        } else if (MailConstants.MAIL_AUTH.equals(p.getParamKey())) {
+          conf.setAuth(p.getParamValue());
+        } else if (MailConstants.MAIL_MAILNAME.equals(p.getParamKey())) {
+          conf.setName(p.getParamValue());
+        } else if (MailConstants.MAIL_PORT.equals(p.getParamKey())) {
+          try {
+            conf.setPort(Integer.parseInt(p.getParamValue()));
+          } catch (Exception e) {
+            conf.setPort(0);
+            break;
+          }
+        } else {
+          props.put(p.getParamKey(), p.getParamValue());
+        }
+      }
+      conf.setProps(props);
+    }
+    if (!StrUtil.isAllBlank(conf.getHost(), conf.getFrom(), conf.getPassword(), conf.getAuth(), conf.getName())
+      && conf.getPort() != 0) {
+      log.info("使用系统默认邮件配置发送邮件 >>>");
+      props = mailProperties.getProps();
+      conf.setHost(ParamConstant.getDEFAULT_MAIL_HOST());
+      conf.setPort(ParamConstant.getDEFAULT_MAIL_PORT());
+      conf.setFrom(ParamConstant.getDEFAULT_MAIL_FROM());
+      conf.setPassword(ParamConstant.getDEFAULT_MAIL_PASSWORD());
+      conf.setAuth(ParamConstant.getDEFAULT_MAIL_AUTH());
+      conf.setName(ParamConstant.getDEFAULT_MAIL_MAILNAME());
+      conf.setProps(props);
+    } else {
+      log.info("使用租户自定义邮件配置发送邮件 >>>");
+    }
+    return conf;
+  }
 }

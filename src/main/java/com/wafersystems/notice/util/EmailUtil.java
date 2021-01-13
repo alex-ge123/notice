@@ -13,6 +13,7 @@ import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.model.MailBean;
+import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.MailTemplateDTO;
 import com.wafersystems.notice.model.enums.MailScheduleStatusEnum;
 import com.wafersystems.notice.service.MailNoticeService;
@@ -87,9 +88,6 @@ public class EmailUtil {
   private AmqpTemplate rabbitTemplate;
 
   @Autowired
-  private MailProperties mailProperties;
-
-  @Autowired
   private MailNoticeService mailService;
 
   /**
@@ -98,7 +96,7 @@ public class EmailUtil {
    * @param mailBean 邮件对象
    * @throws Exception Exception
    */
-  public void send(MailBean mailBean) throws Exception {
+  public void send(MailBean mailBean, MailServerConf mailServerConf) throws Exception {
     final MailTemplateDTO template = mailService.getTempByName(mailBean.getTemplate());
     if (ObjectUtil.isNotNull(template) && ObjectUtil.equal(template.getState(), 1)) {
       log.warn("邮件模板[{}]禁用，邮件[{}]不发送！", mailBean.getTemplate(), mailBean.getSubject());
@@ -112,38 +110,37 @@ public class EmailUtil {
     try {
       Properties props = System.getProperties();
       int i = 465;
-      if (ParamConstant.getDEFAULT_MAIL_PORT() == i) {
+      if (mailServerConf.getPort() == i) {
         // 发送SSL加密邮件
         Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-        props.put("mail.smtp.socketFactory.port", ParamConstant.getDEFAULT_MAIL_PORT());
+        props.put("mail.smtp.socketFactory.port", mailServerConf.getPort());
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");
       }
       int j = 587;
-      if (ParamConstant.getDEFAULT_MAIL_PORT() == j) {
+      if (mailServerConf.getPort() == j) {
         // TLS加密
         props.put("mail.smtp.starttls.enable", "true");
       }
       // 设置SMTP服务器地址
-      props.put("mail.smtp.host", ParamConstant.getDEFAULT_MAIL_HOST());
+      props.put("mail.smtp.host", mailServerConf.getHost());
       // 设置端口
-      props.put("mail.smtp.port", ParamConstant.getDEFAULT_MAIL_PORT());
+      props.put("mail.smtp.port", mailServerConf.getPort());
       // 设置邮件的字符集为GBK
       props.put("mail.mime.charset", ParamConstant.getDEFAULT_MAIL_CHARSET());
       // 设置认证模式
-      props.put("mail.smtp.auth", ParamConstant.getDEFAULT_MAIL_AUTH());
+      props.put("mail.smtp.auth", mailServerConf.getAuth());
       // 设置配置参数
-      final Map<String, Object> propsMap = mailProperties.getProps();
-      if (CollUtil.isNotEmpty(propsMap)) {
-        props.putAll(propsMap);
+      if (CollUtil.isNotEmpty(mailServerConf.getProps())) {
+        props.putAll(mailServerConf.getProps());
       }
       // 获取会话信息
       Session session = Session.getDefaultInstance(props, null);
       // 构造邮件消息对象
       MimeMessage message = new MimeMessage(session);
       // 发件人
-      message.setFrom(new InternetAddress(ParamConstant.getDEFAULT_MAIL_FROM(),
-        ParamConstant.getDEFAULT_MAIL_MAILNAME()));
+      message.setFrom(new InternetAddress(mailServerConf.getFrom(),
+        mailServerConf.getName()));
       // 多个发送地址
       message.addRecipients(Message.RecipientType.TO,
         InternetAddress.parse(mailBean.getToEmails()));
@@ -174,10 +171,10 @@ public class EmailUtil {
       // 使用认证模式发送邮件。
       Transport transport = session.getTransport("smtp");
       //设置端口
-      transport.connect(ParamConstant.getDEFAULT_MAIL_HOST(), ParamConstant.getDEFAULT_MAIL_PORT(),
-        ParamConstant.getDEFAULT_MAIL_FROM(),
-        "true".equals(ParamConstant.getDEFAULT_MAIL_AUTH())
-          ? ParamConstant.getDEFAULT_MAIL_PASSWORD() : null);
+      transport.connect(mailServerConf.getHost(), mailServerConf.getPort(),
+        mailServerConf.getFrom(),
+        "true".equals(mailServerConf.getAuth())
+          ? mailServerConf.getPassword() : null);
       transport.sendMessage(message, message.getAllRecipients());
       transport.close();
       log.debug(

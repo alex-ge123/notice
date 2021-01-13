@@ -2,10 +2,13 @@ package com.wafersystems.notice.receiver;
 
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.RabbitMqConfig;
+import com.wafersystems.notice.model.GlobalParameter;
 import com.wafersystems.notice.model.MailBean;
+import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
@@ -44,6 +47,12 @@ public class Receiver {
 
   @Autowired
   private StringEncryptor stringEncryptor;
+
+  @Autowired
+  private EmailUtil emailUtil;
+
+  @Autowired
+  private GlobalParamService globalParamService;
 
   /**
    * 监听邮件消息队列
@@ -91,7 +100,7 @@ public class Receiver {
             .type(ConfConstant.TypeEnum.FM)
             .template(mailDTO.getTempName())
             .mailDTO(mailDTO)
-            .build(), 0);
+            .build(), 0, globalParamService.getMailServerConf(mailDTO.getTenantId()));
           log.info("邮件消息发送成功，MsgId:{}", messageDTO.getMsgId());
         } catch (Exception e) {
           log.error("发送邮件失败：", e);

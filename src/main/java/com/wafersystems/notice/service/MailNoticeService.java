@@ -10,13 +10,14 @@ import com.wafersystems.notice.model.*;
 public interface MailNoticeService {
 
   /**
-   * 邮件发送 author waferzy DateTime 2016-3-10 下午2:37:55.
+   * 邮件发送
    *
-   * @param mailBean 邮件填充内容
-   * @param count    邮件重发次数
-   * @throws Exception
+   * @param mailBean       邮件填充内容
+   * @param count          邮件重发次数
+   * @param mailServerConf 邮件服务器配置参数
+   * @throws Exception Exception
    */
-  void sendMail(MailBean mailBean, Integer count) throws Exception;
+  void sendMail(MailBean mailBean, Integer count, MailServerConf mailServerConf) throws Exception;
 
 
   /**
