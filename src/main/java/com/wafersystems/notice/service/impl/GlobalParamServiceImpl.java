@@ -69,7 +69,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
       String value = AesUtils.decryptAes(dto.getParamValue(),
         aesKeyProperties.getKey());
       globalParameter.setParamValue(stringEncryptor.encrypt(value));
-      baseDao.update(globalParameter);
+      baseDao.saveOrUpdate(globalParameter);
     });
   }
 
@@ -217,31 +217,32 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     Map<String, Object> props = new HashMap<>(10);
     if (systemParamList != null && !systemParamList.isEmpty()) {
       for (GlobalParameter p : systemParamList) {
+        // 解密参数
+        String value = stringEncryptor.decrypt(p.getParamValue());
         if (MailConstants.MAIL_HOST.equals(p.getParamKey())) {
-          conf.setHost(p.getParamValue());
+          conf.setHost(value);
         } else if (MailConstants.MAIL_FROM.equals(p.getParamKey())) {
-          conf.setFrom(p.getParamValue());
+          conf.setFrom(value);
         } else if (MailConstants.MAIL_PASSWORD.equals(p.getParamKey())) {
-          conf.setPassword(p.getParamValue());
+          conf.setPassword(value);
         } else if (MailConstants.MAIL_AUTH.equals(p.getParamKey())) {
-          conf.setAuth(p.getParamValue());
+          conf.setAuth(value);
         } else if (MailConstants.MAIL_MAILNAME.equals(p.getParamKey())) {
-          conf.setName(p.getParamValue());
+          conf.setName(value);
         } else if (MailConstants.MAIL_PORT.equals(p.getParamKey())) {
           try {
-            conf.setPort(Integer.parseInt(p.getParamValue()));
+            conf.setPort(Integer.parseInt(value));
           } catch (Exception e) {
             conf.setPort(0);
             break;
           }
         } else {
-          props.put(p.getParamKey(), p.getParamValue());
+          props.put(p.getParamKey(), value);
         }
       }
       conf.setProps(props);
     }
-    if (!StrUtil.isAllBlank(conf.getHost(), conf.getFrom(), conf.getPassword(), conf.getAuth(), conf.getName())
-      && conf.getPort() != 0) {
+    if (conf.getPort() == 0) {
       log.info("使用系统默认邮件配置发送邮件 >>>");
       props = mailProperties.getProps();
       conf.setHost(ParamConstant.getDEFAULT_MAIL_HOST());
