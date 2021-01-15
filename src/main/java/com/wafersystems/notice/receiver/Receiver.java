@@ -8,12 +8,14 @@ import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.notice.util.StrUtil;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
+import org.slf4j.MDC;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -52,9 +54,11 @@ public class Receiver {
    */
   @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_MAIL)
   public void mail(@Payload String message) {
-    log.info("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, stringEncryptor.encrypt(message));
     try {
+      log.info("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, stringEncryptor.encrypt(message));
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
+      // 设置消息处理日志追踪标识
+      MDC.put(CommonConstants.LOG_TRACE_ID, messageDTO.getMsgId());
       log.info("监听到邮件消息，MsgId:{}", messageDTO.getMsgId());
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
         MailDTO mailDTO = JSON.parseObject(messageDTO.getData().toString(), MailDTO.class);
@@ -92,7 +96,7 @@ public class Receiver {
             .template(mailDTO.getTempName())
             .mailDTO(mailDTO)
             .build(), 0);
-          log.info("邮件消息发送成功，MsgId:{}", messageDTO.getMsgId());
+          log.info("邮件消息处理完成，MsgId:{}", messageDTO.getMsgId());
         } catch (Exception e) {
           log.error("发送邮件失败：", e);
         }
@@ -111,13 +115,15 @@ public class Receiver {
    */
   @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_SMS)
   public void sms(@Payload String message) {
-    log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, stringEncryptor.encrypt(message));
     try {
+      log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, stringEncryptor.encrypt(message));
       if (!ParamConstant.isSMS_SWITCH()) {
         log.warn("未配置短信服务调用地址！");
         return;
       }
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
+      // 设置消息处理日志追踪标识
+      MDC.put(CommonConstants.LOG_TRACE_ID, messageDTO.getMsgId());
       log.info("监听到短信消息，msgId:{}",messageDTO.getMsgId());
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
         SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
@@ -132,7 +138,7 @@ public class Receiver {
       } else {
         log.warn("消息类型未识别，无法发送短信");
       }
-      log.info("短信消息发送成功，msgId:{}",messageDTO.getMsgId());
+      log.info("短信消息处理完成，msgId:{}",messageDTO.getMsgId());
     } catch (Exception e) {
       log.error("消息监听处理异常", e);
     }
