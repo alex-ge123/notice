@@ -5,4 +5,4 @@ alter table `ntc_parameter` add column `tenant_id` int(11) not null default 0 CO
 update `ntc_parameter` set tenant_id = 0 where tenant_id != 0;
 
 -- 修改ntc_parameter表id自增
-alter table `ntc_parameter` AUTO_INCREMENT=100;
+alter table `ntc_parameter` modify column `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id';
