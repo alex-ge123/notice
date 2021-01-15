@@ -379,7 +379,7 @@ public class EmailUtil {
   private Map<String, Object> attributeToMap(MailBean mailBean) {
     int dtoValueCount = 50;
     final MailDTO mailDTO = mailBean.getMailDTO();
-    Map<String, String> data = mailDTO.getData();
+    Map<String, Object> data = mailDTO.getData();
     if (ObjectUtil.isNull(data)) {
       data = new HashMap<>(dtoValueCount);
     }
