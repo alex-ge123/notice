@@ -1,6 +1,7 @@
 package com.wafersystems.notice.util;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.config.SendInterceptProperties;
@@ -27,6 +28,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -65,6 +67,9 @@ public class SmsUtil {
 
   @Autowired
   private AesKeyProperties aesKeyProperties;
+
+  @Autowired
+  private StringEncryptor stringEncryptor;
 
   @Value("${sms-num-search-url}")
   private String searchUrl;
@@ -111,7 +116,7 @@ public class SmsUtil {
       } catch (Exception ignore) {
       }
       String result = sendSms(templateId, phone, params, domain, smsSign);
-      log.info("电话号码" + phone + "发送短信的结果为：" + result);
+      log.info("电话号码" + StrUtil.hide(phone, phone.length() - 4, phone.length()) + "发送短信的结果为：" + result);
     }
   }
 
@@ -129,9 +134,13 @@ public class SmsUtil {
       log.warn("短信模板[{}]禁用，将不向电话[{}]发送短信！", templetId, phoneNum);
       return "1";
     }
-
-    log.info("开始发送短信：templetId={},phoneNum={},params={},domain={},smsSign={}",
-      templetId, phoneNum, params, domain, smsSign);
+    if (log.isDebugEnabled()){
+      log.debug("开始发送短信：templetId={},phoneNum={},params={},domain={},smsSign={}",
+        templetId, StrUtil.hide(phoneNum, phoneNum.length() - 4, phoneNum.length()), params, domain, smsSign);
+    }else{
+      log.info("开始发送短信：templetId={},phoneNum={}",
+        templetId, StrUtil.hide(phoneNum, phoneNum.length() - 4, phoneNum.length()));
+    }
     //重复拦截
     SmsDTO smsDto = new SmsDTO();
     smsDto.setPhoneList(Collections.singletonList(phoneNum));
@@ -149,7 +158,7 @@ public class SmsUtil {
     String url = ParamConstant.getURL_SMS_SERVER();
     String clientId = ParamConstant.getURL_SMS_CLIENTID();
     String secret = ParamConstant.getURL_SMS_SECRET();
-    log.info("短信接口服务为:{}", url);
+    log.debug("短信接口服务为:{}", url);
     url += '/' + clientId + '/' + secret;
 
     String prefix = "";
@@ -189,10 +198,11 @@ public class SmsUtil {
     } else {
       url += "/send?sign=";
     }
-    log.info("短信参数为{}", hashMap);
+    final String encrypt = stringEncryptor.encrypt(hashMap.toString());
+    log.info("短信参数为{}", encrypt);
     sign = SecurityUtils.calSignatureMap(hashMap);
     url = url + sign;
-    log.info("发送短信的服务接口为:{}", url);
+    log.debug("发送短信的服务接口为:{}", url);
 
     String result = send(url, privateKey, hashMap, domain);
     //记录发送信息
