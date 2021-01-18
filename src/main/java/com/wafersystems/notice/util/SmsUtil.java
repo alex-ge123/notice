@@ -88,7 +88,7 @@ public class SmsUtil {
    */
   public void batchSendSms(String templateId, List<String> phoneList, List<String> params,
                            String domain, String smsSign) {
-    if (phoneList.isEmpty()) {
+    if (phoneList == null || phoneList.isEmpty()) {
       log.warn("接收短信的手机号不能为空！");
       return;
     }
