@@ -34,7 +34,7 @@ public interface GlobalParamService {
    * @param type     类型
    * @return list
    */
-  List<GlobalParameter> getSystemParamList(int tenantId, String type);
+  List<GlobalParameter> getSystemParamList(Integer tenantId, String type);
 
   /**
    * 保存SystemParam

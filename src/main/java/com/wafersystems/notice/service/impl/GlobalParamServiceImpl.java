@@ -109,7 +109,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * @return list
    */
   @Override
-  public List<GlobalParameter> getSystemParamList(int tenantId, String type) {
+  public List<GlobalParameter> getSystemParamList(Integer tenantId, String type) {
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     // 查询全局配置
     criteria.add(Restrictions.eq("tenantId", tenantId));

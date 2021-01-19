@@ -5,7 +5,6 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
-import com.wafersystems.notice.config.MailProperties;
 import com.wafersystems.notice.config.SendInterceptProperties;
 import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
 import com.wafersystems.notice.constants.ConfConstant;
@@ -325,10 +324,21 @@ public class EmailUtil {
         configuration.setTemplateLoader(mysqlMailTemplateLoader);
         //配置共享变量
         configuration.setSharedVariable("loccalMessage", messageService);
+
+        final Map<String, Object> objectMap = this.attributeToMap(mailBean);
         //加载模板
         freemarker.template.Template template = configuration.getTemplate(mailBean.getTemplate(), mailBean.getMailDTO().getLocale());
         //模板渲染
-        return FreeMarkerTemplateUtils.processTemplateIntoString(template, this.attributeToMap(mailBean));
+        final String contextStr = FreeMarkerTemplateUtils.processTemplateIntoString(template, objectMap);
+        //是否使用基础模板
+        if (!mailBean.getMailDTO().isUseBaseTemplate()) {
+          return contextStr;
+        }
+        //加载基础模板
+        freemarker.template.Template baseTemplate = configuration.getTemplate("baseTemplate", mailBean.getMailDTO().getLocale());
+        objectMap.put("context", contextStr);
+        //渲染基础模板
+        return FreeMarkerTemplateUtils.processTemplateIntoString(baseTemplate, objectMap);
       } else {
         log.debug("使用html模版" + mailBean.getTemplate());
         context = new VelocityContext(mailBean.getData());
