@@ -336,7 +336,7 @@ public class EmailUtil {
         }
         //加载基础模板
         freemarker.template.Template baseTemplate = configuration.getTemplate("baseTemplate", mailBean.getMailDTO().getLocale());
-        objectMap.put("context", contextStr);
+        objectMap.put("productTemplateContent", contextStr);
         //渲染基础模板
         return FreeMarkerTemplateUtils.processTemplateIntoString(baseTemplate, objectMap);
       } else {
