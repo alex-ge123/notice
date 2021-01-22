@@ -5,7 +5,7 @@
 
   <groupId>com.wafersystems</groupId>
   <artifactId>virsical-notice</artifactId>
-  <version>5.2.2.100</version>
+  <version>6.2.100</version>
   <packaging>jar</packaging>
 
   <name>notice</name>
