@@ -74,8 +74,12 @@ public class Receiver {
 
         Locale locale = ParamConstant.getLocaleByStr(mailDTO.getLang());
         if (!ParamConstant.isEMAIL_SWITCH()) {
-          log.warn("邮件服务参数未配置，将忽略主题【" + mailDTO.getSubject() + "】的邮件发送");
-          return;
+          // 系统刚启动，消费到消息，未检测到参数时，等待3秒，待参数初始化
+          Thread.sleep(3000);
+          if (!ParamConstant.isEMAIL_SWITCH()) {
+            log.warn("邮件服务参数未配置，将忽略MsgId:{}的邮件发送", messageDTO.getMsgId());
+            return;
+          }
         }
         if (StrUtil.isEmptyStr(mailDTO.getSubject())) {
           log.warn("邮件主题不能为空");
@@ -127,8 +131,12 @@ public class Receiver {
     try {
       log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, stringEncryptor.encrypt(message));
       if (!ParamConstant.isSMS_SWITCH()) {
-        log.warn("未配置短信服务调用地址！");
-        return;
+        // 系统刚启动，消费到消息，未检测到参数时，等待3秒，待参数初始化
+        Thread.sleep(3000);
+        if (!ParamConstant.isSMS_SWITCH()) {
+          log.warn("未配置短信服务调用地址！");
+          return;
+        }
       }
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
       // 设置消息处理日志追踪标识
