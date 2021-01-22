@@ -74,14 +74,14 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   @Override
   @EventListener({WebServerInitializedEvent.class})
   public void initSystemParam() {
-    log.debug("开始加载系统数据库配置相关参数");
+    log.info("开始加载系统数据库配置相关参数");
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     List<GlobalParameter> list = baseDao.findByCriteria(criteria);
     Map<String, String> map = new HashMap<>(30);
     // 清空系统全局参数缓存
     Optional.ofNullable(list).orElse(Arrays.asList()).forEach(globalParameter -> {
       if (StrUtil.isBlank(globalParameter.getParamValue())) {
-        log.debug("DBParam [" + globalParameter.getParamKey() + "] is null, ignore!");
+        log.info("Param [" + globalParameter.getParamKey() + "] is null, ignore!");
       } else {
         // 参数值解密，解密失败按原文处理
         String value = globalParameter.getParamValue();
@@ -95,7 +95,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     });
     this.setValue(map);
     this.checkValue();
-    log.debug("系统数据库配置相关参数加载完毕");
+    log.info("系统数据库配置相关参数加载完毕");
   }
 
   private void checkValue() {
