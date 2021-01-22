@@ -125,7 +125,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   @Override
   @EventListener({WebServerInitializedEvent.class})
   public void initSystemParam() {
-    log.debug("开始加载系统数据库配置相关参数");
+    log.info("开始加载系统数据库配置相关参数");
     DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     // 查询全局配置
     criteria.add(Restrictions.eq("tenantId", CommonConstants.PLATFORM_ADMIN_TENANT_ID));
@@ -134,7 +134,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     // 清空系统全局参数缓存
     Optional.ofNullable(list).orElse(Arrays.asList()).forEach(globalParameter -> {
       if (StrUtil.isBlank(globalParameter.getParamValue())) {
-        log.debug("DBParam [" + globalParameter.getParamKey() + "] is null, ignore!");
+        log.info("Param [" + globalParameter.getParamKey() + "] is null, ignore!");
       } else {
         // 参数值解密，解密失败按原文处理
         String value = globalParameter.getParamValue();
