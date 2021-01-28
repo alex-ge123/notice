@@ -12,6 +12,7 @@ import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.config.AesKeyProperties;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SecurityConstants;
+import com.wafersystems.virsical.common.core.constant.SysDictConstants;
 import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
@@ -26,6 +27,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,6 +57,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
 
   @Autowired
   private AesKeyProperties aesKeyProperties;
+
+  @Autowired
+  private StringRedisTemplate redisTemplate;
 
   /**
    * 邮件发送
@@ -200,7 +205,19 @@ public class MailNoticeServiceImpl implements MailNoticeService {
         TenantDTO tenant = tenantByIdForInner.getData();
         //设置租户logo
         if (!StrUtil.isEmptyStr(tenant.getLogo())) {
-          mailDTO.setLogo(tenant.getLogo());
+          String logo = tenant.getLogo();
+          if (!cn.hutool.core.util.StrUtil.startWith(logo, "http")) {
+            try {
+              String domain = (String) redisTemplate.opsForHash().get(
+                CommonConstants.SYS_DICT + SysDictConstants.DOMAIN_TYPE, SysDictConstants.DOMAIN_TYPE);
+              if (cn.hutool.core.util.StrUtil.isNotBlank(domain)) {
+                logo = domain + "/" + logo;
+              }
+            } catch (Exception e) {
+              log.warn("缓存中查询用户域信息异常！", e);
+            }
+          }
+          mailDTO.setLogo(logo);
         }
         //设置租户系统名
         if (!StrUtil.isEmptyStr(tenant.getName())) {
