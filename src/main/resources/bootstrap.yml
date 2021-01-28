@@ -33,7 +33,7 @@ spring:
         enabled: true
         service-id: virsical-config
       username: ${config-server.username}
-      password: ${config-server..password}
+      password: ${config-server.password}
   jpa:
     show-sql: true
     hibernate:
