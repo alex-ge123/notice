@@ -6,6 +6,7 @@ import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.dao.impl.BaseDaoImpl;
 import com.wafersystems.notice.model.*;
+import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.StrUtil;
@@ -14,6 +15,7 @@ import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SecurityConstants;
 import com.wafersystems.virsical.common.core.constant.SysDictConstants;
 import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
+import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
@@ -30,6 +32,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -60,6 +67,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
 
   @Autowired
   private StringRedisTemplate redisTemplate;
+
+  @Autowired
+  private GlobalParamService globalParamService;
 
   /**
    * 邮件发送
@@ -278,4 +288,56 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     return mails;
   }
 
+  @Override
+  public R check(BaseCheckDTO dto) {
+    final MailServerConf conf = globalParamService.getMailServerConf(dto.getTenantId());
+    Transport transport = null;
+    try {
+      final Session session = mailUtil.getSession(conf);
+      transport = session.getTransport("smtp");
+      transport.connect(conf.getHost(), conf.getPort(),
+        conf.getFrom(),
+        "true".equals(conf.getAuth())
+          ? conf.getPassword() : null);
+      sendCheckLog(null, CommonConstants.SUCCESS, dto.getTenantId());
+      return R.ok();
+    } catch (Exception e) {
+      log.warn("邮箱检测失败！", e);
+      StringWriter stringWriter = new StringWriter();
+      e.printStackTrace(new PrintWriter(stringWriter));
+      sendCheckLog(e.getMessage(), CommonConstants.FAIL, dto.getTenantId());
+      return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
+    } finally {
+      if (ObjectUtil.isNotNull(transport)) {
+        try {
+          transport.close();
+        } catch (MessagingException e) {
+          log.error("关闭transport异常！", e);
+        }
+      }
+    }
+  }
+
+  /**
+   * 记录检测结果
+   *
+   * @param message  message
+   * @param result   result
+   * @param tenantId 租户ID
+   */
+  private void sendCheckLog(String message, Integer result, Integer tenantId) {
+    LogDTO logDTO = new LogDTO();
+    logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
+    logDTO.setResult(result);
+    logDTO.setTitle("邮箱配置检测");
+    logDTO.setType("check-mail");
+    if (cn.hutool.core.util.StrUtil.isNotBlank(message)) {
+      logDTO.setContent(message);
+    }
+    logDTO.setUsername(TenantContextHolder.getUsername());
+    logDTO.setTenantId(TenantContextHolder.getTenantId());
+    logDTO.setUserId(TenantContextHolder.getUserId());
+    logDTO.setObjectId(String.valueOf(tenantId));
+    asyncTaskManager.asyncSendLogMessage(logDTO);
+  }
 }

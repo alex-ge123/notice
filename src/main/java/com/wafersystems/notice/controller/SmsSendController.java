@@ -1,5 +1,7 @@
 package com.wafersystems.notice.controller;
+
 import cn.hutool.core.util.RandomUtil;
+import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.model.PaginationDTO;
@@ -7,7 +9,12 @@ import com.wafersystems.notice.model.SmsTemplateDTO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.notice.util.SmsUtil;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
+import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
+import com.wafersystems.virsical.common.core.dto.LogDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
+import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +25,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,6 +56,9 @@ public class SmsSendController {
 
   @Autowired
   private StringRedisTemplate stringRedisTemplate;
+
+  @Autowired
+  private AsyncTaskManager asyncTaskManager;
 
   @Value("${sms.captcha.length}")
   private int length;
@@ -178,4 +192,40 @@ public class SmsSendController {
   public R templateUpdateState(@RequestBody TemplateStateUpdateDTO dto) {
     return smsService.updateTempState(dto) ? R.ok() : R.fail();
   }
+
+  @PostMapping("/check")
+  @PreAuthorize("@pms.hasPermission('')")
+  public R check(@RequestBody BaseCheckDTO dto) {
+    try {
+      URL url = new URL(ParamConstant.getURL_SMS_SERVER());
+      URLConnection co = url.openConnection();
+      co.setConnectTimeout(5000);
+      co.connect();
+      sendCheckLog(null, CommonConstants.SUCCESS, dto.getTenantId());
+      return R.ok();
+    } catch (Exception e) {
+      log.warn("短信检测失败！", e);
+      StringWriter stringWriter = new StringWriter();
+      e.printStackTrace(new PrintWriter(stringWriter));
+      sendCheckLog(e.getMessage(), CommonConstants.FAIL, dto.getTenantId());
+      return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
+    }
+  }
+
+  private void sendCheckLog(String message, Integer result, Integer tenantId) {
+    LogDTO logDTO = new LogDTO();
+    logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
+    if (cn.hutool.core.util.StrUtil.isNotBlank(message)) {
+      logDTO.setContent(message);
+    }
+    logDTO.setUsername(TenantContextHolder.getUsername());
+    logDTO.setTenantId(TenantContextHolder.getTenantId());
+    logDTO.setResult(result);
+    logDTO.setTitle("短信配置检测");
+    logDTO.setType("check-sms");
+    logDTO.setUserId(TenantContextHolder.getUserId());
+    logDTO.setObjectId(String.valueOf(tenantId));
+    asyncTaskManager.asyncSendLogMessage(logDTO);
+  }
+
 }

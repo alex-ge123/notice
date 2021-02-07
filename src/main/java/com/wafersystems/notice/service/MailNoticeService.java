@@ -1,6 +1,8 @@
 package com.wafersystems.notice.service;
 
 import com.wafersystems.notice.model.*;
+import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
+import com.wafersystems.virsical.common.core.util.R;
 
 /**
  * 邮件接口
@@ -77,4 +79,11 @@ public interface MailNoticeService {
    * @return boolean
    */
   boolean updateTempState(TemplateStateUpdateDTO dto);
+
+  /**
+   * 校验邮件配置
+   * @param dto dto
+   * @return boolean
+   */
+  R check(BaseCheckDTO dto);
 }

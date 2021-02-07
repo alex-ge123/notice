@@ -9,7 +9,7 @@ import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.notice.util.DateUtil;
 import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.StrUtil;
-import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
@@ -347,5 +347,17 @@ public class MailSendController {
       clazz.getDeclaredMethod("setValue" + i, String.class).invoke(con, params[i - 1]);
     }
     return con;
+  }
+
+  /**
+   * 测试发送邮箱配置
+   *
+   * @param dto dto
+   * @return R
+   */
+  @PostMapping("/check")
+  @PreAuthorize("@pms.hasPermission('')")
+  public R check(@RequestBody BaseCheckDTO dto) throws Exception {
+    return mailNoticeService.check(dto);
   }
 }

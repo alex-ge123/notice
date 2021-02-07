@@ -105,34 +105,7 @@ public class EmailUtil {
       return;
     }
     try {
-      Properties props = System.getProperties();
-      int i = 465;
-      if (mailServerConf.getPort() == i) {
-        // 发送SSL加密邮件
-        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-        props.put("mail.smtp.socketFactory.port", mailServerConf.getPort());
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.socketFactory.fallback", "false");
-      }
-      int j = 587;
-      if (mailServerConf.getPort() == j) {
-        // TLS加密
-        props.put("mail.smtp.starttls.enable", "true");
-      }
-      // 设置SMTP服务器地址
-      props.put("mail.smtp.host", mailServerConf.getHost());
-      // 设置端口
-      props.put("mail.smtp.port", mailServerConf.getPort());
-      // 设置邮件的字符集为GBK
-      props.put("mail.mime.charset", ParamConstant.getDEFAULT_MAIL_CHARSET());
-      // 设置认证模式
-      props.put("mail.smtp.auth", mailServerConf.getAuth());
-      // 设置配置参数
-      if (CollUtil.isNotEmpty(mailServerConf.getProps())) {
-        props.putAll(mailServerConf.getProps());
-      }
-      // 获取会话信息
-      Session session = Session.getDefaultInstance(props, null);
+      final Session session = getSession(mailServerConf);
       // 构造邮件消息对象
       MimeMessage message = new MimeMessage(session);
       // 发件人
@@ -189,6 +162,37 @@ public class EmailUtil {
       sendResult(mailBean.getUuid(), mailBean.getRouterKey(), false);
       throw ex;
     }
+  }
+
+  public Session getSession(MailServerConf mailServerConf) {
+    Properties props = System.getProperties();
+    int i = 465;
+    if (mailServerConf.getPort() == i) {
+      // 发送SSL加密邮件
+      Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+      props.put("mail.smtp.socketFactory.port", mailServerConf.getPort());
+      props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+      props.put("mail.smtp.socketFactory.fallback", "false");
+    }
+    int j = 587;
+    if (mailServerConf.getPort() == j) {
+      // TLS加密
+      props.put("mail.smtp.starttls.enable", "true");
+    }
+    // 设置SMTP服务器地址
+    props.put("mail.smtp.host", mailServerConf.getHost());
+    // 设置端口
+    props.put("mail.smtp.port", mailServerConf.getPort());
+    // 设置邮件的字符集为GBK
+    props.put("mail.mime.charset", ParamConstant.getDEFAULT_MAIL_CHARSET());
+    // 设置认证模式
+    props.put("mail.smtp.auth", mailServerConf.getAuth());
+    // 设置配置参数
+    if (CollUtil.isNotEmpty(mailServerConf.getProps())) {
+      props.putAll(mailServerConf.getProps());
+    }
+    // 获取会话信息
+    return Session.getDefaultInstance(props, null);
   }
 
   /**
