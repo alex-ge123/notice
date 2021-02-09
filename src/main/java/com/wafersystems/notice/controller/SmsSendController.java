@@ -1,6 +1,7 @@
 package com.wafersystems.notice.controller;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
@@ -10,8 +11,6 @@ import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
-import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
-import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
@@ -195,36 +194,36 @@ public class SmsSendController {
 
   @PostMapping("/check")
   @PreAuthorize("@pms.hasPermission('')")
-  public R check(@RequestBody BaseCheckDTO dto) {
+  public R check() {
     try {
       URL url = new URL(ParamConstant.getURL_SMS_SERVER());
       URLConnection co = url.openConnection();
       co.setConnectTimeout(5000);
       co.connect();
-      sendCheckLog(null, CommonConstants.SUCCESS, dto.getTenantId());
+      sendCheckLog(null, null, CommonConstants.SUCCESS);
       return R.ok();
     } catch (Exception e) {
       log.warn("短信检测失败！", e);
       StringWriter stringWriter = new StringWriter();
       e.printStackTrace(new PrintWriter(stringWriter));
-      sendCheckLog(e.getMessage(), CommonConstants.FAIL, dto.getTenantId());
+      sendCheckLog(e.getMessage(), stringWriter.toString(), CommonConstants.FAIL);
       return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
     }
   }
 
-  private void sendCheckLog(String message, Integer result, Integer tenantId) {
+  private void sendCheckLog(String message, String messageDetail, Integer result) {
     LogDTO logDTO = new LogDTO();
-    logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
-    if (cn.hutool.core.util.StrUtil.isNotBlank(message)) {
-      logDTO.setContent(message);
+    logDTO.setProductCode(CommonConstants.PRODCUT_CHECK);
+    if (StrUtil.isNotBlank(messageDetail) && messageDetail.length() > 2000) {
+      logDTO.setContent(messageDetail.substring(0, 2000));
     }
     logDTO.setUsername(TenantContextHolder.getUsername());
     logDTO.setTenantId(TenantContextHolder.getTenantId());
     logDTO.setResult(result);
-    logDTO.setTitle("check-sms");
-    logDTO.setType("check");
+    logDTO.setTitle(message);
+    logDTO.setType("check-sms");
     logDTO.setUserId(TenantContextHolder.getUserId());
-    logDTO.setObjectId(String.valueOf(tenantId));
+    logDTO.setObjectId(String.valueOf(CommonConstants.COMMON_TENANT_ID));
     asyncTaskManager.asyncSendLogMessage(logDTO);
   }
 

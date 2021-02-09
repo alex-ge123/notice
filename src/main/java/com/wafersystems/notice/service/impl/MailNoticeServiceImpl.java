@@ -290,7 +290,13 @@ public class MailNoticeServiceImpl implements MailNoticeService {
 
   @Override
   public R check(BaseCheckDTO dto) {
-    final MailServerConf conf = globalParamService.getMailServerConf(dto.getTenantId());
+    Integer tenantId;
+    if (ObjectUtil.isNull(dto)) {
+      tenantId = TenantContextHolder.getTenantId();
+    } else {
+      tenantId = dto.getTenantId();
+    }
+    final MailServerConf conf = globalParamService.getMailServerConf(tenantId);
     Transport transport = null;
     try {
       final Session session = mailUtil.getSession(conf);
@@ -299,13 +305,13 @@ public class MailNoticeServiceImpl implements MailNoticeService {
         conf.getFrom(),
         "true".equals(conf.getAuth())
           ? conf.getPassword() : null);
-      sendCheckLog(null, CommonConstants.SUCCESS, dto.getTenantId());
+      sendCheckLog(null, null, CommonConstants.SUCCESS, tenantId);
       return R.ok();
     } catch (Exception e) {
       log.warn("邮箱检测失败！", e);
       StringWriter stringWriter = new StringWriter();
       e.printStackTrace(new PrintWriter(stringWriter));
-      sendCheckLog(e.getMessage(), CommonConstants.FAIL, dto.getTenantId());
+      sendCheckLog(e.getMessage(), stringWriter.toString(), CommonConstants.FAIL, tenantId);
       return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
     } finally {
       if (ObjectUtil.isNotNull(transport)) {
@@ -321,18 +327,19 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   /**
    * 记录检测结果
    *
-   * @param message  message
-   * @param result   result
-   * @param tenantId 租户ID
+   * @param message       message
+   * @param messageDetail messageDetail
+   * @param result        result
+   * @param tenantId      租户ID
    */
-  private void sendCheckLog(String message, Integer result, Integer tenantId) {
+  private void sendCheckLog(String message, String messageDetail, Integer result, Integer tenantId) {
     LogDTO logDTO = new LogDTO();
-    logDTO.setProductCode(ProductCodeEnum.COMMON.getCode());
+    logDTO.setProductCode(CommonConstants.PRODCUT_CHECK);
     logDTO.setResult(result);
-    logDTO.setTitle("check-mail");
-    logDTO.setType("check");
-    if (cn.hutool.core.util.StrUtil.isNotBlank(message)) {
-      logDTO.setContent(message);
+    logDTO.setType("check-mail");
+    logDTO.setTitle(message);
+    if (cn.hutool.core.util.StrUtil.isNotBlank(messageDetail) && messageDetail.length() > 2000) {
+      logDTO.setContent(messageDetail.substring(0, 2000));
     }
     logDTO.setUsername(TenantContextHolder.getUsername());
     logDTO.setTenantId(TenantContextHolder.getTenantId());

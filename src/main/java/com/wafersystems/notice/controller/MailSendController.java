@@ -357,7 +357,7 @@ public class MailSendController {
    */
   @PostMapping("/check")
   @PreAuthorize("@pms.hasPermission('')")
-  public R check(@RequestBody BaseCheckDTO dto) throws Exception {
+  public R check(@RequestBody(required = false) BaseCheckDTO dto) throws Exception {
     return mailNoticeService.check(dto);
   }
 }
