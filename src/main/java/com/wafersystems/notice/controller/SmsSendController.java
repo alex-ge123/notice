@@ -223,7 +223,7 @@ public class SmsSendController {
     logDTO.setTitle(message);
     logDTO.setType("check-sms");
     logDTO.setUserId(TenantContextHolder.getUserId());
-    logDTO.setObjectId(String.valueOf(CommonConstants.COMMON_TENANT_ID));
+    logDTO.setObjectId(String.valueOf(CommonConstants.PLATFORM_ADMIN_TENANT_ID));
     asyncTaskManager.asyncSendLogMessage(logDTO);
   }
 
