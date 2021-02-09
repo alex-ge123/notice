@@ -221,8 +221,8 @@ public class SmsSendController {
     logDTO.setUsername(TenantContextHolder.getUsername());
     logDTO.setTenantId(TenantContextHolder.getTenantId());
     logDTO.setResult(result);
-    logDTO.setTitle("短信配置检测");
-    logDTO.setType("check-sms");
+    logDTO.setTitle("check-sms");
+    logDTO.setType("check");
     logDTO.setUserId(TenantContextHolder.getUserId());
     logDTO.setObjectId(String.valueOf(tenantId));
     asyncTaskManager.asyncSendLogMessage(logDTO);
