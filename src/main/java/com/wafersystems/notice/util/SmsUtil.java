@@ -21,6 +21,7 @@ import com.wafersystems.virsical.common.util.AesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -134,10 +135,10 @@ public class SmsUtil {
       log.warn("短信模板[{}]禁用，将不向电话[{}]发送短信！", templetId, phoneNum);
       return "1";
     }
-    if (log.isDebugEnabled()){
+    if (log.isDebugEnabled()) {
       log.debug("开始发送短信：templetId={},phoneNum={},params={},domain={},smsSign={}",
         templetId, StrUtil.hide(phoneNum, phoneNum.length() - 4, phoneNum.length()), params, domain, smsSign);
-    }else{
+    } else {
       log.info("开始发送短信：templetId={},phoneNum={}",
         templetId, StrUtil.hide(phoneNum, phoneNum.length() - 4, phoneNum.length()));
     }
@@ -228,12 +229,19 @@ public class SmsUtil {
       hashMap.remove(privateKey);
       method.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(hashMap),
         StandardCharsets.UTF_8));
-      httpClient = HttpClientBuilder.create().build();
+      RequestConfig defaultRequestConfig = RequestConfig.custom()
+        .setSocketTimeout(5000)
+        .setConnectTimeout(5000)
+        .setConnectionRequestTimeout(5000)
+        .build();
+      httpClient = HttpClientBuilder.create().setDefaultRequestConfig(defaultRequestConfig).build();
       response = httpClient.execute(method);
       if (response != null && response.getStatusLine() != null) {
         responseStatusCode = response.getStatusLine().getStatusCode();
         responseResult = EntityUtils.toString(response.getEntity());
         log.info("发送https短信结果：状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
+      } else {
+        log.warn("response == null 或 response.getStatusLine() == null");
       }
     } catch (Exception ex) {
       // 异常信息
