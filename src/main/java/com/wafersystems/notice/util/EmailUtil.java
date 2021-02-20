@@ -153,9 +153,11 @@ public class EmailUtil {
       }
       // 使用认证模式发送邮件。
       Transport transport = session.getTransport("smtp");
+      String username = "DSPC\\MeetingroomAdmin";
+      log.info("username :{}", username);
       //设置端口
       transport.connect(ParamConstant.getDEFAULT_MAIL_HOST(), ParamConstant.getDEFAULT_MAIL_PORT(),
-        ParamConstant.getDEFAULT_MAIL_FROM(),
+        username,
         "true".equals(ParamConstant.getDEFAULT_MAIL_AUTH())
           ? ParamConstant.getDEFAULT_MAIL_PASSWORD() : null);
       transport.sendMessage(message, message.getAllRecipients());
