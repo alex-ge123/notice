@@ -49,16 +49,16 @@ spring:
     username: wafer
     password: wafer
     driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
+    type: com.zaxxer.hikari.HikariDataSource
   redis:
     host: 0.0.0.0
     port: 7007
   rabbitmq:
     host: 192.168.203.141
     port: 5672
-    virtual-host: /testcase-notice
-    username: testcase-notice
-    password: testcase-notice
+    virtual-host: /testcase
+    username: testcase
+    password: testcase
 
 # 注册中心配置
 eureka:
