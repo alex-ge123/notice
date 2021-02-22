@@ -216,6 +216,8 @@ public class SmsSendController {
     logDTO.setProductCode(CommonConstants.PRODCUT_CHECK);
     if (StrUtil.isNotBlank(messageDetail) && messageDetail.length() > 2000) {
       logDTO.setContent(messageDetail.substring(0, 2000));
+    } else {
+      logDTO.setContent(messageDetail);
     }
     logDTO.setUsername(TenantContextHolder.getUsername());
     logDTO.setTenantId(TenantContextHolder.getTenantId());

@@ -340,6 +340,8 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setTitle(message);
     if (cn.hutool.core.util.StrUtil.isNotBlank(messageDetail) && messageDetail.length() > 2000) {
       logDTO.setContent(messageDetail.substring(0, 2000));
+    } else {
+      logDTO.setContent(messageDetail);
     }
     logDTO.setUsername(TenantContextHolder.getUsername());
     logDTO.setTenantId(TenantContextHolder.getTenantId());
