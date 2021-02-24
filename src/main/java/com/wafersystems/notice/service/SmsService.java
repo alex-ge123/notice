@@ -24,13 +24,6 @@ public interface SmsService {
   void delTemp(String id);
 
   /**
-   * 修改短信模板
-   *
-   * @param dto dto
-   */
-  void updateTemp(SmsTemplateDTO dto);
-
-  /**
    * 分页查询短信模板
    *
    * @param id

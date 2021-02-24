@@ -8,11 +8,9 @@ import com.wafersystems.notice.model.PaginationDTO;
 import com.wafersystems.notice.model.SmsTemplateDTO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.SmsService;
-import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
-import com.wafersystems.virsical.common.core.exception.BusinessException;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
@@ -63,30 +61,7 @@ public class SmsServiceImpl implements SmsService {
     sendLog(id, "模板:[" + id + "]删除。");
   }
 
-  @Override
-  public void updateTemp(SmsTemplateDTO dto) {
-    SmsTemplateDTO smsDto = getTempById(dto.getId());
-    if (null != smsDto) {
-      if (!StrUtil.isEmptyStr(dto.getName())) {
-        smsDto.setName(dto.getName());
-      }
-      if (!StrUtil.isEmptyStr(dto.getDescription())) {
-        smsDto.setDescription(dto.getDescription());
-      }
-      if (!StrUtil.isEmptyStr(dto.getCategory())) {
-        smsDto.setCategory(dto.getCategory());
-      }
-      if (!StrUtil.isEmptyStr(dto.getContent())) {
-        smsDto.setContent(dto.getContent());
-      }
-      smsDto.setModtime(null);
-      baseDao.update(smsDto);
-      sendLog(dto.getId(), "模板:[" + dto.getName() + "]更新。");
-      log.debug("修改{}模板成功！", dto.getName());
-    } else {
-      throw new BusinessException("未查询到id为[" + dto.getId() + "]的短信模板");
-    }
-  }
+
 
   @Override
   public PaginationDTO<SmsTemplateDTO> getTemp(String id, String category, String name, Integer page, Integer row) {
