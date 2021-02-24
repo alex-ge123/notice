@@ -10,6 +10,8 @@ import org.springframework.test.annotation.Rollback;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+
 /**
  * @author shennan
  * @date 2019/12/27 10:05
@@ -46,6 +48,28 @@ public class GlobalParamControllerTest extends BaseTest {
     content = JSON.toJSONString(parameter);
     jsonObject = doPost(url, content, null);
     Assert.assertEquals(jsonObject.get("code"), CommonConstants.FAIL);
-
   }
+
+  @Test
+  public void testBatchSet() throws Exception {
+    String url = "/parameter/batch-set";
+    final ParameterDTO parameterDTO = new ParameterDTO();
+    parameterDTO.setParamKey("aaa");
+    parameterDTO.setParamValue("uE1tVeh9giaxBVKw35dB1Q==");
+    parameterDTO.setParamDesc("{\"zh\":\"电话\",\"en\":\"Phone\",\"tw\":\"電話\"}");
+    parameterDTO.setType("aaa");
+    final ArrayList<ParameterDTO> list = new ArrayList<>();
+    list.add(parameterDTO);
+    String content = JSON.toJSONString(list);
+    JSONObject jsonObject = doPost(url, content, null, false, true);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+  }
+
+  @Test
+  public void testDel() throws Exception {
+    String url = "/parameter/del?id=1";
+    JSONObject jsonObject = doPost(url, null, null, false, true);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+  }
+
 }

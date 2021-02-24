@@ -80,7 +80,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    */
   @Override
   public void del(Integer id) {
-    baseDao.delete(GlobalParameter.class, id);
+    baseDao.delete(GlobalParameter.class, id.longValue());
   }
 
   /**

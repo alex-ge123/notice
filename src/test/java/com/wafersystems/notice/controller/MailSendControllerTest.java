@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.BaseTest;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.model.TestSendMailDTO;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.dto.TemContentVal;
@@ -49,7 +50,7 @@ public class MailSendControllerTest extends BaseTest {
   //  @MockBean
 //  @Qualifier("mailUtil")
 //  private EmailUtil mailUtil;
-  
+
   @BeforeClass
   public void initData() {
     ParamConstant.setDEFAULT_MAIL_HOST("12345");
@@ -160,4 +161,24 @@ public class MailSendControllerTest extends BaseTest {
     JSONObject jsonObject = doPost(url, content, null);
     Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
   }
+
+
+  @Test
+  public void testTemplateUpdateState() throws Exception {
+    String url = "/mail/template/update/state";
+    final TemplateStateUpdateDTO dto = new TemplateStateUpdateDTO();
+    dto.setState(0);
+    dto.setUpdateAll(true);
+    String content = JSON.toJSONString(dto);
+    JSONObject jsonObject = doPost(url, content, null);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+  }
+
+  @Test
+  public void testCheck() throws Exception {
+    String url = "/mail/check";
+    JSONObject jsonObject = doPost(url, null, null);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.FAIL);
+  }
+
 }

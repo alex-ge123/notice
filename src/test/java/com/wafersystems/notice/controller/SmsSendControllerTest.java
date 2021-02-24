@@ -112,4 +112,22 @@ public class SmsSendControllerTest extends BaseTest {
     JSONObject jsonObject = doPost(url, jsonString, null, false, true);
     Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
   }
+
+  @Test
+  public void testTemplateUpdateState() throws Exception {
+    String url = "/sms/template/update/state";
+    final TemplateStateUpdateDTO dto = new TemplateStateUpdateDTO();
+    dto.setState(0);
+    dto.setUpdateAll(true);
+    String content = JSON.toJSONString(dto);
+    JSONObject jsonObject = doPost(url, content, null);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+  }
+
+  @Test
+  public void testCheck() throws Exception {
+    String url = "/sms/check";
+    JSONObject jsonObject = doPost(url, null, null);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
+  }
 }
