@@ -16,7 +16,6 @@ import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.MailTemplateDTO;
 import com.wafersystems.notice.model.enums.MailScheduleStatusEnum;
 import com.wafersystems.notice.service.MailNoticeService;
-import com.wafersystems.virsical.common.core.constant.FreqConstants;
 import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
@@ -268,11 +267,7 @@ public class EmailUtil {
       if (ObjectUtil.isNotNull(mailScheduleDto.getRecurrenceRuleDTO())) {
         //日历循环规则 RRULE:FREQ=WEEKLY;UNTIL=20210304T080228Z;INTERVAL=2
         final RecurrenceRuleDTO rRule = mailScheduleDto.getRecurrenceRuleDTO();
-        if (FreqConstants.WEEKLY.equals(rRule.getFreq())) {
-          buffer.append("RRULE:FREQ=").append(rRule.getFreq()).append(";UNTIL=").append(formatDate(rRule.getUntil(), mailScheduleDto.getTimeZone()));
-        } else {
-          buffer.append("RRULE:FREQ=").append(rRule.getFreq()).append(";COUNT=").append(rRule.getCount() + 1);
-        }
+        buffer.append("RRULE:FREQ=").append(rRule.getFreq()).append(";UNTIL=").append(formatDate(rRule.getUntil(), mailScheduleDto.getTimeZone()));
         if (ObjectUtil.isNotNull(rRule.getInterval())) {
           buffer.append(";INTERVAL=").append(rRule.getInterval());
         }
