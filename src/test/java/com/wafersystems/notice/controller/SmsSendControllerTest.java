@@ -31,7 +31,8 @@ public class SmsSendControllerTest extends BaseTest {
 
   @BeforeClass
   public void initData() {
-    ParamConstant.setURL_SMS_SECRET("123");
+    //yapi 挡板
+    ParamConstant.setURL_SMS_SERVER("https://yapi.rd.virsical.cn/mock/121/sms");
   }
 
   @Test
@@ -39,12 +40,12 @@ public class SmsSendControllerTest extends BaseTest {
     SmsDTO smsDTO = new SmsDTO();
     smsDTO.setTemplateId("105856");
     smsDTO.setSmsSign("威发系统");
-    smsDTO.setPhoneList(Lists.newArrayList("qn49Eg57fYA0VPCO9u2K/Q==","13439089878","12289746575"));
+    smsDTO.setPhoneList(Lists.newArrayList("qn49Eg57fYA0VPCO9u2K/Q==", "13439089878", "12289746575"));
     smsDTO.setParamList(Lists.newArrayList("11", "2019-12-26 10:35", "访客", "", "", ""));
     String url = "/sms/sendSms";
     String content = JSON.toJSONString(smsDTO);
     JSONObject jsonObject = doPost(url, content, null, true, false);
-    Assert.assertEquals(jsonObject.get("code"), CommonConstants.FAIL);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
   }
 
   @Test
@@ -57,7 +58,7 @@ public class SmsSendControllerTest extends BaseTest {
     smsDTO.setParamList(Lists.newArrayList("11", "2019-12-26 10:35", "访客", "", "", ""));
     String content = JSON.toJSONString(smsDTO);
     JSONObject jsonObject = doPost(url, content, null, true, false);
-    Assert.assertEquals(jsonObject.get("code"), CommonConstants.FAIL);
+    Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
   }
 
   @Test

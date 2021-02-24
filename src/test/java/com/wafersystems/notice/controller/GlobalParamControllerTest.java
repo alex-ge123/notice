@@ -20,7 +20,7 @@ public class GlobalParamControllerTest extends BaseTest {
 
   @Test
   public void testInitSysParam() throws Exception {
-    String url = "/init";
+    String url = "/parameter/init";
     JSONObject jsonObject = doPost(url, null, null);
     Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
   }
@@ -40,7 +40,7 @@ public class GlobalParamControllerTest extends BaseTest {
     parameter.setLang("zh_CN");
     String url = "/parameter/set";
     String content = JSON.toJSONString(parameter);
-    JSONObject jsonObject = doPost(url, content, null);
+    JSONObject jsonObject = doPost(url, content, null, false, true);
     Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
     parameter.setParamKey("test");
     content = JSON.toJSONString(parameter);

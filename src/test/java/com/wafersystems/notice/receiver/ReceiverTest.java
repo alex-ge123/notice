@@ -20,8 +20,7 @@ public class ReceiverTest extends BaseTest {
 
   @BeforeClass
   public void initData() {
-    ParamConstant.setDEFAULT_MAIL_HOST("12345");
-    ParamConstant.setURL_SMS_SECRET("123");
+    ParamConstant.setURL_SMS_SERVER("https://yapi.rd.virsical.cn/mock/121/sms");
   }
 
   @Test
