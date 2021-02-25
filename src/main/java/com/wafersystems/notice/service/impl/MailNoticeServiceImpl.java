@@ -32,9 +32,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
@@ -301,10 +304,16 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     try {
       final Session session = mailUtil.getSession(conf);
       transport = session.getTransport("smtp");
-      transport.connect(conf.getHost(), conf.getPort(),
-        conf.getFrom(),
-        "true".equals(conf.getAuth())
-          ? conf.getPassword() : null);
+      transport.connect(conf.getHost(), conf.getPort(), conf.getFrom(), "true".equals(conf.getAuth()) ? conf.getPassword() : null);
+      // 构造邮件消息对象
+      MimeMessage message = new MimeMessage(session);
+      message.setSubject("邮件配置测试");
+      // 发件人
+      message.setFrom(new InternetAddress(conf.getFrom(), conf.getName()));
+      // 收件人
+      message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(dto.getToMail()));
+      message.setContent("该邮件用于验证邮件配置，收到该邮件，则您的邮箱配置正确！", "text/html;charset=UTF-8");
+      transport.sendMessage(message, message.getAllRecipients());
       sendCheckLog(null, null, CommonConstants.SUCCESS, tenantId);
       return R.ok();
     } catch (Exception e) {
