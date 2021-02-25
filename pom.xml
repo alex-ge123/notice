@@ -149,12 +149,6 @@
       <artifactId>virsical-common-security</artifactId>
       <version>${virsical-common-security.version}</version>
     </dependency>
-    <!--jasypt配置文件加解密-->
-    <dependency>
-      <groupId>com.github.ulisesbocchio</groupId>
-      <artifactId>jasypt-spring-boot-starter</artifactId>
-      <version>2.1.0</version>
-    </dependency>
     <!--缓存依赖-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
