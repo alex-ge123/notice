@@ -346,7 +346,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setProductCode(CommonConstants.PRODCUT_CHECK);
     logDTO.setResult(result);
     logDTO.setType("check-mail");
-    logDTO.setTitle(message);
+    logDTO.setTitle(cn.hutool.core.util.StrUtil.subSufByLength(message, 100));
     if (cn.hutool.core.util.StrUtil.isNotBlank(messageDetail) && messageDetail.length() > 2000) {
       logDTO.setContent(messageDetail.substring(0, 2000));
     } else {
@@ -357,5 +357,11 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setUserId(TenantContextHolder.getUserId());
     logDTO.setObjectId(String.valueOf(tenantId));
     asyncTaskManager.asyncSendLogMessage(logDTO);
+  }
+
+  public static void main(String[] args) {
+    System.out.println(null == cn.hutool.core.util.StrUtil.subSufByLength(null, 10));
+    System.out.println(cn.hutool.core.util.StrUtil.subSufByLength("aa", 10));
+    System.out.println(cn.hutool.core.util.StrUtil.subSufByLength("dfsdfasdfasdfasdfasdf", 10));
   }
 }
