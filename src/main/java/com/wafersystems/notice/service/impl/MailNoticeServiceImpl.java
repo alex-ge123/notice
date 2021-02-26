@@ -358,10 +358,4 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setObjectId(String.valueOf(tenantId));
     asyncTaskManager.asyncSendLogMessage(logDTO);
   }
-
-  public static void main(String[] args) {
-    System.out.println(null == cn.hutool.core.util.StrUtil.subSufByLength(null, 10));
-    System.out.println(cn.hutool.core.util.StrUtil.subSufByLength("aa", 10));
-    System.out.println(cn.hutool.core.util.StrUtil.subSufByLength("dfsdfasdfasdfasdfasdf", 10));
-  }
 }
