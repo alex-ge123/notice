@@ -222,7 +222,7 @@ public class SmsSendController {
     logDTO.setUsername(TenantContextHolder.getUsername());
     logDTO.setTenantId(TenantContextHolder.getTenantId());
     logDTO.setResult(result);
-    logDTO.setTitle(cn.hutool.core.util.StrUtil.subSufByLength(message, 100));
+    logDTO.setTitle(cn.hutool.core.util.StrUtil.sub(message, 0, 100));
     logDTO.setType("check-sms");
     logDTO.setUserId(TenantContextHolder.getUserId());
     logDTO.setObjectId(String.valueOf(CommonConstants.PLATFORM_ADMIN_TENANT_ID));

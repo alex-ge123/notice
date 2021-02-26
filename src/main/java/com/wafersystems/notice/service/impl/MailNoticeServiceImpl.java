@@ -346,7 +346,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     logDTO.setProductCode(CommonConstants.PRODCUT_CHECK);
     logDTO.setResult(result);
     logDTO.setType("check-mail");
-    logDTO.setTitle(cn.hutool.core.util.StrUtil.subSufByLength(message, 100));
+    logDTO.setTitle(cn.hutool.core.util.StrUtil.sub(message, 0, 100));
     if (cn.hutool.core.util.StrUtil.isNotBlank(messageDetail) && messageDetail.length() > 2000) {
       logDTO.setContent(messageDetail.substring(0, 2000));
     } else {
