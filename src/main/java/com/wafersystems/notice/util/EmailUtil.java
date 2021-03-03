@@ -1,6 +1,7 @@
 package com.wafersystems.notice.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -16,7 +17,9 @@ import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.MailTemplateDTO;
 import com.wafersystems.notice.model.enums.MailScheduleStatusEnum;
 import com.wafersystems.notice.service.MailNoticeService;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
+import com.wafersystems.virsical.common.core.constant.SysDictConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.dto.*;
@@ -35,19 +38,14 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.activation.DataHandler;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.security.Security;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -137,6 +135,14 @@ public class EmailUtil {
         multipart.addBodyPart(bodyPart);
         message.setContent(multipart);
       }
+
+      //添加附件
+      final List<String> accessoryList = mailBean.getMailDTO().getAccessoryList();
+      if (CollUtil.isNotEmpty(accessoryList)) {
+        Multipart multipart = (Multipart) message.getContent();
+        addAccessory(multipart, accessoryList);
+      }
+
       // 使用认证模式发送邮件。
       Transport transport = session.getTransport("smtp");
       //设置端口
@@ -162,6 +168,49 @@ public class EmailUtil {
       throw ex;
     }
   }
+
+  /**
+   * 添加附件，最多支持5个附件，单个附件最大10M，超过则忽略
+   *
+   * @param multipart     multipart
+   * @param accessoryList accessoryList
+   * @throws Exception
+   */
+  private void addAccessory(Multipart multipart, List<String> accessoryList) throws Exception {
+    final String domain = getDomain();
+    int count = 5;
+    accessoryList.stream().limit(count).forEach(accessory -> {
+      if (!StrUtil.startWithIgnoreCase(accessory, "http")) {
+        accessory = domain + accessory;
+      }
+      log.debug("开始添加附件：{}", accessory);
+      try {
+        URL url = new URL(accessory);
+        MimeBodyPart mimeBodyPart = new MimeBodyPart();
+        mimeBodyPart.setDataHandler(new DataHandler(url));
+        mimeBodyPart.setFileName(MimeUtility.encodeWord(FileUtil.getName(accessory)));
+        multipart.addBodyPart(mimeBodyPart);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
+
+  /**
+   * 获取用户域
+   *
+   * @return 域
+   */
+  private String getDomain() {
+    try {
+      return (String) redisTemplate.opsForHash().get(CommonConstants.SYS_DICT + SysDictConstants.DOMAIN_TYPE,
+        SysDictConstants.DOMAIN_TYPE);
+    } catch (Exception e) {
+      log.error("【系统未配置域名，请联系管理员！】");
+      return null;
+    }
+  }
+
 
   public Session getSession(MailServerConf mailServerConf) {
     Properties props = System.getProperties();
