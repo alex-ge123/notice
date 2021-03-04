@@ -178,8 +178,7 @@ public class EmailUtil {
    */
   private void addAccessory(Multipart multipart, List<String> accessoryList) throws Exception {
     final String domain = getDomain();
-    int count = 5;
-    accessoryList.stream().limit(count).forEach(accessory -> {
+    accessoryList.forEach(accessory -> {
       if (!StrUtil.startWithIgnoreCase(accessory, "http")) {
         accessory = domain + accessory;
       }
