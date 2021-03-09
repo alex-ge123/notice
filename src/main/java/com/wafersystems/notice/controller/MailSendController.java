@@ -166,12 +166,9 @@ public class MailSendController {
     MailDTO mailDto = getTemContentVal(params);
     mailDto.setLocale(locale);
     mailDto.setResource(resource);
-    mailDto.setLogo(ParamConstant.getLOGO_DEFALUT());
-    mailDto.setPhone(ParamConstant.getPHONE());
-    mailDto.setSystemName(ParamConstant.getSYSTEM_NAME());
-    mailDto.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
-    mailDto.setImgPathBanner(ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg");
-    mailDto.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
+    mailDto.setLogo(ParamConstant.getLogoDefault());
+    mailDto.setPhone(ParamConstant.getPhone());
+    mailDto.setSystemName(ParamConstant.getSystemName());
     response.setCharacterEncoding("UTF-8");
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
@@ -205,7 +202,7 @@ public class MailSendController {
                     @RequestParam String tempName,
                     @RequestBody MailDTO mailDto, String lang, Integer tenantId) {
     Locale locale = ParamConstant.getLocaleByStr(lang);
-    if (!ParamConstant.isEMAIL_SWITCH()) {
+    if (!ParamConstant.isEmailSwitch()) {
       log.warn("邮件服务参数未配置，将忽略主题【" + subject + "】的邮件发送");
       return R.fail(resource.getMessage("msg.msg.emailServerNull", null, locale));
     }
@@ -221,9 +218,6 @@ public class MailSendController {
     }
     mailDto.setLocale(cn.hutool.core.util.StrUtil.isBlank(lang) ? null : locale);
     mailDto.setResource(resource);
-    mailDto.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
-    mailDto.setImgPathBanner(ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg");
-    mailDto.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
     try {
       taskExecutor.execute(new MailTask(mailNoticeService, StrUtil.regStr(subject), toMail, copyTo,
         tempName, mailDto, lang, globalParamService.getMailServerConf(tenantId)));

@@ -12,154 +12,153 @@ import java.util.Locale;
 public class ParamConstant {
   private ParamConstant() {
   }
-
-  /**
-   * 系统默认域名.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_DOMAIN;
-
-  /**
-   * 默认logo.
-   */
-  @Getter
-  @Setter
-  private static String LOGO_DEFALUT;
-
-  /**
-   * 静态图片资源外网访问路径如http://www.virsical.cn/images
-   */
-  @Getter
-  @Setter
-  private static String IMAGE_DIRECTORY;
-
+  //短信相关配置
   /**
    * 短信接口clientId.
    */
   @Getter
   @Setter
-  private static String URL_SMS_CLIENTID;
+  private static String urlSmsClientId;
   /**
    * 短信接口secret.
    */
   @Getter
   @Setter
-  private static String URL_SMS_SECRET;
+  private static String urlSmsSecret;
 
   /**
    * 短信接口服务.
    */
   @Getter
   @Setter
-  private static String URL_SMS_SERVER;
-
-  /**
-   * 系统邮件发送邮件.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_MAIL_FROM;
-
-  /**
-   * 系统邮件服务.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_MAIL_HOST;
-
-
-  /**
-   * 系统邮件服务.
-   */
-  @Getter
-  @Setter
-  private static Integer DEFAULT_MAIL_PORT;
-
-  /**
-   * 系统邮件密码.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_MAIL_PASSWORD;
-
-  /**
-   * 系统邮件认证.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_MAIL_AUTH;
-
-  /**
-   * 系统邮件超时时间.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_MAIL_TIMEOUT;
-
-  /**
-   * 系统邮件编码.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_MAIL_CHARSET;
-
-  /**
-   * 系统邮件显示名称.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_MAIL_MAILNAME;
-
-  /**
-   * 后台服务默认时区.
-   */
-  @Getter
-  @Setter
-  private static String DEFAULT_TIMEZONE;
-
-  /**
-   * 默认重发次数.
-   */
-  @Getter
-  @Setter
-  private static Integer DEFAULT_REPEAT_COUNT;
-
-  /**
-   * 邮件服务是否开启(服务必须参数是否配置).
-   */
-  @Getter
-  @Setter
-  private static boolean EMAIL_SWITCH;
+  private static String urlSmsServer;
 
   /**
    * 短信服务是否开启(服务必须参数是否配置).
    */
   @Getter
   @Setter
-  private static boolean SMS_SWITCH;
-
+  private static boolean smsSwitch;
 
   /**
    * 短信签名.
    */
   @Getter
   @Setter
-  private static String SMS_SIGN_NAME;
+  private static String smsSignName;
 
+  /**
+   * 短信重发次数
+   */
+  @Getter
+  @Setter
+  private static Integer smsRepeatCount;
+
+
+
+  //邮件相关配置
+  /**
+   * 默认logo.
+   */
+  @Getter
+  @Setter
+  private static String logoDefault;
+
+  /**
+   * 系统邮件发送邮件.
+   */
+  @Getter
+  @Setter
+  private static String defaultMailFrom;
+
+  /**
+   * 系统邮件服务.
+   */
+  @Getter
+  @Setter
+  private static String defaultMailHost;
+
+
+  /**
+   * 系统邮件端口.
+   */
+  @Getter
+  @Setter
+  private static Integer defaultMailPort;
+
+  /**
+   * 系统邮件密码.
+   */
+  @Getter
+  @Setter
+  private static String defaultMailPassword;
+
+  /**
+   * 系统邮件认证.
+   */
+  @Getter
+  @Setter
+  private static String defaultMailAuth;
+
+  /**
+   * 系统邮件用户名
+   */
+  @Getter
+  @Setter
+  private static String defaultMailUsername;
+
+  /**
+   * 系统邮件编码.
+   */
+  @Getter
+  @Setter
+  private static String defaultMailCharset;
+
+  /**
+   * 系统邮件显示名称.
+   */
+  @Getter
+  @Setter
+  private static String defaultMailMailName;
+
+  /**
+   * 默认重发次数.
+   */
+  @Getter
+  @Setter
+  private static Integer defaultRepeatCount;
+
+  /**
+   * 邮件服务是否开启(服务必须参数是否配置).
+   */
+  @Getter
+  @Setter
+  private static boolean emailSwitch;
+
+
+
+  //其他
   /**
    * 电话.
    */
   @Getter
   @Setter
-  private static String PHONE;
+  private static String phone;
 
   /**
    * 系统名称.
    */
   @Getter
   @Setter
-  private static String SYSTEM_NAME;
+  private static String systemName;
+
+  /**
+   * 系统默认域名.
+   */
+  @Getter
+  @Setter
+  private static String defaultDomain;
+
 
   /**
    * Title: getLocaleByStr Description: 获取本地语言资源.

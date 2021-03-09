@@ -146,8 +146,10 @@ public class EmailUtil {
       // 使用认证模式发送邮件。
       Transport transport = session.getTransport("smtp");
       //设置端口
+      String username = StrUtil.isBlank(mailServerConf.getUsername()) ?
+        mailServerConf.getFrom() : mailServerConf.getUsername();
       transport.connect(mailServerConf.getHost(), mailServerConf.getPort(),
-        mailServerConf.getFrom(),
+        username,
         "true".equals(mailServerConf.getAuth())
           ? mailServerConf.getPassword() : null);
       transport.sendMessage(message, message.getAllRecipients());
@@ -231,7 +233,7 @@ public class EmailUtil {
     // 设置端口
     props.put("mail.smtp.port", mailServerConf.getPort());
     // 设置邮件的字符集为GBK
-    props.put("mail.mime.charset", ParamConstant.getDEFAULT_MAIL_CHARSET());
+    props.put("mail.mime.charset", ParamConstant.getDefaultMailCharset());
     // 设置认证模式
     props.put("mail.smtp.auth", mailServerConf.getAuth());
     // 设置配置参数
@@ -297,7 +299,7 @@ public class EmailUtil {
         .append(mailBean.getToEmails().contains(ConfConstant.COMMA) ?
           mailBean.getToEmails().split(ConfConstant.COMMA) : mailBean.getToEmails())
         .append("\nORGANIZER:MAILTO:")
-        .append(ParamConstant.getDEFAULT_MAIL_FROM())
+        .append(ParamConstant.getDefaultMailFrom())
         //开始时间
         .append("\nDTSTART:").append(startStr)
         //结束时间

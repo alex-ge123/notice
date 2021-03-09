@@ -32,7 +32,7 @@ public class SmsSendControllerTest extends BaseTest {
   @BeforeClass
   public void initData() {
     //yapi 挡板
-    ParamConstant.setURL_SMS_SERVER("https://yapi.rd.virsical.cn/mock/121/sms");
+    ParamConstant.setUrlSmsServer("https://yapi.rd.virsical.cn/mock/121/sms");
   }
 
   @Test

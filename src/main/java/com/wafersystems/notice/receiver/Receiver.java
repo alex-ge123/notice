@@ -2,13 +2,11 @@ package com.wafersystems.notice.receiver;
 
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.RabbitMqConfig;
-import com.wafersystems.notice.model.GlobalParameter;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailNoticeService;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
-import com.wafersystems.notice.util.EmailUtil;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
@@ -51,9 +49,6 @@ public class Receiver {
   private StringEncryptor stringEncryptor;
 
   @Autowired
-  private EmailUtil emailUtil;
-
-  @Autowired
   private GlobalParamService globalParamService;
 
   /**
@@ -73,10 +68,10 @@ public class Receiver {
         MailDTO mailDTO = JSON.parseObject(messageDTO.getData().toString(), MailDTO.class);
 
         Locale locale = ParamConstant.getLocaleByStr(mailDTO.getLang());
-        if (!ParamConstant.isEMAIL_SWITCH()) {
+        if (!ParamConstant.isEmailSwitch()) {
           // 系统刚启动，消费到消息，未检测到参数时，等待3秒，待参数初始化
           Thread.sleep(3000);
-          if (!ParamConstant.isEMAIL_SWITCH()) {
+          if (!ParamConstant.isEmailSwitch()) {
             log.warn("邮件服务参数未配置，将忽略MsgId:{}的邮件发送", messageDTO.getMsgId());
             return;
           }
@@ -95,9 +90,6 @@ public class Receiver {
         }
         mailDTO.setLocale(cn.hutool.core.util.StrUtil.isBlank(mailDTO.getLang()) ? null : locale);
         mailDTO.setResource(resource);
-        mailDTO.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
-        mailDTO.setImgPathBanner(ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg");
-        mailDTO.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
         try {
           mailNoticeService.sendMail(MailBean.builder()
             .uuid(mailDTO.getUuid())
@@ -130,10 +122,10 @@ public class Receiver {
   public void sms(@Payload String message) {
     try {
       log.info("【{}监听到短信消息】{}", RabbitMqConfig.QUEUE_NOTICE_SMS, stringEncryptor.encrypt(message));
-      if (!ParamConstant.isSMS_SWITCH()) {
+      if (!ParamConstant.isSmsSwitch()) {
         // 系统刚启动，消费到消息，未检测到参数时，等待3秒，待参数初始化
         Thread.sleep(3000);
-        if (!ParamConstant.isSMS_SWITCH()) {
+        if (!ParamConstant.isSmsSwitch()) {
           log.warn("未配置短信服务调用地址！");
           return;
         }

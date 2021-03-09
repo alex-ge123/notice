@@ -53,7 +53,7 @@ public class MailSendControllerTest extends BaseTest {
 
   @BeforeClass
   public void initData() {
-    ParamConstant.setDEFAULT_MAIL_HOST("12345");
+    ParamConstant.setDefaultMailHost("12345");
   }
 
   @Test

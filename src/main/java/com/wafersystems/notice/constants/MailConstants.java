@@ -13,6 +13,7 @@ public class MailConstants {
   public static final String MAIL_PASSWORD = "MAIL_PASSWORD";
   public static final String MAIL_AUTH = "MAIL_AUTH";
   public static final String MAIL_MAILNAME = "MAIL_MAILNAME";
+  public static final String MAIL_USERNAME = "MAIL_USERNAME";
   public static final String MAIL_PORT = "MAIL_PORT";
   public static final String MAIL_PROPS = "MAIL_PROPS";
 }

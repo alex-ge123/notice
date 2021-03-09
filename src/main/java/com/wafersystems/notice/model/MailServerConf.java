@@ -21,6 +21,10 @@ public class MailServerConf {
    */
   private int port;
   /**
+   * 邮箱用户名
+   */
+  private String username;
+  /**
    * 邮箱账号
    */
   private String from;

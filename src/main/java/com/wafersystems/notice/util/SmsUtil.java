@@ -116,6 +116,7 @@ public class SmsUtil {
         phone = AesUtils.decryptAes(phone, aesKeyProperties.getKey());
       } catch (Exception ignore) {
       }
+      //todo 发送失败，重复发送
       String result = sendSms(templateId, phone, params, domain, smsSign);
       log.info("电话号码" + StrUtil.hide(phone, phone.length() - 4, phone.length()) + "发送短信的结果为：" + result);
     }
@@ -156,9 +157,9 @@ public class SmsUtil {
       return "1";
     }
 
-    String url = ParamConstant.getURL_SMS_SERVER();
-    String clientId = ParamConstant.getURL_SMS_CLIENTID();
-    String secret = ParamConstant.getURL_SMS_SECRET();
+    String url = ParamConstant.getUrlSmsServer();
+    String clientId = ParamConstant.getUrlSmsClientId();
+    String secret = ParamConstant.getUrlSmsSecret();
     log.debug("短信接口服务为:{}", url);
     url += '/' + clientId + '/' + secret;
 
@@ -174,7 +175,7 @@ public class SmsUtil {
     // 不支持带+86的
     hashMap.put("calleeNbr", phoneNum);
     hashMap.put("templetId", templetId);
-    hashMap.put("domain", StringUtils.isBlank(domain) ? ParamConstant.getDEFAULT_DOMAIN() : domain);
+    hashMap.put("domain", StringUtils.isBlank(domain) ? ParamConstant.getDefaultDomain() : domain);
     hashMap.put("value1", params.get(0));
     for (int i = 1; i < params.size(); i++) {
       if (StringUtils.isNotBlank(params.get(i))) {

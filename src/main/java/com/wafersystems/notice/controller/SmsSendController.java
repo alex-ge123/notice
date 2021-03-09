@@ -75,7 +75,7 @@ public class SmsSendController {
   @Inner
   @PostMapping(value = "/sendSms")
   public R sendSms(@RequestBody SmsDTO smsDTO, String lang) {
-    if (!ParamConstant.isSMS_SWITCH()) {
+    if (!ParamConstant.isSmsSwitch()) {
       log.warn("未配置短信服务调用地址！");
       return R.fail(resource.getMessage("msg.msg.smsServerNull", null, ParamConstant.getLocaleByStr(lang)));
     }
@@ -196,7 +196,7 @@ public class SmsSendController {
   @PreAuthorize("@pms.hasPermission('')")
   public R check() {
     try {
-      URL url = new URL(ParamConstant.getURL_SMS_SERVER());
+      URL url = new URL(ParamConstant.getUrlSmsServer());
       URLConnection co = url.openConnection();
       co.setConnectTimeout(5000);
       co.connect();

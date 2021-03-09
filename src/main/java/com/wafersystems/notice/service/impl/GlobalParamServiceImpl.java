@@ -152,53 +152,52 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   }
 
   private void checkValue() {
-    if (StrUtil.isNotBlank(ParamConstant.getURL_SMS_SERVER())
-      && StrUtil.isNotBlank(ParamConstant.getURL_SMS_CLIENTID())
-      && StrUtil.isNotBlank(ParamConstant.getURL_SMS_SECRET())) {
-      ParamConstant.setSMS_SWITCH(true);
+    if (StrUtil.isNotBlank(ParamConstant.getUrlSmsServer())
+      && StrUtil.isNotBlank(ParamConstant.getUrlSmsClientId())
+      && StrUtil.isNotBlank(ParamConstant.getUrlSmsSecret())) {
+      ParamConstant.setSmsSwitch(true);
     } else {
       log.warn("短信服务地址未配置，将不能使用短信服务！");
-      ParamConstant.setSMS_SWITCH(false);
+      ParamConstant.setSmsSwitch(false);
     }
-    if (StrUtil.isNotBlank(ParamConstant.getDEFAULT_MAIL_AUTH())
-      && StrUtil.isNotBlank(ParamConstant.getDEFAULT_MAIL_FROM())
-      && StrUtil.isNotBlank(ParamConstant.getDEFAULT_MAIL_HOST())
-      && ParamConstant.getDEFAULT_MAIL_PORT() != null
-      && StrUtil.isNotBlank(ParamConstant.getDEFAULT_MAIL_PASSWORD())) {
-      ParamConstant.setEMAIL_SWITCH(true);
+    if (StrUtil.isNotBlank(ParamConstant.getDefaultMailAuth())
+      && StrUtil.isNotBlank(ParamConstant.getDefaultMailFrom())
+      && StrUtil.isNotBlank(ParamConstant.getDefaultMailHost())
+      && ParamConstant.getDefaultMailPort() != null
+      && StrUtil.isNotBlank(ParamConstant.getDefaultMailPassword())) {
+      ParamConstant.setEmailSwitch(true);
     } else {
       log.warn("邮件服务参数配置不完整，将不能使用邮件服务！");
-      ParamConstant.setEMAIL_SWITCH(false);
+      ParamConstant.setEmailSwitch(false);
     }
   }
 
   private void setValue(Map<String, String> map) {
     if (!map.isEmpty()) {
-      ParamConstant.setDEFAULT_DOMAIN(
+      ParamConstant.setDefaultDomain(
         StrUtil.isNotBlank(map.get("DEFAULT_DOMAIN")) ? map.get("DEFAULT_DOMAIN") : "wafersystems.com");
-      ParamConstant.setDEFAULT_MAIL_AUTH(map.get("DEFAULT_MAIL_AUTH"));
-      ParamConstant.setDEFAULT_MAIL_CHARSET(
+      ParamConstant.setDefaultMailAuth(map.get("DEFAULT_MAIL_AUTH"));
+      ParamConstant.setDefaultMailCharset(
         StrUtil.isNotBlank(map.get("DEFAULT_MAIL_CHARSET")) ? map.get("DEFAULT_MAIL_CHARSET") : "GBK");
-      ParamConstant.setDEFAULT_MAIL_FROM(map.get("DEFAULT_MAIL_FROM"));
-      ParamConstant.setDEFAULT_MAIL_HOST(map.get("DEFAULT_MAIL_HOST"));
-      ParamConstant.setDEFAULT_MAIL_PORT(
+      ParamConstant.setDefaultMailFrom(map.get("DEFAULT_MAIL_FROM"));
+      ParamConstant.setDefaultMailHost(map.get("DEFAULT_MAIL_HOST"));
+      ParamConstant.setDefaultMailPort(
         map.get("DEFAULT_MAIL_PORT") != null ? Integer.parseInt(map.get("DEFAULT_MAIL_PORT")) : 25);
-      ParamConstant.setDEFAULT_MAIL_MAILNAME(
+      ParamConstant.setDefaultMailMailName(
         StrUtil.isNotBlank(map.get("DEFAULT_MAIL_MAILNAME")) ? map.get("DEFAULT_MAIL_MAILNAME") : "威思客预约服务");
-      ParamConstant.setDEFAULT_MAIL_PASSWORD(map.get("DEFAULT_MAIL_PASSWORD"));
-      ParamConstant.setDEFAULT_MAIL_TIMEOUT(
-        StrUtil.isNotBlank(map.get("DEFAULT_MAIL_TIMEOUT")) ? map.get("DEFAULT_MAIL_TIMEOUT") : "25000");
-      ParamConstant.setDEFAULT_REPEAT_COUNT(StrUtil.isNotBlank(
+      ParamConstant.setDefaultMailPassword(map.get("DEFAULT_MAIL_PASSWORD"));
+      ParamConstant.setDefaultRepeatCount(StrUtil.isNotBlank(
         map.get("DEFAULT_REPEAT_COUNT")) ? Integer.parseInt(map.get("DEFAULT_REPEAT_COUNT")) : 0);
-      ParamConstant.setDEFAULT_TIMEZONE(map.get("DEFAULT_TIMEZONE"));
-      ParamConstant.setLOGO_DEFALUT(map.get("LOGO_DEFALUT"));
-      ParamConstant.setIMAGE_DIRECTORY(map.get("IMAGE_DIRECTORY"));
-      ParamConstant.setURL_SMS_SERVER(map.get("URL_SMS_SERVER"));
-      ParamConstant.setURL_SMS_CLIENTID(map.get("URL_SMS_CLIENTID"));
-      ParamConstant.setURL_SMS_SECRET(map.get("URL_SMS_SECRET"));
-      ParamConstant.setSMS_SIGN_NAME(map.get("SMS_SIGN_NAME"));
-      ParamConstant.setSYSTEM_NAME(StrUtil.equals(map.get("SYSTEM_NAME"), null) ? "威发系统有限公司" : map.get("SYSTEM_NAME"));
-      ParamConstant.setPHONE(StrUtil.equals(map.get("PHONE"), null) ? "" : map.get("PHONE"));
+      ParamConstant.setLogoDefault(map.get("LOGO_DEFALUT"));
+      ParamConstant.setUrlSmsServer(map.get("URL_SMS_SERVER"));
+      ParamConstant.setUrlSmsClientId(map.get("URL_SMS_CLIENTID"));
+      ParamConstant.setUrlSmsSecret(map.get("URL_SMS_SECRET"));
+      ParamConstant.setSmsSignName(map.get("SMS_SIGN_NAME"));
+      ParamConstant.setSystemName(StrUtil.equals(map.get("SYSTEM_NAME"), null) ? "威发系统有限公司" : map.get("SYSTEM_NAME"));
+      ParamConstant.setPhone(StrUtil.equals(map.get("PHONE"), null) ? "" : map.get("PHONE"));
+      ParamConstant.setSmsRepeatCount(StrUtil.isNotBlank(
+        map.get("SMS_REPEAT_COUNT")) ? Integer.parseInt(map.get("SMS_REPEAT_COUNT")) : 0);
+      ParamConstant.setDefaultMailUsername(map.get("DEFAULT_MAIL_USERNAME"));
     }
   }
 
@@ -229,6 +228,8 @@ public class GlobalParamServiceImpl implements GlobalParamService {
           conf.setAuth(value);
         } else if (MailConstants.MAIL_MAILNAME.equals(p.getParamKey())) {
           conf.setName(value);
+        } else if (MailConstants.MAIL_USERNAME.equals(p.getParamKey())) {
+          conf.setUsername(value);
         } else if (MailConstants.MAIL_PORT.equals(p.getParamKey())) {
           try {
             conf.setPort(Integer.parseInt(value));
@@ -245,12 +246,13 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     if (conf.getPort() == 0) {
       log.info("使用系统默认邮件配置发送邮件 >>>");
       props = mailProperties.getProps();
-      conf.setHost(ParamConstant.getDEFAULT_MAIL_HOST());
-      conf.setPort(ParamConstant.getDEFAULT_MAIL_PORT());
-      conf.setFrom(ParamConstant.getDEFAULT_MAIL_FROM());
-      conf.setPassword(ParamConstant.getDEFAULT_MAIL_PASSWORD());
-      conf.setAuth(ParamConstant.getDEFAULT_MAIL_AUTH());
-      conf.setName(ParamConstant.getDEFAULT_MAIL_MAILNAME());
+      conf.setHost(ParamConstant.getDefaultMailHost());
+      conf.setPort(ParamConstant.getDefaultMailPort());
+      conf.setFrom(ParamConstant.getDefaultMailFrom());
+      conf.setUsername(ParamConstant.getDefaultMailUsername());
+      conf.setPassword(ParamConstant.getDefaultMailPassword());
+      conf.setAuth(ParamConstant.getDefaultMailAuth());
+      conf.setName(ParamConstant.getDefaultMailMailName());
       conf.setProps(props);
     } else {
       log.info("使用租户自定义邮件配置发送邮件 >>>");

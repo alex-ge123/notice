@@ -20,7 +20,7 @@ public class ReceiverTest extends BaseTest {
 
   @BeforeClass
   public void initData() {
-    ParamConstant.setURL_SMS_SERVER("https://yapi.rd.virsical.cn/mock/121/sms");
+    ParamConstant.setUrlSmsServer("https://yapi.rd.virsical.cn/mock/121/sms");
   }
 
   @Test

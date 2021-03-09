@@ -95,7 +95,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
       mailUtil.send(mailBean, mailServerConf);
     } catch (Exception exception) {
       count++;
-      if (count < ParamConstant.getDEFAULT_REPEAT_COUNT()) {
+      if (count < ParamConstant.getDefaultRepeatCount()) {
         log.debug("主题[" + mailBean.getSubject() + "],发往[" + mailBean.getToEmails() + "]的邮件第" + count + "次重发......");
         this.sendMail(mailBean, count, mailServerConf);
       } else {
@@ -210,8 +210,8 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   public MailBean fillTenantInfo(MailBean mailBean) {
     //填充系统默认参数
     MailDTO mailDTO = mailBean.getMailDTO();
-    mailDTO.setLogo(StrUtil.isEmptyStr(mailDTO.getLogo()) ? ParamConstant.getLOGO_DEFALUT() : mailDTO.getLogo());
-    mailDTO.setSystemName(ParamConstant.getSYSTEM_NAME());
+    mailDTO.setLogo(StrUtil.isEmptyStr(mailDTO.getLogo()) ? ParamConstant.getLogoDefault() : mailDTO.getLogo());
+    mailDTO.setSystemName(ParamConstant.getSystemName());
     if (ObjectUtil.isNotNull(mailDTO.getTenantId())) {
       R<TenantDTO> tenantByIdForInner = tenantService.getTenantByIdForInner(mailDTO.getTenantId(), SecurityConstants.FROM_IN);
       if (ObjectUtil.isNotNull(tenantByIdForInner)) {
