@@ -116,7 +116,6 @@ public class SmsUtil {
         phone = AesUtils.decryptAes(phone, aesKeyProperties.getKey());
       } catch (Exception ignore) {
       }
-      //todo 发送失败，重复发送
       String result = sendSms(templateId, phone, params, domain, smsSign);
       log.info("电话号码" + StrUtil.hide(phone, phone.length() - 4, phone.length()) + "发送短信的结果为：" + result);
     }
@@ -216,12 +215,39 @@ public class SmsUtil {
   }
 
   private String send(String url, String privateKey, Map<String, String> hashMap, String domain) {
-    HttpResponse response = null;
-    CloseableHttpClient httpClient = null;
+    HttpResponse response = send(0, url, privateKey, hashMap);
     // 响应码
     int responseStatusCode = 0;
     // 响应结果
     String responseResult = "";
+    if (response != null && response.getStatusLine() != null) {
+      responseStatusCode = response.getStatusLine().getStatusCode();
+      try {
+        responseResult = EntityUtils.toString(response.getEntity());
+      } catch (IOException e) {
+        log.warn("获取短信响应结果失败！", e);
+      }
+      log.info("发送https短信结果：状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
+    } else {
+      log.warn("response == null 或 response.getStatusLine() == null");
+    }
+    if (responseStatusCode != 0) {
+      if (responseStatusCode == SmsConstants.SUCCESS_CODE) {
+        if (systemProperties.isCloudService()) {
+          // 解析返回内容中剩余短信数量并更新缓存
+          parseSmsBalanceCacheRedis(domain, responseResult, true);
+        }
+        return "0";
+      } else {
+        log.error("发送短信失败，状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
+      }
+    }
+    return "1";
+  }
+
+  private HttpResponse send(Integer count, String url, String privateKey, Map<String, String> hashMap) {
+    HttpResponse response = null;
+    CloseableHttpClient httpClient = null;
     try {
       HttpPost method = new HttpPost(url);
       method.addHeader("Content-type", "application/json; charset=utf-8");
@@ -237,16 +263,16 @@ public class SmsUtil {
         .build();
       httpClient = HttpClientBuilder.create().setDefaultRequestConfig(defaultRequestConfig).build();
       response = httpClient.execute(method);
-      if (response != null && response.getStatusLine() != null) {
-        responseStatusCode = response.getStatusLine().getStatusCode();
-        responseResult = EntityUtils.toString(response.getEntity());
-        log.info("发送https短信结果：状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
+    } catch (Exception exception) {
+      count++;
+      if (count < ParamConstant.getSmsRepeatCount()) {
+        String phone = hashMap.get("calleeNbr");
+        phone = StrUtil.hide(phone, phone.length() - 4, phone.length());
+        log.warn("模板ID[" + hashMap.get("templetId") + "],发往[" + phone + "]的短信第" + count + "次重发......");
+        response = this.send(count, url, privateKey, hashMap);
       } else {
-        log.warn("response == null 或 response.getStatusLine() == null");
+        log.error("短信发送失败：", exception);
       }
-    } catch (Exception ex) {
-      // 异常信息
-      log.info("发送https短信异常:", ex);
     } finally {
       if (null != httpClient) {
         try {
@@ -256,18 +282,7 @@ public class SmsUtil {
         }
       }
     }
-    if (responseStatusCode != 0) {
-      if (responseStatusCode == SmsConstants.SUCCESS_CODE) {
-        if (systemProperties.isCloudService()) {
-          // 解析返回内容中剩余短信数量并更新缓存
-          parseSmsBalanceCacheRedis(domain, responseResult, true);
-        }
-        return "0";
-      } else {
-        log.error("发送短信失败，状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
-      }
-    }
-    return "1";
+    return response;
   }
 
   /**
