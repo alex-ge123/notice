@@ -37,10 +37,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -135,13 +132,6 @@ public class SmsUtil {
       log.warn("短信模板[{}]禁用，将不向电话[{}]发送短信！", templetId, phoneNum);
       return "1";
     }
-    if (log.isDebugEnabled()) {
-      log.debug("开始发送短信：templetId={},phoneNum={},params={},domain={},smsSign={}",
-        templetId, StrUtil.hide(phoneNum, phoneNum.length() - 4, phoneNum.length()), params, domain, smsSign);
-    } else {
-      log.info("开始发送短信：templetId={},phoneNum={}",
-        templetId, StrUtil.hide(phoneNum, phoneNum.length() - 4, phoneNum.length()));
-    }
     //重复拦截
     SmsDTO smsDto = new SmsDTO();
     smsDto.setPhoneList(Collections.singletonList(phoneNum));
@@ -200,7 +190,8 @@ public class SmsUtil {
       url += "/send?sign=";
     }
     final String encrypt = stringEncryptor.encrypt(hashMap.toString());
-    log.info("短信参数为{}", encrypt);
+    log.info("开始发送短信：templetId={},phoneNum={},短信参数为{}",
+      templetId, StrUtil.hide(phoneNum, phoneNum.length() - 4, phoneNum.length()), encrypt);
     sign = SecurityUtils.calSignatureMap(hashMap);
     url = url + sign;
     log.debug("发送短信的服务接口为:{}", url);
@@ -218,16 +209,9 @@ public class SmsUtil {
     HttpResponse response = send(0, url, privateKey, hashMap);
     // 响应码
     int responseStatusCode = 0;
-    // 响应结果
-    String responseResult = "";
     if (response != null && response.getStatusLine() != null) {
       responseStatusCode = response.getStatusLine().getStatusCode();
-      try {
-        responseResult = EntityUtils.toString(response.getEntity());
-      } catch (IOException e) {
-        log.warn("获取短信响应结果失败！", e);
-      }
-      log.info("发送https短信结果：状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
+      log.info("发送https短信结果：状态码[{}]，响应结果[{}]", responseStatusCode, response.getHeaders("responseResult"));
     } else {
       log.warn("response == null 或 response.getStatusLine() == null");
     }
@@ -235,11 +219,11 @@ public class SmsUtil {
       if (responseStatusCode == SmsConstants.SUCCESS_CODE) {
         if (systemProperties.isCloudService()) {
           // 解析返回内容中剩余短信数量并更新缓存
-          parseSmsBalanceCacheRedis(domain, responseResult, true);
+          parseSmsBalanceCacheRedis(domain, Arrays.toString(response.getHeaders("responseResult")), true);
         }
         return "0";
       } else {
-        log.error("发送短信失败，状态码[{}]，响应结果[{}]", responseStatusCode, responseResult);
+        log.error("发送短信失败，状态码[{}]，响应结果[{}]", responseStatusCode, response.getHeaders("responseResult"));
       }
     }
     return "1";
@@ -263,6 +247,9 @@ public class SmsUtil {
         .build();
       httpClient = HttpClientBuilder.create().setDefaultRequestConfig(defaultRequestConfig).build();
       response = httpClient.execute(method);
+      String responseResult = EntityUtils.toString(response.getEntity());
+      //将entity临时放到header里，供后面使用。  关闭httpClient后将获取不到
+      response.setHeader("responseResult", responseResult);
     } catch (Exception exception) {
       count++;
       if (count < ParamConstant.getSmsRepeatCount()) {
