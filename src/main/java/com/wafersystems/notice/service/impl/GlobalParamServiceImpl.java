@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.config.MailProperties;
 import com.wafersystems.notice.constants.MailConstants;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.dao.BaseDao;
 import com.wafersystems.notice.model.GlobalParameter;
 import com.wafersystems.notice.model.MailServerConf;
@@ -21,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -46,6 +48,9 @@ public class GlobalParamServiceImpl implements GlobalParamService {
 
   @Autowired
   private MailProperties mailProperties;
+
+  @Autowired
+  private RedisTemplate redisTemplate;
 
   /**
    * 保存SystemParam
@@ -174,6 +179,12 @@ public class GlobalParamServiceImpl implements GlobalParamService {
 
   private void setValue(Map<String, String> map) {
     if (!map.isEmpty()) {
+      //redis缓存
+      String cacheKey = RedisKeyConstants.CACHE_KEY + RedisKeyConstants.CACHE_HASH_KEY;
+      redisTemplate.opsForHash().putAll(cacheKey, map);
+      log.info("通用参数存放至redis缓存！{}", map.keySet());
+
+      //本地缓存
       ParamConstant.setDefaultDomain(
         StrUtil.isNotBlank(map.get("DEFAULT_DOMAIN")) ? map.get("DEFAULT_DOMAIN") : "wafersystems.com");
       ParamConstant.setDefaultMailAuth(map.get("DEFAULT_MAIL_AUTH"));

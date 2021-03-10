@@ -23,4 +23,10 @@ public class RedisKeyConstants {
    */
   public static final String MAIL_KEY = "base:notice:mail:%s:%s:%s:%s";
 
+  /**
+   * 参数缓存前缀
+   */
+  public static final String CACHE_KEY = "base:notice:param:";
+  public static final String CACHE_HASH_KEY = "common";
+
 }

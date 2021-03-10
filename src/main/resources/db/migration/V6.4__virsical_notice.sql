@@ -6,3 +6,4 @@ UPDATE `ntc_parameter` SET `param_desc` = '{\"zh\":\"默认邮件重发次数\",
 
 -- 插入短信重试参数
 INSERT INTO `ntc_parameter`( `param_desc`, `param_key`, `param_value`, `type`, `tenant_id`) VALUES ('{\"zh\":\"默认短信重发次数\",\"en\":\"Sms repeat times\",\"tw\":\"默認短信重發次數\"}', 'SMS_REPEAT_COUNT', '3', NULL, 0);
+INSERT INTO `ntc_parameter`( `param_desc`, `param_key`, `param_value`, `type`, `tenant_id`) VALUES ('{\"zh\":\"默认邮件用户名\",\"en\":\"Mail username\",\"tw\":\"默認郵件用戶名\"}', 'DEFAULT_MAIL_USERNAME', '', NULL, 0);
