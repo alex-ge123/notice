@@ -96,11 +96,6 @@ public class EmailUtil {
       log.warn("邮件模板[{}]禁用，邮件[{}]不发送！", mailBean.getTemplate(), mailBean.getSubject());
       return;
     }
-    //重复发送拦截
-    if (sendIntercept.mailBoolIntercept(mailBean)) {
-      log.error("拦截重复发送邮件[{}]", mailBean.toString());
-      return;
-    }
     try {
       final Session session = getSession(mailServerConf);
       // 构造邮件消息对象
@@ -141,6 +136,11 @@ public class EmailUtil {
       if (CollUtil.isNotEmpty(accessoryList)) {
         Multipart multipart = (Multipart) message.getContent();
         addAccessory(multipart, accessoryList);
+      }
+      //重复发送拦截
+      if (sendIntercept.mailBoolIntercept(mailBean)) {
+        log.error("拦截重复发送邮件[{}]", mailBean.toString());
+        return;
       }
 
       // 使用认证模式发送邮件。

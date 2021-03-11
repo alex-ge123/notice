@@ -22,7 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -50,7 +50,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   private MailProperties mailProperties;
 
   @Autowired
-  private RedisTemplate redisTemplate;
+  private StringRedisTemplate redisTemplate;
 
   /**
    * 保存SystemParam

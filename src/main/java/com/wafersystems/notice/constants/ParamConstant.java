@@ -2,10 +2,8 @@ package com.wafersystems.notice.constants;
 
 import cn.hutool.core.util.StrUtil;
 import com.wafersystems.virsical.common.core.util.SpringContextHolder;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Locale;
 
@@ -21,42 +19,35 @@ public class ParamConstant {
   /**
    * 短信接口clientId.
    */
-  @Getter
-  @Setter
   private static String urlSmsClientId;
   /**
    * 短信接口secret.
    */
-  @Getter
-  @Setter
+
   private static String urlSmsSecret;
 
   /**
    * 短信接口服务.
    */
-  @Getter
-  @Setter
+
   private static String urlSmsServer;
 
   /**
    * 短信服务是否开启(服务必须参数是否配置).
    */
-  @Getter
-  @Setter
+
   private static boolean smsSwitch;
 
   /**
    * 短信签名.
    */
-  @Getter
-  @Setter
+
   private static String smsSignName;
 
   /**
    * 短信重发次数
    */
-  @Getter
-  @Setter
+
   private static Integer smsRepeatCount;
 
 
@@ -64,79 +55,68 @@ public class ParamConstant {
   /**
    * 默认logo.
    */
-  @Getter
-  @Setter
+
   private static String logoDefault;
 
   /**
    * 系统邮件发送邮件.
    */
-  @Getter
-  @Setter
+
   private static String defaultMailFrom;
 
   /**
    * 系统邮件服务.
    */
-  @Getter
-  @Setter
+
   private static String defaultMailHost;
 
 
   /**
    * 系统邮件端口.
    */
-  @Getter
-  @Setter
+
   private static Integer defaultMailPort;
 
   /**
    * 系统邮件密码.
    */
-  @Getter
-  @Setter
+
   private static String defaultMailPassword;
 
   /**
    * 系统邮件认证.
    */
-  @Getter
-  @Setter
+
   private static String defaultMailAuth;
 
   /**
    * 系统邮件用户名
    */
-  @Getter
-  @Setter
+
   private static String defaultMailUsername;
 
   /**
    * 系统邮件编码.
    */
-  @Getter
-  @Setter
+
   private static String defaultMailCharset;
 
   /**
    * 系统邮件显示名称.
    */
-  @Getter
-  @Setter
+
   private static String defaultMailMailName;
 
   /**
    * 默认重发次数.
    */
-  @Getter
-  @Setter
+
   private static Integer defaultRepeatCount;
 
   /**
    * 邮件服务是否开启(服务必须参数是否配置).
    */
-  @Getter
-  @Setter
+
   private static boolean emailSwitch;
 
 
@@ -144,22 +124,19 @@ public class ParamConstant {
   /**
    * 电话.
    */
-  @Getter
-  @Setter
+
   private static String phone;
 
   /**
    * 系统名称.
    */
-  @Getter
-  @Setter
+
   private static String systemName;
 
   /**
    * 系统默认域名.
    */
-  @Getter
-  @Setter
+
   private static String defaultDomain;
 
 
@@ -191,7 +168,7 @@ public class ParamConstant {
   }
 
   private static String getCommonCacheByKey(String key) {
-    RedisTemplate redisTemplate = SpringContextHolder.getBean("redisTemplate");
+    StringRedisTemplate redisTemplate = SpringContextHolder.getBean("stringRedisTemplate");
     String cacheKey = RedisKeyConstants.CACHE_KEY + RedisKeyConstants.CACHE_HASH_KEY;
     String value = (String) redisTemplate.opsForHash().get(cacheKey, key);
     log.debug("redis缓存获取key={},value={}", key, value);
