@@ -64,33 +64,20 @@ spring:
 eureka:
   client:
     enabled: false
-
-## spring security 配置
-security:
-  oauth2:
-    client:
-      client-id: ENC(KmOp5EIyjX0n6hoYE0jMSIDq12xwlmcs)
-      client-secret: ENC(KmOp5EIyjX0n6hoYE0jMSIDq12xwlmcs)
-      scope: server
-      ignore-urls:
-        - '/actuator/**'
-        - '/v2/api-docs'
-        - '/sms/sendSms'
-        - '/sms/sendCaptcha'
-        - '/sms/checkCaptcha'
-        - '/mail/sendMail'
-    resource:
-      loadBalanced: true
-      # token解码的URI
-      token-info-uri: http://virsical-auth/oauth/check_token
-      
 # 加解密根密码
 jasypt:
   encryptor:
     password: wafer
+## spring security 配置
+security:
+  oauth2:
+    resource:
+      loadBalanced: true
+      # token解码的URI
+      token-info-uri: http://virsical-auth/oauth/check_token
 aes:
   # 前端密码密钥，必须16位
-  key: ENC(P99o76/qZUsXdVIUeQnWCZOX/d8xspy1xKczV0uc9yA=)
+  key: XDH206VF30Nf9q7t
 
 # 系统参数配置
 system:
