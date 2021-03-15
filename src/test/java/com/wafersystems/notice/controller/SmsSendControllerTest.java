@@ -9,6 +9,7 @@ import com.wafersystems.notice.model.SmsTemplateDTO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -25,12 +26,15 @@ import org.testng.annotations.Test;
  */
 @Rollback
 @WithMockUser(authorities = {"admin@platform@upms_sys_tenant_add"})
+@Slf4j
 public class SmsSendControllerTest extends BaseTest {
   @Autowired
   private StringRedisTemplate redisTemplate;
 
   @BeforeClass
   public void initData() {
+    redisTemplate.opsForHash().put("base:notice:param:common", "URL_SMS_SERVER", "https://yapi.rd.virsical.cn/mock/121/sms");
+    log.info("发送短信host:{}", redisTemplate.opsForHash().get("base:notice:param:common", "URL_SMS_SERVER"));
     //yapi 挡板
     ParamConstant.setUrlSmsServer("https://yapi.rd.virsical.cn/mock/121/sms");
   }

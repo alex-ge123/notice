@@ -12,9 +12,11 @@ import com.wafersystems.virsical.common.core.util.FileUtils;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.entity.TenantDTO;
 import com.wafersystems.virsical.common.feign.fallback.RemoteTenantServiceFallbackImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.ResultActions;
@@ -35,6 +37,7 @@ import java.io.FileWriter;
  * @date 2019/12/2 16:32
  */
 @Rollback
+@Slf4j
 @WithMockUser(authorities = {"admin@platform@upms_sys_tenant_add"})
 public class MailSendControllerTest extends BaseTest {
 
@@ -43,6 +46,9 @@ public class MailSendControllerTest extends BaseTest {
 
   @MockBean
   RemoteTenantServiceFallbackImpl remoteTenantServiceFallbackImpl;
+
+  @Autowired
+  private StringRedisTemplate redisTemplate;
 
   //  @MockBean
 //  private MailNoticeServiceImpl mailNoticeService;
@@ -53,6 +59,8 @@ public class MailSendControllerTest extends BaseTest {
 
   @BeforeClass
   public void initData() {
+    redisTemplate.opsForHash().put("base:notice:param:common", "DEFAULT_MAIL_HOST", "12345");
+    log.info("发送邮件host:{}", redisTemplate.opsForHash().get("base:notice:param:common", "DEFAULT_MAIL_HOST"));
     ParamConstant.setDefaultMailHost("12345");
   }
 

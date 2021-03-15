@@ -2,7 +2,9 @@ package com.wafersystems.notice.receiver;
 
 import com.wafersystems.notice.BaseTest;
 import com.wafersystems.notice.constants.ParamConstant;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.testng.annotations.BeforeClass;
@@ -14,13 +16,21 @@ import org.testng.annotations.Test;
  */
 @Rollback
 @WithMockUser(authorities = {"admin@platform@upms_sys_tenant_add"})
+@Slf4j
 public class ReceiverTest extends BaseTest {
   @Autowired
   private Receiver receiver;
+  @Autowired
+  private StringRedisTemplate redisTemplate;
 
   @BeforeClass
   public void initData() {
+    redisTemplate.opsForHash().put("base:notice:param:common", "URL_SMS_SERVER", "https://yapi.rd.virsical.cn/mock/121/sms");
+    log.info("发送短信host:{}", redisTemplate.opsForHash().get("base:notice:param:common", "URL_SMS_SERVER"));
     ParamConstant.setUrlSmsServer("https://yapi.rd.virsical.cn/mock/121/sms");
+
+    redisTemplate.opsForHash().put("base:notice:param:common", "DEFAULT_MAIL_HOST", "12345");
+    log.info("发送邮件host:{}", redisTemplate.opsForHash().get("base:notice:param:common", "DEFAULT_MAIL_HOST"));
   }
 
   @Test
