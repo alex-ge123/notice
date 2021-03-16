@@ -14,9 +14,6 @@ import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.annotation.Inner;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -219,55 +216,28 @@ public class MailSendController {
     mailDto.setLocale(cn.hutool.core.util.StrUtil.isBlank(lang) ? null : locale);
     mailDto.setResource(resource);
     try {
-      taskExecutor.execute(new MailTask(mailNoticeService, StrUtil.regStr(subject), toMail, copyTo,
-        tempName, mailDto, lang, globalParamService.getMailServerConf(tenantId)));
+      MailDTO finalMailDto = mailDto;
+      taskExecutor.execute(() -> {
+        try {
+          final MailBean mailBean = MailBean.builder()
+            .subject(subject)
+            .toEmails(toMail)
+            .copyTo(copyTo)
+            .type(ConfConstant.TypeEnum.FM)
+            .template(tempName)
+            .mailDTO(finalMailDto)
+            .build();
+          mailNoticeService.sendMail(mailBean, 0, globalParamService.getMailServerConf(tenantId));
+        } catch (Exception ex) {
+          throw new RuntimeException();
+        }
+      });
       return R.ok();
     } catch (Exception ex) {
       log.error("发送邮件失败：", ex);
       return R.fail(resource.getMessage("msg.email.sendError", null, locale));
     }
   }
-
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  private static class MailTask implements Runnable {
-    private MailNoticeService mailNoticeService;
-    private String subject;
-    private String toMail;
-    private String copyTo;
-    private String tempName;
-    private MailDTO con;
-    private String lang;
-    private MailServerConf mailServerConf;
-
-    /**
-     * When an object implementing interface <code>Runnable</code> is used to create a thread,
-     * starting the thread causes the object's <code>run</code> method to be called in that
-     * separately executing thread.
-     * <p/>
-     * The general contract of the method <code>run</code> is that it may take any action
-     * whatsoever.
-     *
-     * @see Thread#run()
-     */
-    @Override
-    public void run() {
-      try {
-        mailNoticeService.sendMail(MailBean.builder()
-          .subject(subject)
-          .toEmails(toMail)
-          .copyTo(copyTo)
-          .type(ConfConstant.TypeEnum.FM)
-          .template(tempName)
-          .mailDTO(con)
-          .build(), 0, mailServerConf);
-      } catch (Exception ex) {
-        throw new RuntimeException();
-      }
-    }
-  }
-
 
   /**
    * 测试发送邮件
