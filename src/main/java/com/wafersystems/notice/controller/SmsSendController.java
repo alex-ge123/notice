@@ -1,5 +1,6 @@
 package com.wafersystems.notice.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.config.AsyncTaskManager;
@@ -79,7 +80,7 @@ public class SmsSendController {
       log.warn("未配置短信服务调用地址！");
       return R.fail(resource.getMessage("msg.msg.smsServerNull", null, ParamConstant.getLocaleByStr(lang)));
     }
-    if (smsDTO == null || smsDTO.getPhoneList().isEmpty()) {
+    if (smsDTO == null || CollUtil.isEmpty(smsDTO.getPhoneList())) {
       log.warn("接收短信的手机号不能为空！");
       return R.fail(resource.getMessage("msg.msg.recipientIdNull", null,
         ParamConstant.getLocaleByStr(lang)));
