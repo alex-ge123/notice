@@ -30,7 +30,7 @@ public class GlobalParamControllerTest extends BaseTest {
   @Test
   public void testGet() throws Exception {
     String url = "/parameter/get";
-    JSONObject jsonObject = doGet(url);
+    JSONObject jsonObject = doGet(url,false,true);
     Assert.assertEquals(jsonObject.get("code"), CommonConstants.SUCCESS);
   }
 

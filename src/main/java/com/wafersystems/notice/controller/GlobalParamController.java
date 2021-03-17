@@ -39,8 +39,8 @@ public class GlobalParamController {
   @Autowired
   private AesKeyProperties aesKeyProperties;
 
-  private final static String DEFAULT_MAIL_PORT = "DEFAULT_MAIL_PORT";
-  private final static String DEFAULT_REPEAT_COUNT = "DEFAULT_REPEAT_COUNT";
+  private static final String DEFAULT_MAIL_PORT = "DEFAULT_MAIL_PORT";
+  private static final String DEFAULT_REPEAT_COUNT = "DEFAULT_REPEAT_COUNT";
 
   /**
    * 更新系统配置信息到缓存.

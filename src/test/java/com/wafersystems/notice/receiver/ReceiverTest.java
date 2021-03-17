@@ -44,4 +44,10 @@ public class ReceiverTest extends BaseTest {
     String message = "{\"clientId\":\"+8615529360323\",\"data\":{\"paramList\":[\"11\",\"2019-12-26 10:35\",\"访客\",\"\",\"\",\"\"],\"phoneList\":[\"+8615529360323\"],\"smsSign\":\"威发系统\",\"templateId\":\"105856\"},\"lang\":\"zh\",\"msgAction\":\"ADD\",\"msgId\":\"9773bdf1-d844-4278-ab85-ea896535ab43\",\"msgTime\":1577327459154,\"msgType\":\"ONE\",\"product\":\"vst\"}";
     receiver.sms(message);
   }
+
+  @Test
+  public void testSmsBstch() throws Exception {
+    String message = "{\"clientId\":\"+8615529360323\",\"data\":[{\"paramList\":[\"11\",\"2019-12-26 10:35\",\"访客\",\"\",\"\",\"\"],\"phoneList\":[\"+8615529360323\"],\"smsSign\":\"威发系统\",\"templateId\":\"105856\"}],\"lang\":\"zh\",\"msgAction\":\"ADD\",\"msgId\":\"9773bdf1-d844-4278-ab85-ea896535ab43\",\"msgTime\":1577327459154,\"msgType\":\"BATCH\",\"product\":\"vst\"}";
+    receiver.sms(message);
+  }
 }
