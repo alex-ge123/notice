@@ -58,11 +58,11 @@ pipeline {
                 }
             }
             steps {
-                sh "rm -rf tmp"
-                sh "mkdir -p tmp/config"
-                sh "mkdir -p tmp/vms"
+                sh "rm -rf work"
+                sh "mkdir -p work/config"
+                sh "mkdir -p work/vms"
 
-                sh "cp target/*.jar tmp"
+                sh "cp target/*.jar work"
 
                 sh "cp k8s/backend-k8s.yml k8s.yml"
                 sh "cp k8s/backend-service.yml k8s-service.yml"
@@ -101,23 +101,32 @@ pipeline {
                         datas.spring.cloud.config.uri = "http://wafer:wafer@${GROUP_NAME}-config:8080"
                         datas.server.port = 8080
 
-                        writeYaml file: "tmp/config/bootstrap.yml", data: datas
+                        writeYaml file: "work/config/bootstrap.yml", data: datas
 
-                        RET = sh(
-                                script: "kubectl get pvc ${SERVICE_NAME}-work --no-headers=true -o custom-columns=pv:.spec.volumeName -n ${RD_ENV}",
-                                returnStdout: true
-                        ).trim()
-                        PVC_WORK = "${RD_ENV}-${SERVICE_NAME}-work-" + RET
+                        // 创建一个初始化Pod，临时用户数据复制
+                        INIT_POD_NAME = "${SERVICE_NAME}-init-${currentBuild.startTimeInMillis}"
+                        sh "cp k8s/initpod.yml initpod.yml"
+                        sh "sed -i s@__PROJECT__@${SERVICE_NAME}@g initpod.yml"
+                        sh "sed -i s@__GROUP_NAME__@${GROUP_NAME}@g initpod.yml"
+                        sh "sed -i s@__INIT_POD_NAME__@${INIT_POD_NAME}@g initpod.yml"
+                        sh "kubectl apply -f initpod.yml -n ${RD_ENV}"
 
-                        ftpPublisher failOnError: true,
-                                publishers: [
-                                        [configName: 'ftp_ds1819_dev', transfers: [
-                                                [cleanRemote    : true,
-                                                 remoteDirectory: "${PVC_WORK}",
-                                                 sourceFiles    : 'tmp/',
-                                                 removePrefix   : 'tmp']
-                                        ]]
-                                ]
+                        INIT_POD_STATUS = ''
+
+                        while (INIT_POD_STATUS != 'Running') {
+                            INIT_POD_STATUS = sh(
+                                    script: "kubectl get pod ${INIT_POD_NAME} --no-headers=true -o custom-columns=status:.status.phase -n ${RD_ENV}",
+                                    returnStdout: true
+                            ).trim()
+                            
+                            echo 'Waiting for init...'
+                            sleep 2
+                        }
+
+                        // 使用初始化Pod进行数据复制
+                        sh "kubectl cp --no-preserve=false ./work ${INIT_POD_NAME}:/ -n ${RD_ENV}"
+                        // 删除初始化Pod
+                        sh "kubectl delete pod ${INIT_POD_NAME} --now --wait=false -n ${RD_ENV}"
 
                         sh "kubectl apply -f k8s-service.yml -n ${RD_ENV}"
                         sh "kubectl apply -f k8s.yml -n ${RD_ENV}"
