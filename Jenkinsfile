@@ -74,27 +74,18 @@ pipeline {
                 sh "sed -i s@__REPLICAS_NUM__@${REPLICAS_NUM}@g k8s.yml"
 
                 script {
-                    if (SERVICE_NAME.length() > 24) {
-                        APP_NAME = SERVICE_NAME.substring(0, 24)
-                    } else {
-                        APP_NAME = SERVICE_NAME
-                    }
-
-                    sh "sed -i s@__PINPOINT_APPNAME__@${APP_NAME}@g k8s.yml"
-
                     withKubeConfig(clusterName: "${K8S_CLUSTER_NAME}",
                             credentialsId: "k8s-${RD_ENV}",
                             serverUrl: "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT_HTTPS}") {
+                        MYSQL_POD = sh(
+                                script: "kubectl get pod -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | grep ^${GROUP_NAME}-mysql | head -1",
+                                returnStdout: true
+                        ).trim()
+
                         if (params.reserveDBData == 'No') {
-                            MYSQL_POD = sh(
-                                    script: "kubectl get pod -n ${RD_ENV} --field-selector=status.phase=Running --ignore-not-found -o custom-columns=name:.metadata.name --no-headers=true | grep ^${GROUP_NAME}-mysql | head -1",
-                                    returnStdout: true
-                            ).trim()
-
                             sh "kubectl exec ${MYSQL_POD} -n ${RD_ENV} -- mysql -uwafer -pwafer -e 'DROP DATABASE IF EXISTS virsical_notice'"
-                            sh "kubectl exec ${MYSQL_POD} -n ${RD_ENV} -- mysql -uwafer -pwafer -e 'CREATE DATABASE virsical_notice'"
                         }
-
+                        sh "kubectl exec ${MYSQL_POD} -n ${RD_ENV} -- mysql -uwafer -pwafer -e 'CREATE DATABASE IF NOT EXISTS virsical_notice'"
 
                         datas = readYaml file: 'src/main/resources/bootstrap.yml'
                         datas.eureka.client['service-url'].defaultZone = "http://wafer:wafer@${GROUP_NAME}-eureka:8080/eureka/"
