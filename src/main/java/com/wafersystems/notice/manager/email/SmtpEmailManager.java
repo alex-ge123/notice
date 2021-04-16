@@ -15,7 +15,6 @@ import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
 import com.wafersystems.virsical.common.core.dto.RecurrenceRuleDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -73,7 +72,6 @@ public class SmtpEmailManager extends AbstractEmailManager {
     }
   }
 
-  @NotNull
   private MimeMessage generateMessage(MailBean mailBean, MailServerConf mailServerConf, Session session) throws Exception {
     // 构造邮件消息对象
     MimeMessage message = new MimeMessage(session);
