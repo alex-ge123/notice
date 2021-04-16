@@ -19,6 +19,12 @@ public class MailServerConf {
    * - microsoft
    */
   private String serverType;
+
+  /**
+   * 邮箱账号
+   */
+  private String from;
+
   //**************************************smtp配置***************************
   /**
    * 邮件服务器
@@ -32,10 +38,7 @@ public class MailServerConf {
    * 邮箱用户名
    */
   private String username;
-  /**
-   * 邮箱账号
-   */
-  private String from;
+
   /**
    * 邮箱授权码
    */
@@ -54,7 +57,24 @@ public class MailServerConf {
   private Map<String, Object> props;
 
   //**************************************Microsoft配置***************************
+  /**
+   * clientId
+   */
+  private String clientId;
 
+  /**
+   * clientSecret
+   */
+  private String clientSecret;
 
+  /**
+   * officeTenantId
+   */
+  private String officeTenantId;
+
+  /**
+   * scope
+   */
+  private String scope;
   ////**************************************ews配置***************************
 }

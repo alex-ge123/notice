@@ -165,16 +165,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
       log.warn("短信服务地址未配置，将不能使用短信服务！");
       ParamConstant.setSmsSwitch(false);
     }
-    if (StrUtil.isNotBlank(ParamConstant.getDefaultMailAuth())
-      && StrUtil.isNotBlank(ParamConstant.getDefaultMailFrom())
-      && StrUtil.isNotBlank(ParamConstant.getDefaultMailHost())
-      && ParamConstant.getDefaultMailPort() != null
-      && StrUtil.isNotBlank(ParamConstant.getDefaultMailPassword())) {
-      ParamConstant.setEmailSwitch(true);
-    } else {
-      log.warn("邮件服务参数配置不完整，将不能使用邮件服务！");
-      ParamConstant.setEmailSwitch(false);
-    }
+    ParamConstant.setEmailSwitch(true);
   }
 
   private void setValue(Map<String, String> map) {

@@ -3,17 +3,19 @@ package com.wafersystems.notice.manager.email;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.config.FreemarkerMacroMessage;
 import com.wafersystems.notice.config.loader.MysqlMailTemplateLoader;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
-import com.wafersystems.virsical.common.core.dto.MailDTO;
-import com.wafersystems.virsical.common.core.dto.MailResultDTO;
-import com.wafersystems.virsical.common.core.dto.MessageDTO;
+import com.wafersystems.virsical.common.core.dto.*;
+import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
+import com.wafersystems.virsical.common.core.util.R;
 import freemarker.template.Configuration;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +25,6 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.StringWriter;
@@ -37,7 +38,6 @@ import java.util.Map;
  * @author wafer
  */
 @Slf4j
-@Component
 public abstract class AbstractEmailManager {
 
   @Setter
@@ -55,6 +55,9 @@ public abstract class AbstractEmailManager {
   @Autowired
   private AmqpTemplate rabbitTemplate;
 
+  @Autowired
+  private AsyncTaskManager asyncTaskManager;
+
   /**
    * 发送邮件
    *
@@ -63,6 +66,17 @@ public abstract class AbstractEmailManager {
    * @throws Exception Exception
    */
   public abstract void send(MailBean mailBean, MailServerConf mailServerConf) throws Exception;
+
+  /**
+   * 邮件配置检测
+   *
+   * @param dto            dto
+   * @param tenantId       tenantId
+   * @param mailServerConf mailServerConf
+   * @return R
+   * @throws Exception Exception
+   */
+  public abstract R check(BaseCheckDTO dto, Integer tenantId, MailServerConf mailServerConf);
 
   /**
    * 模板解析
@@ -162,5 +176,31 @@ public abstract class AbstractEmailManager {
       rabbitTemplate.convertAndSend(NoticeMqConstants.EXCHANGE_DIRECT_NOTICE_RESULT_MAIL, routerKey, JSON.toJSONString(dto));
       log.debug("发送邮件发送结果uuid={}，result={}", uuid, result);
     }
+  }
+
+  /**
+   * 记录检测结果
+   *
+   * @param message       message
+   * @param messageDetail messageDetail
+   * @param result        result
+   * @param tenantId      租户ID
+   */
+  void sendCheckLog(String message, String messageDetail, Integer result, Integer tenantId) {
+    LogDTO logDTO = new LogDTO();
+    logDTO.setProductCode(CommonConstants.PRODCUT_CHECK);
+    logDTO.setResult(result);
+    logDTO.setType("check-mail");
+    logDTO.setTitle(cn.hutool.core.util.StrUtil.sub(message, 0, 100));
+    if (cn.hutool.core.util.StrUtil.isNotBlank(messageDetail) && messageDetail.length() > 2000) {
+      logDTO.setContent(messageDetail.substring(0, 2000));
+    } else {
+      logDTO.setContent(messageDetail);
+    }
+    logDTO.setUsername(TenantContextHolder.getUsername());
+    logDTO.setTenantId(TenantContextHolder.getTenantId());
+    logDTO.setUserId(TenantContextHolder.getUserId());
+    logDTO.setObjectId(String.valueOf(tenantId));
+    asyncTaskManager.asyncSendLogMessage(logDTO);
   }
 }

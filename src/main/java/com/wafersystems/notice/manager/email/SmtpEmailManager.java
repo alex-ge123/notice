@@ -11,18 +11,23 @@ import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.enums.MailScheduleStatusEnum;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SysDictConstants;
+import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
 import com.wafersystems.virsical.common.core.dto.RecurrenceRuleDTO;
+import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.security.Security;
 import java.text.SimpleDateFormat;
@@ -36,7 +41,8 @@ import java.util.TimeZone;
  * @author wafer
  */
 @Slf4j
-@Component
+@Primary
+@Service("smtp")
 public class SmtpEmailManager extends AbstractEmailManager {
 
   @Autowired
@@ -307,5 +313,41 @@ public class SmtpEmailManager extends AbstractEmailManager {
       return false;
     }
     return true;
+  }
+
+
+  @Override
+  public R check(BaseCheckDTO dto, Integer tenantId, MailServerConf conf) {
+    Transport transport = null;
+    try {
+      final Session session = this.getSession(conf);
+      transport = session.getTransport("smtp");
+      transport.connect(conf.getHost(), conf.getPort(), conf.getFrom(), "true".equals(conf.getAuth()) ? conf.getPassword() : null);
+      // 构造邮件消息对象
+      MimeMessage message = new MimeMessage(session);
+      message.setSubject("邮件配置测试");
+      // 发件人
+      message.setFrom(new InternetAddress(conf.getFrom(), conf.getName()));
+      // 收件人
+      message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(dto.getToMail()));
+      message.setContent("该邮件用于验证邮件配置，收到该邮件，则您的邮箱配置正确！", "text/html;charset=UTF-8");
+      transport.sendMessage(message, message.getAllRecipients());
+      sendCheckLog(null, null, CommonConstants.SUCCESS, tenantId);
+      return R.ok();
+    } catch (Exception e) {
+      log.warn("邮箱检测失败！", e);
+      StringWriter stringWriter = new StringWriter();
+      e.printStackTrace(new PrintWriter(stringWriter));
+      sendCheckLog(e.getMessage(), stringWriter.toString(), CommonConstants.FAIL, tenantId);
+      return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
+    } finally {
+      if (ObjectUtil.isNotNull(transport)) {
+        try {
+          transport.close();
+        } catch (MessagingException e) {
+          log.error("关闭transport异常！", e);
+        }
+      }
+    }
   }
 }

@@ -9,7 +9,7 @@ import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.dao.impl.BaseDaoImpl;
 import com.wafersystems.notice.intercept.SendIntercept;
-import com.wafersystems.notice.manager.email.SmtpEmailManager;
+import com.wafersystems.notice.manager.email.AbstractEmailManager;
 import com.wafersystems.notice.model.*;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailService;
@@ -36,15 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -60,9 +53,6 @@ public class MailServiceImpl implements MailService {
 
   @Autowired
   private BaseDaoImpl baseDao;
-
-  @Autowired
-  private SmtpEmailManager smtpEMailManager;
 
   @Autowired
   private RemoteTenantService tenantService;
@@ -84,6 +74,9 @@ public class MailServiceImpl implements MailService {
 
   @Autowired
   private SendInterceptProperties properties;
+
+  @Autowired
+  private Map<String, AbstractEmailManager> emailManagerMap;
 
   /**
    * 邮件发送
@@ -118,17 +111,17 @@ public class MailServiceImpl implements MailService {
 
     // 传递副本，防止send方法中对mailBean修改，导致hashcode改变，影响重复邮件拦截
     final MailBean sendMailBean = ObjectUtil.cloneByStream(mailBean);
-
+    AbstractEmailManager emailManager = emailManagerMap.get(mailServerConf.getServerType());
     // 发送邮件
     try {
-      smtpEMailManager.send(sendMailBean, mailServerConf);
+      emailManager.send(sendMailBean, mailServerConf);
       //记录（拦截重复发送用）
       String redisKey = String.format(RedisKeyConstants.MAIL_KEY,
         mailBean.getToEmails(), mailBean.getTemplate(), mailBean.getSubject(), mailBean.hashCode());
       redisTemplate.opsForValue().set(
         redisKey, JSON.toJSONString(mailBean), properties.getMailTimeHorizon(), TimeUnit.MINUTES);
       //发送 发送结果(成功)
-      smtpEMailManager.sendResult(mailBean.getUuid(), mailBean.getRouterKey(), true);
+      emailManager.sendResult(mailBean.getUuid(), mailBean.getRouterKey(), true);
     } catch (Exception exception) {
       count++;
       if (count < ParamConstant.getDefaultRepeatCount()) {
@@ -137,7 +130,7 @@ public class MailServiceImpl implements MailService {
       } else {
         log.error("邮件发送失败：", exception);
         //发送 发送结果(失败)
-        smtpEMailManager.sendResult(mailBean.getUuid(), mailBean.getRouterKey(), false);
+        emailManager.sendResult(mailBean.getUuid(), mailBean.getRouterKey(), false);
         throw exception;
       }
     }
@@ -338,62 +331,7 @@ public class MailServiceImpl implements MailService {
       tenantId = dto.getTenantId();
     }
     final MailServerConf conf = globalParamService.getMailServerConf(tenantId);
-    Transport transport = null;
-    try {
-      final Session session = smtpEMailManager.getSession(conf);
-      transport = session.getTransport("smtp");
-      transport.connect(conf.getHost(), conf.getPort(), conf.getFrom(), "true".equals(conf.getAuth()) ? conf.getPassword() : null);
-      // 构造邮件消息对象
-      MimeMessage message = new MimeMessage(session);
-      message.setSubject("邮件配置测试");
-      // 发件人
-      message.setFrom(new InternetAddress(conf.getFrom(), conf.getName()));
-      // 收件人
-      message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(dto.getToMail()));
-      message.setContent("该邮件用于验证邮件配置，收到该邮件，则您的邮箱配置正确！", "text/html;charset=UTF-8");
-      transport.sendMessage(message, message.getAllRecipients());
-      sendCheckLog(null, null, CommonConstants.SUCCESS, tenantId);
-      return R.ok();
-    } catch (Exception e) {
-      log.warn("邮箱检测失败！", e);
-      StringWriter stringWriter = new StringWriter();
-      e.printStackTrace(new PrintWriter(stringWriter));
-      sendCheckLog(e.getMessage(), stringWriter.toString(), CommonConstants.FAIL, tenantId);
-      return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
-    } finally {
-      if (ObjectUtil.isNotNull(transport)) {
-        try {
-          transport.close();
-        } catch (MessagingException e) {
-          log.error("关闭transport异常！", e);
-        }
-      }
-    }
-  }
-
-  /**
-   * 记录检测结果
-   *
-   * @param message       message
-   * @param messageDetail messageDetail
-   * @param result        result
-   * @param tenantId      租户ID
-   */
-  private void sendCheckLog(String message, String messageDetail, Integer result, Integer tenantId) {
-    LogDTO logDTO = new LogDTO();
-    logDTO.setProductCode(CommonConstants.PRODCUT_CHECK);
-    logDTO.setResult(result);
-    logDTO.setType("check-mail");
-    logDTO.setTitle(cn.hutool.core.util.StrUtil.sub(message, 0, 100));
-    if (cn.hutool.core.util.StrUtil.isNotBlank(messageDetail) && messageDetail.length() > 2000) {
-      logDTO.setContent(messageDetail.substring(0, 2000));
-    } else {
-      logDTO.setContent(messageDetail);
-    }
-    logDTO.setUsername(TenantContextHolder.getUsername());
-    logDTO.setTenantId(TenantContextHolder.getTenantId());
-    logDTO.setUserId(TenantContextHolder.getUserId());
-    logDTO.setObjectId(String.valueOf(tenantId));
-    asyncTaskManager.asyncSendLogMessage(logDTO);
+    final AbstractEmailManager emailManager = emailManagerMap.get(conf.getServerType());
+    return emailManager.check(dto, tenantId, conf);
   }
 }

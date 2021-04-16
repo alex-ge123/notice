@@ -3,11 +3,11 @@ package com.wafersystems.notice.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.manager.email.AbstractEmailManager;
 import com.wafersystems.notice.model.*;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.DateUtil;
-import com.wafersystems.notice.manager.email.SmtpEmailManager;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
@@ -50,7 +50,7 @@ public class MailSendController {
   @Autowired
   private ApplicationContext resource;
   @Autowired
-  private SmtpEmailManager mailUtil;
+  private AbstractEmailManager mailUtil;
 
   /**
    * 获取所有邮件模板
