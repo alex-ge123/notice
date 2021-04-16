@@ -63,9 +63,7 @@ public class SendIntercept {
     if (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
       String redisDtoStr = redisTemplate.opsForValue().get(redisKey);
       String beanStr = JSON.toJSONString(mailBean);
-      if (StrUtil.equals(redisDtoStr, beanStr)) {
-        return true;
-      }
+      return StrUtil.equals(redisDtoStr, beanStr);
     }
     return false;
   }

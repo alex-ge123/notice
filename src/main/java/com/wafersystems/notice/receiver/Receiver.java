@@ -6,7 +6,7 @@ import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.service.GlobalParamService;
-import com.wafersystems.notice.service.MailNoticeService;
+import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
@@ -38,7 +38,7 @@ import java.util.Locale;
 public class Receiver {
 
   @Autowired
-  private MailNoticeService mailNoticeService;
+  private MailService mailService;
 
   @Autowired
   private ApplicationContext resource;
@@ -96,7 +96,7 @@ public class Receiver {
           }
           mailDTO.setLocale(cn.hutool.core.util.StrUtil.isBlank(mailDTO.getLang()) ? null : locale);
           mailDTO.setResource(resource);
-          mailNoticeService.sendMail(MailBean.builder()
+          mailService.send(MailBean.builder()
             .uuid(mailDTO.getUuid())
             .routerKey(mailDTO.getRouterKey())
             .subject(mailDTO.getSubject())

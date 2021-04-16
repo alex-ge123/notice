@@ -2,13 +2,17 @@ package com.wafersystems.notice.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.AsyncTaskManager;
+import com.wafersystems.notice.config.SendInterceptProperties;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.dao.impl.BaseDaoImpl;
+import com.wafersystems.notice.intercept.SendIntercept;
+import com.wafersystems.notice.manager.email.SmtpEmailManager;
 import com.wafersystems.notice.model.*;
 import com.wafersystems.notice.service.GlobalParamService;
-import com.wafersystems.notice.service.MailNoticeService;
-import com.wafersystems.notice.util.EmailUtil;
+import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.config.AesKeyProperties;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
@@ -41,6 +45,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,13 +56,13 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Service
-public class MailNoticeServiceImpl implements MailNoticeService {
+public class MailServiceImpl implements MailService {
 
   @Autowired
   private BaseDaoImpl baseDao;
 
   @Autowired
-  private EmailUtil mailUtil;
+  private SmtpEmailManager smtpEMailManager;
 
   @Autowired
   private RemoteTenantService tenantService;
@@ -74,6 +79,12 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   @Autowired
   private GlobalParamService globalParamService;
 
+  @Autowired
+  private SendIntercept sendIntercept;
+
+  @Autowired
+  private SendInterceptProperties properties;
+
   /**
    * 邮件发送
    *
@@ -83,23 +94,50 @@ public class MailNoticeServiceImpl implements MailNoticeService {
    * @throws Exception Exception
    */
   @Override
-  public void sendMail(MailBean mailBean, Integer count, MailServerConf mailServerConf) throws Exception {
+  public void send(MailBean mailBean, Integer count, MailServerConf mailServerConf) throws Exception {
     log.debug("开始发送邮件。");
-    //邮箱解密
-    mailBean.setToEmails(this.mailsDecrypt(mailBean.getToEmails()));
-    mailBean.setCopyTo(this.mailsDecrypt(mailBean.getCopyTo()));
-    //填充租户信息
-    mailBean = this.fillTenantInfo(mailBean);
+    if (0 == count) {
+      //邮箱解密
+      mailBean.setToEmails(this.mailsDecrypt(mailBean.getToEmails()));
+      mailBean.setCopyTo(this.mailsDecrypt(mailBean.getCopyTo()));
+      //填充租户信息
+      mailBean = this.fillTenantInfo(mailBean);
+    }
+
+    // 校验邮件状态
+    final MailTemplateDTO template = this.getTempByName(mailBean.getTemplate());
+    if (ObjectUtil.isNotNull(template) && ObjectUtil.equal(template.getState(), 1)) {
+      log.warn("邮件模板[{}]禁用，邮件[{}]不发送！", mailBean.getTemplate(), mailBean.getSubject());
+      return;
+    }
+    //重复发送拦截
+    if (sendIntercept.mailBoolIntercept(mailBean)) {
+      log.error("拦截重复发送邮件[{}]", mailBean.toString());
+      return;
+    }
+
+    // 传递副本，防止send方法中对mailBean修改，导致hashcode改变，影响重复邮件拦截
+    final MailBean sendMailBean = ObjectUtil.cloneByStream(mailBean);
+
     // 发送邮件
     try {
-      mailUtil.send(mailBean, mailServerConf);
+      smtpEMailManager.send(sendMailBean, mailServerConf);
+      //记录（拦截重复发送用）
+      String redisKey = String.format(RedisKeyConstants.MAIL_KEY,
+        mailBean.getToEmails(), mailBean.getTemplate(), mailBean.getSubject(), mailBean.hashCode());
+      redisTemplate.opsForValue().set(
+        redisKey, JSON.toJSONString(mailBean), properties.getMailTimeHorizon(), TimeUnit.MINUTES);
+      //发送 发送结果(成功)
+      smtpEMailManager.sendResult(mailBean.getUuid(), mailBean.getRouterKey(), true);
     } catch (Exception exception) {
       count++;
       if (count < ParamConstant.getDefaultRepeatCount()) {
         log.debug("主题[" + mailBean.getSubject() + "],发往[" + mailBean.getToEmails() + "]的邮件第" + count + "次重发......");
-        this.sendMail(mailBean, count, mailServerConf);
+        this.send(mailBean, count, mailServerConf);
       } else {
         log.error("邮件发送失败：", exception);
+        //发送 发送结果(失败)
+        smtpEMailManager.sendResult(mailBean.getUuid(), mailBean.getRouterKey(), false);
         throw exception;
       }
     }
@@ -302,7 +340,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     final MailServerConf conf = globalParamService.getMailServerConf(tenantId);
     Transport transport = null;
     try {
-      final Session session = mailUtil.getSession(conf);
+      final Session session = smtpEMailManager.getSession(conf);
       transport = session.getTransport("smtp");
       transport.connect(conf.getHost(), conf.getPort(), conf.getFrom(), "true".equals(conf.getAuth()) ? conf.getPassword() : null);
       // 构造邮件消息对象

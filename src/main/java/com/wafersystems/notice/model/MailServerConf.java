@@ -12,6 +12,14 @@ import java.util.Map;
  */
 @Data
 public class MailServerConf {
+
+  /**
+   * 服务类型
+   * - smtp
+   * - microsoft
+   */
+  private String serverType;
+  //**************************************smtp配置***************************
   /**
    * 邮件服务器
    */
@@ -44,4 +52,9 @@ public class MailServerConf {
    * 邮件配置额外参数
    */
   private Map<String, Object> props;
+
+  //**************************************Microsoft配置***************************
+
+
+  ////**************************************ews配置***************************
 }

@@ -5,9 +5,9 @@ import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.model.*;
 import com.wafersystems.notice.service.GlobalParamService;
-import com.wafersystems.notice.service.MailNoticeService;
+import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.DateUtil;
-import com.wafersystems.notice.util.EmailUtil;
+import com.wafersystems.notice.manager.email.SmtpEmailManager;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
@@ -42,7 +42,7 @@ import java.util.Locale;
 public class MailSendController {
 
   @Autowired
-  private MailNoticeService mailNoticeService;
+  private MailService mailService;
   @Autowired
   private GlobalParamService globalParamService;
   @Autowired
@@ -50,7 +50,7 @@ public class MailSendController {
   @Autowired
   private ApplicationContext resource;
   @Autowired
-  private EmailUtil mailUtil;
+  private SmtpEmailManager mailUtil;
 
   /**
    * 获取所有邮件模板
@@ -67,7 +67,7 @@ public class MailSendController {
   public R templateList(Long id, String category, String name, @RequestParam(
     defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize, @RequestParam(
     defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
-    PaginationDTO<MailTemplateSearchListDTO> list = mailNoticeService.getTemp(id, category, name, pageSize, startIndex);
+    PaginationDTO<MailTemplateSearchListDTO> list = mailService.getTemp(id, category, name, pageSize, startIndex);
     return R.ok(list);
   }
 
@@ -91,7 +91,7 @@ public class MailSendController {
       mailTemplateDto.setContent(content);
       mailTemplateDto.setCategory(new String(category.getBytes(), StandardCharsets.UTF_8));
       mailTemplateDto.setDescription(new String(description.getBytes(), StandardCharsets.UTF_8));
-      mailNoticeService.saveTemp(mailTemplateDto);
+      mailService.saveTemp(mailTemplateDto);
     } catch (Exception e) {
       log.error("上传邮件模板失败", e);
       return R.fail(e.getMessage());
@@ -128,7 +128,7 @@ public class MailSendController {
       if (!cn.hutool.core.util.StrUtil.isEmpty(description)) {
         mailTemplateDto.setDescription(new String(description.getBytes(), StandardCharsets.UTF_8));
       }
-      mailNoticeService.updateTemp(mailTemplateDto);
+      mailService.updateTemp(mailTemplateDto);
     } catch (Exception e) {
       log.error("更新邮件模板失败", e);
       return R.fail(e.getMessage());
@@ -139,7 +139,7 @@ public class MailSendController {
   @PostMapping("/template/update/state")
   @PreAuthorize("@pms.hasPermission('')")
   public R templateUpdateState(@RequestBody TemplateStateUpdateDTO dto) {
-    return mailNoticeService.updateTempState(dto) ? R.ok() : R.fail();
+    return mailService.updateTempState(dto) ? R.ok() : R.fail();
   }
 
   /**
@@ -227,7 +227,7 @@ public class MailSendController {
             .template(tempName)
             .mailDTO(finalMailDto)
             .build();
-          mailNoticeService.sendMail(mailBean, 0, globalParamService.getMailServerConf(tenantId));
+          mailService.send(mailBean, 0, globalParamService.getMailServerConf(tenantId));
         } catch (Exception ex) {
           throw new RuntimeException();
         }
@@ -322,6 +322,6 @@ public class MailSendController {
   @PostMapping("/check")
   @PreAuthorize("@pms.hasPermission('')")
   public R check(@RequestBody(required = false) BaseCheckDTO dto) throws Exception {
-    return mailNoticeService.check(dto);
+    return mailService.check(dto);
   }
 }

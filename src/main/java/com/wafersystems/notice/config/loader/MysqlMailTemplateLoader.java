@@ -1,7 +1,7 @@
 package com.wafersystems.notice.config.loader;
 
 import com.wafersystems.notice.model.MailTemplateDTO;
-import com.wafersystems.notice.service.MailNoticeService;
+import com.wafersystems.notice.service.MailService;
 import freemarker.cache.TemplateLoader;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ public class MysqlMailTemplateLoader implements TemplateLoader {
 
   @Autowired
   @Lazy
-  private MailNoticeService mailNoticeService;
+  private MailService mailService;
 
   @Override
   public Object findTemplateSource(String name) {
     try {
-      MailTemplateDTO mailTemplateDto = mailNoticeService.getTempByName(name);
+      MailTemplateDTO mailTemplateDto = mailService.getTempByName(name);
       return new StringTemplateSource(name, mailTemplateDto.getContent(), mailTemplateDto.getModtime().getTime());
     } catch (Exception e) {
       return null;

@@ -9,7 +9,7 @@ import com.wafersystems.virsical.common.core.util.R;
  *
  * @author wafer
  */
-public interface MailNoticeService {
+public interface MailService {
 
   /**
    * 邮件发送
@@ -19,7 +19,7 @@ public interface MailNoticeService {
    * @param mailServerConf 邮件服务器配置参数
    * @throws Exception Exception
    */
-  void sendMail(MailBean mailBean, Integer count, MailServerConf mailServerConf) throws Exception;
+  void send(MailBean mailBean, Integer count, MailServerConf mailServerConf) throws Exception;
 
 
   /**
