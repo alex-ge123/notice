@@ -8,6 +8,12 @@ package com.wafersystems.notice.constants;
  */
 public class MailConstants {
   public static final String TYPE = "MAIL";
+  public static final String MAIL_SERVER_TYPE = "MAIL_SERVER_TYPE";
+
+  /**
+   * smtp相关配置
+   */
+  public static final String MAIL_SERVER_TYPE_SMTP = "smtp";
   public static final String MAIL_HOST = "MAIL_HOST";
   public static final String MAIL_FROM = "MAIL_FROM";
   public static final String MAIL_PASSWORD = "MAIL_PASSWORD";
@@ -16,4 +22,21 @@ public class MailConstants {
   public static final String MAIL_USERNAME = "MAIL_USERNAME";
   public static final String MAIL_PORT = "MAIL_PORT";
   public static final String MAIL_PROPS = "MAIL_PROPS";
+
+  /**
+   * microsoft相关配置
+   */
+  public static final String MAIL_SERVER_TYPE_MICROSOFT = "microsoft";
+  public static final String MAIL_MICROSOFT_CLIENTID = "MAIL_MICROSOFT_CLIENTID";
+  public static final String MAIL_MICROSOFT_CLIENTSECRET = "MAIL_MICROSOFT_CLIENTSECRET";
+  public static final String MAIL_MICROSOFT_TENANTID = "MAIL_MICROSOFT_TENANTID";
+  public static final String MAIL_MICROSOFT_SCOPE = "MAIL_MICROSOFT_SCOPE";
+  public static final String MAIL_MICROSOFT_FROM = "MAIL_MICROSOFT_FROM";
+
+
+
+  /**
+   * ews相关配置
+   */
+  public static final String MAIL_SERVER_TYPE_EWS = "ews";
 }

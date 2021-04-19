@@ -5,6 +5,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.constants.ConfConstant;
+import com.wafersystems.notice.constants.MailConstants;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
@@ -42,7 +43,7 @@ import java.util.TimeZone;
  */
 @Slf4j
 @Primary
-@Service("smtp")
+@Service(MailConstants.MAIL_SERVER_TYPE_SMTP)
 public class SmtpEmailManager extends AbstractEmailManager {
 
   @Autowired

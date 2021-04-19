@@ -86,7 +86,7 @@ public abstract class AbstractEmailManager {
    */
   public String getMessage(MailBean mailBean) throws Exception {
     VelocityContext context;
-    try (StringWriter writer = new StringWriter();) {
+    try (StringWriter writer = new StringWriter()) {
       if (ConfConstant.TypeEnum.VM.equals(mailBean.getType())) {
         log.debug("使用模版" + mailBean.getTemplate());
         context = new VelocityContext();

@@ -18,12 +18,7 @@ public class MailServerConf {
    * - smtp
    * - microsoft
    */
-  private String serverType;
-
-  /**
-   * 邮箱账号
-   */
-  private String from;
+  private String serverType = "smtp";
 
   //**************************************smtp配置***************************
   /**
@@ -51,6 +46,12 @@ public class MailServerConf {
    * 邮件显示名称
    */
   private String name;
+
+  /**
+   * 邮箱账号
+   */
+  private String from;
+
   /**
    * 邮件配置额外参数
    */
@@ -71,6 +72,11 @@ public class MailServerConf {
    * officeTenantId
    */
   private String officeTenantId;
+
+  /**
+   * 邮箱账号
+   */
+  private String microsoftFrom;
 
   /**
    * scope

@@ -39,7 +39,7 @@ import java.util.Locale;
 @Slf4j
 @RestController
 @RequestMapping("/mail")
-public class MailSendController {
+public class MailController {
 
   @Autowired
   private MailService mailService;

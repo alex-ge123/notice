@@ -114,6 +114,7 @@ public class MailServiceImpl implements MailService {
     AbstractEmailManager emailManager = emailManagerMap.get(mailServerConf.getServerType());
     // 发送邮件
     try {
+      log.debug("用户使用{}发送邮件", mailServerConf.getServerType());
       emailManager.send(sendMailBean, mailServerConf);
       //记录（拦截重复发送用）
       String redisKey = String.format(RedisKeyConstants.MAIL_KEY,

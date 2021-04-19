@@ -8,6 +8,7 @@ import com.microsoft.aad.msal4j.ClientCredentialParameters;
 import com.microsoft.aad.msal4j.ConfidentialClientApplication;
 import com.microsoft.aad.msal4j.IAuthenticationResult;
 import com.microsoft.graph.models.*;
+import com.wafersystems.notice.constants.MailConstants;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
@@ -31,7 +32,7 @@ import java.util.concurrent.ExecutionException;
  * @author wafer
  */
 @Slf4j
-@Service("Microsoft")
+@Service(MailConstants.MAIL_SERVER_TYPE_MICROSOFT)
 public class MicrosoftEmailManager extends AbstractEmailManager {
   @Override
   public void send(MailBean mailBean, MailServerConf conf) throws Exception {
@@ -42,7 +43,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
 
   private void sendMail(MailServerConf conf, CompletableFuture<IAuthenticationResult> tokenFuture, Message message) throws InterruptedException, ExecutionException {
     // 发送邮件
-    final HttpResponse execute = HttpRequest.post("https://graph.microsoft.com/v1.0/users/" + conf.getFrom() + "/sendMail")
+    final HttpResponse execute = HttpRequest.post("https://graph.microsoft.com/v1.0/users/" + conf.getMicrosoftFrom() + "/sendMail")
       .body(JSON.toJSONString(message))
       .header("Content-type", "application/json")
       .header("Authorization", "Bearer " + tokenFuture.get().accessToken())

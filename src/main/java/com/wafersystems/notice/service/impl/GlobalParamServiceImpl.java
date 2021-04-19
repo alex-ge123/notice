@@ -213,52 +213,130 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   public MailServerConf getMailServerConf(Integer tenantId) {
     // 查询租户邮件配置
     List<GlobalParameter> systemParamList = getSystemParamList(tenantId, MailConstants.TYPE);
-    MailServerConf conf = new MailServerConf();
-    // 其它参数
-    Map<String, Object> props = new HashMap<>(10);
+
+    // 租户配置不为空，走租户配置
     if (systemParamList != null && !systemParamList.isEmpty()) {
+      String serverType = MailConstants.MAIL_SERVER_TYPE_SMTP;
+      //判断邮件服务器类型
       for (GlobalParameter p : systemParamList) {
-        // 解密参数
-        String value = stringEncryptor.decrypt(p.getParamValue());
-        if (MailConstants.MAIL_HOST.equals(p.getParamKey())) {
-          conf.setHost(value);
-        } else if (MailConstants.MAIL_FROM.equals(p.getParamKey())) {
-          conf.setFrom(value);
-        } else if (MailConstants.MAIL_PASSWORD.equals(p.getParamKey())) {
-          conf.setPassword(value);
-        } else if (MailConstants.MAIL_AUTH.equals(p.getParamKey())) {
-          conf.setAuth(value);
-        } else if (MailConstants.MAIL_MAILNAME.equals(p.getParamKey())) {
-          conf.setName(value);
-        } else if (MailConstants.MAIL_USERNAME.equals(p.getParamKey())) {
-          conf.setUsername(value);
-        } else if (MailConstants.MAIL_PORT.equals(p.getParamKey())) {
-          try {
-            conf.setPort(Integer.parseInt(value));
-          } catch (Exception e) {
-            conf.setPort(0);
-            break;
-          }
-        } else {
-          props.put(p.getParamKey(), value);
+        if (MailConstants.MAIL_SERVER_TYPE.equals(p.getParamKey())) {
+          serverType = p.getParamValue();
+          break;
         }
       }
-      conf.setProps(props);
+      return getServerConf(systemParamList, serverType);
     }
-    if (conf.getPort() == 0) {
-      log.info("使用系统默认邮件配置发送邮件 >>>");
-      props = mailProperties.getProps();
-      conf.setHost(ParamConstant.getDefaultMailHost());
-      conf.setPort(ParamConstant.getDefaultMailPort());
-      conf.setFrom(ParamConstant.getDefaultMailFrom());
-      conf.setUsername(ParamConstant.getDefaultMailUsername());
-      conf.setPassword(ParamConstant.getDefaultMailPassword());
-      conf.setAuth(ParamConstant.getDefaultMailAuth());
-      conf.setName(ParamConstant.getDefaultMailMailName());
-      conf.setProps(props);
+
+    // 租户配置为空，走默认配置
+    return smtpDefaultConf();
+  }
+
+  private MailServerConf getServerConf(List<GlobalParameter> systemParamList, String serverType) {
+    if (MailConstants.MAIL_SERVER_TYPE_MICROSOFT.equals(serverType)) {
+      return getMicrosoftConf(systemParamList);
+    } else if (MailConstants.MAIL_SERVER_TYPE_EWS.equals(serverType)) {
+      return getEwsConf(systemParamList);
     } else {
-      log.info("使用租户自定义邮件配置发送邮件 >>>");
+      return getSmtpConf(systemParamList);
+    }
+  }
+
+  private MailServerConf smtpDefaultConf() {
+    log.info("使用系统默认邮件配置发送邮件 >>>");
+    MailServerConf conf = new MailServerConf();
+    final Map<String, Object> props = mailProperties.getProps();
+    conf.setServerType(MailConstants.MAIL_SERVER_TYPE_SMTP);
+    conf.setHost(ParamConstant.getDefaultMailHost());
+    conf.setPort(ParamConstant.getDefaultMailPort());
+    conf.setFrom(ParamConstant.getDefaultMailFrom());
+    conf.setUsername(ParamConstant.getDefaultMailUsername());
+    conf.setPassword(ParamConstant.getDefaultMailPassword());
+    conf.setAuth(ParamConstant.getDefaultMailAuth());
+    conf.setName(ParamConstant.getDefaultMailMailName());
+    conf.setProps(props);
+    return conf;
+  }
+
+  /**
+   * 获取smtp配置，如果为空，则取默认配置
+   *
+   * @param systemParamList systemParamList
+   * @return MailServerConf
+   */
+  private MailServerConf getSmtpConf(List<GlobalParameter> systemParamList) {
+    MailServerConf conf = new MailServerConf();
+    Map<String, Object> props = new HashMap<>(10);
+    for (GlobalParameter p : systemParamList) {
+      // 解密参数
+      String value = stringEncryptor.decrypt(p.getParamValue());
+      if (MailConstants.MAIL_HOST.equals(p.getParamKey())) {
+        conf.setHost(value);
+      } else if (MailConstants.MAIL_FROM.equals(p.getParamKey())) {
+        conf.setFrom(value);
+      } else if (MailConstants.MAIL_PASSWORD.equals(p.getParamKey())) {
+        conf.setPassword(value);
+      } else if (MailConstants.MAIL_AUTH.equals(p.getParamKey())) {
+        conf.setAuth(value);
+      } else if (MailConstants.MAIL_MAILNAME.equals(p.getParamKey())) {
+        conf.setName(value);
+      } else if (MailConstants.MAIL_USERNAME.equals(p.getParamKey())) {
+        conf.setUsername(value);
+      } else if (MailConstants.MAIL_PORT.equals(p.getParamKey())) {
+        try {
+          conf.setPort(Integer.parseInt(value));
+        } catch (Exception e) {
+          conf.setPort(0);
+          break;
+        }
+      } else {
+        props.put(p.getParamKey(), value);
+      }
+    }
+    conf.setProps(props);
+
+    if (conf.getPort() == 0) {
+      return smtpDefaultConf();
+    } else {
+      return conf;
+    }
+  }
+
+  /**
+   * 获取ews配置
+   *
+   * @param systemParamList systemParamList
+   * @return MailServerConf
+   */
+  private MailServerConf getEwsConf(List<GlobalParameter> systemParamList) {
+    return null;
+  }
+
+  /**
+   * 获取Microsoft配置
+   *
+   * @param systemParamList systemParamList
+   * @return MailServerConf
+   */
+  private MailServerConf getMicrosoftConf(List<GlobalParameter> systemParamList) {
+    MailServerConf conf = new MailServerConf();
+    conf.setServerType(MailConstants.MAIL_SERVER_TYPE_MICROSOFT);
+    for (GlobalParameter p : systemParamList) {
+      // 解密参数
+      String value = stringEncryptor.decrypt(p.getParamValue());
+      if (MailConstants.MAIL_MICROSOFT_CLIENTID.equals(p.getParamKey())) {
+        conf.setClientId(value);
+      } else if (MailConstants.MAIL_MICROSOFT_CLIENTSECRET.equals(p.getParamKey())) {
+        conf.setClientSecret(value);
+      } else if (MailConstants.MAIL_MICROSOFT_FROM.equals(p.getParamKey())) {
+        conf.setMicrosoftFrom(value);
+      } else if (MailConstants.MAIL_MICROSOFT_SCOPE.equals(p.getParamKey())) {
+        conf.setScope(value);
+      } else if (MailConstants.MAIL_MICROSOFT_TENANTID.equals(p.getParamKey())) {
+        conf.setOfficeTenantId(value);
+      }
     }
     return conf;
   }
+
+
 }

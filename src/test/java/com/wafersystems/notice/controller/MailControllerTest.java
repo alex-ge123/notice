@@ -39,10 +39,10 @@ import java.io.FileWriter;
 @Rollback
 @Slf4j
 @WithMockUser(authorities = {"admin@platform@upms_sys_tenant_add"})
-public class MailSendControllerTest extends BaseTest {
+public class MailControllerTest extends BaseTest {
 
   @Autowired
-  MailSendController mailSendController;
+  MailController mailController;
 
   @MockBean
   RemoteTenantServiceFallbackImpl remoteTenantServiceFallbackImpl;
@@ -93,7 +93,7 @@ public class MailSendControllerTest extends BaseTest {
       writer.append("aaaaa");
       writer.flush();
     }
-    R r = mailSendController.templateUpload(FileUtils.file2MultipartFile(file), "分类", "描述");
+    R r = mailController.templateUpload(FileUtils.file2MultipartFile(file), "分类", "描述");
     Assert.assertEquals(r.getCode(), CommonConstants.SUCCESS.intValue());
   }
 
@@ -111,7 +111,7 @@ public class MailSendControllerTest extends BaseTest {
     map.add("id", "1");
     map.add("category", "1123");
     map.add("description", "34gjsd");
-    R r = mailSendController.templateUpdate(FileUtils.file2MultipartFile(file), 1, "aaaa", "bbbb");
+    R r = mailController.templateUpdate(FileUtils.file2MultipartFile(file), 1, "aaaa", "bbbb");
     Assert.assertEquals(r.getCode(), CommonConstants.SUCCESS.intValue());
   }
 
