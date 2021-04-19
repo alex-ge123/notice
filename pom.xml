@@ -155,6 +155,16 @@
       <groupId>com.microsoft.graph</groupId>
       <artifactId>microsoft-graph</artifactId>
       <version>[3.0,)</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.squareup.okhttp3</groupId>
+          <artifactId>okhttp</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-xml</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- 单元测试 start-->
     <dependency>
