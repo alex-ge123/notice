@@ -23,6 +23,8 @@ import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
 import com.wafersystems.virsical.common.core.dto.RecurrenceRuleDTO;
 import com.wafersystems.virsical.common.core.exception.BusinessException;
 import com.wafersystems.virsical.common.core.util.R;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -256,8 +258,9 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   }
 
   private void sendMail(String from, String token, Message message) {
+    final MyMessage myMessage = new MyMessage(message);
     // 发送邮件
-    final HttpResponse execute = post(DOMAIN + "/users/" + from + "/sendMail", token, JSON.toJSONString(message));
+    final HttpResponse execute = post(DOMAIN + "/users/" + from + "/sendMail", token, JSON.toJSONString(myMessage));
     log.debug("发送邮件，响应状态为{}，响应结果为{}", execute.getStatus(), execute.body());
     // 发送结果
     final int status = execute.getStatus();
@@ -265,6 +268,12 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
       log.error("Microsoft邮件发送失败，status={},body={}", status, execute.body());
       throw new BusinessException("Microsoft邮件发送失败");
     }
+  }
+
+  @Data
+  @AllArgsConstructor
+  private class MyMessage {
+    private Message message;
   }
 
   private Message generateMessage(MailBean mailBean) throws Exception {
@@ -319,7 +328,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
       .execute();
     final JSONObject object = JSON.parseObject(execute.body());
     final String accessToken = String.valueOf(object.get("access_token"));
-    final long expiresIn = Long.parseLong((String) object.get("expires_in"));
+    final Integer expiresIn = object.getInteger("expires_in");
     redisTemplate.opsForValue().set(key, accessToken, expiresIn, TimeUnit.SECONDS);
     return accessToken;
   }
@@ -359,6 +368,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   }
 
   private HttpResponse post(String url, String token, String jsonBody) {
+    log.debug("post请求 url={},token={},jsonBody={}", url, token, jsonBody);
     return HttpRequest.post(url)
       .body(jsonBody)
       .header("Content-type", "application/json")
@@ -369,6 +379,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   }
 
   private HttpResponse patch(String url, String token, String jsonBody) {
+    log.debug("patch请求 url={},token={},jsonBody={}", url, token, jsonBody);
     return HttpRequest.patch(url)
       .body(jsonBody)
       .header("Content-type", "application/json")
@@ -379,6 +390,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   }
 
   private HttpResponse del(String url, String token) {
+    log.debug("delete请求 url={},token={}", url, token);
     return HttpRequest.delete(url)
       .header("Content-type", "application/json")
       .header("Authorization", "Bearer " + token)
