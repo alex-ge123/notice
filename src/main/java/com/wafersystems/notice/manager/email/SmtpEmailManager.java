@@ -31,10 +31,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.security.Security;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
-import java.util.TimeZone;
 
 /**
  * Smtp邮件工具类
@@ -275,19 +273,6 @@ public class SmtpEmailManager extends AbstractEmailManager {
       throw ex;
     }
     return multipart;
-  }
-
-  /**
-   * 格式化日期
-   *
-   * @param date     日期
-   * @param timeZone 时区
-   * @return 格式化后的日期串
-   */
-  private String formatDate(String date, String timeZone) {
-    SimpleDateFormat sim = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    sim.setTimeZone(TimeZone.getTimeZone("UTC"));
-    return sim.format(Long.valueOf(date));
   }
 
   /**

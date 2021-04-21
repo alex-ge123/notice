@@ -29,8 +29,10 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * 邮件工具类
@@ -202,5 +204,31 @@ public abstract class AbstractEmailManager {
     logDTO.setUserId(TenantContextHolder.getUserId());
     logDTO.setObjectId(String.valueOf(tenantId));
     asyncTaskManager.asyncSendLogMessage(logDTO);
+  }
+
+  /**
+   * 格式化日期
+   *
+   * @param date     日期
+   * @param timeZone 时区
+   * @return 格式化后的日期串
+   */
+  String formatDate(String date, String timeZone) {
+    SimpleDateFormat sim = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+    sim.setTimeZone(TimeZone.getTimeZone("UTC"));
+    return sim.format(Long.valueOf(date));
+  }
+
+  /**
+   * 格式化日期
+   *
+   * @param date    日期
+   * @param pattern pattern
+   * @return 格式化后的日期串
+   */
+  String formatDateByPattern(String date, String pattern) {
+    SimpleDateFormat sim = new SimpleDateFormat(pattern);
+    sim.setTimeZone(TimeZone.getTimeZone("UTC"));
+    return sim.format(Long.valueOf(date));
   }
 }

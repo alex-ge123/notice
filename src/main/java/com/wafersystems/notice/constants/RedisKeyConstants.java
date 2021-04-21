@@ -29,4 +29,9 @@ public class RedisKeyConstants {
   public static final String CACHE_KEY = "base:notice:param:";
   public static final String CACHE_HASH_KEY = "common";
 
+  /**
+   * 微软token缓存
+   */
+  public static final String CACHE_MICROSOFT_TOKEN = "base:notice:microsoft:token:";
+
 }

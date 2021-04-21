@@ -220,7 +220,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
       //判断邮件服务器类型
       for (GlobalParameter p : systemParamList) {
         if (MailConstants.MAIL_SERVER_TYPE.equals(p.getParamKey())) {
-          serverType = p.getParamValue();
+          serverType = stringEncryptor.decrypt(p.getParamValue());
           break;
         }
       }
