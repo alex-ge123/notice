@@ -8,7 +8,10 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.*;
+import com.alibaba.fastjson.serializer.ObjectSerializer;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializeWriter;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.microsoft.graph.core.DateOnly;
 import com.microsoft.graph.models.*;
 import com.wafersystems.notice.constants.MailConstants;
@@ -38,7 +41,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
@@ -430,18 +432,15 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   }
 
   private String toJson(Object object) {
-    final ObjectSerializer objectSerializer = new ObjectSerializer() {
-      @Override
-      public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {
-        SerializeWriter out = serializer.out;
+    final ObjectSerializer objectSerializer = (serializer, object1, fieldName, fieldType, features) -> {
+      SerializeWriter out = serializer.out;
 
-        if (object == null) {
-          out.writeNull();
-          return;
-        }
-        String strVal = StrUtil.toCamelCase(object.toString());
-        out.writeString(strVal);
+      if (object1 == null) {
+        out.writeNull();
+        return;
       }
+      String strVal = StrUtil.toCamelCase(object1.toString());
+      out.writeString(strVal);
     };
     final SerializeConfig conf = new SerializeConfig();
     // 对DateOnly对象序列化类型定制
@@ -451,9 +450,4 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     conf.put(RecurrenceRangeType.class, objectSerializer);
     return JSON.toJSONString(object, conf);
   }
-
-  /*public static void main(String[] args) {
-    final int i = DateUtil.dayOfMonth(new Date(Long.valueOf("1619076570000")));
-    System.out.println(i);
-  }*/
 }
