@@ -16,9 +16,13 @@ import java.util.Date;
 @Entity
 @Table(name = "mail_microsoft_record")
 public class MicrosoftRecordDTO implements Serializable {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  /**
+   * uuid
+   */
   private String uuid;
 
   /**

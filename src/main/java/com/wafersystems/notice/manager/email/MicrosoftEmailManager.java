@@ -1,11 +1,14 @@
 package com.wafersystems.notice.manager.email;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.Week;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.*;
 import com.microsoft.graph.core.DateOnly;
 import com.microsoft.graph.models.*;
 import com.wafersystems.notice.constants.MailConstants;
@@ -26,13 +29,19 @@ import com.wafersystems.virsical.common.core.util.R;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Request;
+import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -75,34 +84,34 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
       if (MailScheduleStatusEnum.REQUEST.getEventType().equals(eventType) && 1 == sequence) {
         // 新增
         Event event = mailBeanToEvent(mailBean);
-        final String eventId = createEvent(conf.getMicrosoftFrom(), token, JSON.toJSONString(event));
+        final String eventId = createEvent(conf.getMicrosoftFrom(), token, toJson(event));
         final MicrosoftRecordDTO microsoftRecordDTO = new MicrosoftRecordDTO();
         microsoftRecordDTO.setEventid(eventId);
-        microsoftRecordDTO.setUuid(mailBean.getUuid());
+        microsoftRecordDTO.setUuid(schedule.getUuid());
         microsoftRecordService.saveTemp(microsoftRecordDTO);
 
       } else if (MailScheduleStatusEnum.REQUEST.getEventType().equals(eventType) && 1 < sequence) {
         // 修改
-        final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(mailBean.getUuid());
+        final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(schedule.getUuid());
         Event event = mailBeanToEvent(mailBean);
         if (ObjectUtil.isNotNull(recordDTO) && StrUtil.isNotBlank(recordDTO.getEventid())) {
           event.transactionId = null;
-          updateEvent(recordDTO.getEventid(), conf.getMicrosoftFrom(), token, JSON.toJSONString(event));
+          updateEvent(recordDTO.getEventid(), conf.getMicrosoftFrom(), token, toJson(event));
         } else {
-          final String newEventId = createEvent(conf.getMicrosoftFrom(), token, JSON.toJSONString(event));
+          final String newEventId = createEvent(conf.getMicrosoftFrom(), token, toJson(event));
           final MicrosoftRecordDTO microsoftRecordDTO = new MicrosoftRecordDTO();
           microsoftRecordDTO.setEventid(newEventId);
-          microsoftRecordDTO.setUuid(mailBean.getUuid());
+          microsoftRecordDTO.setUuid(schedule.getUuid());
           microsoftRecordService.saveTemp(microsoftRecordDTO);
         }
 
       } else if (MailScheduleStatusEnum.CANCEL.getEventType().equals(eventType)) {
         // 取消
-        final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(mailBean.getUuid());
+        final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(schedule.getUuid());
         if (ObjectUtil.isNotNull(recordDTO)) {
           final HttpResponse response = delEvent(recordDTO.getEventid(), conf.getMicrosoftFrom(), token);
           if (isOk(response.getStatus())) {
-            microsoftRecordService.delById(recordDTO.getUuid());
+            microsoftRecordService.delById(recordDTO.getId());
           }
         } else {
           log.error("通过uuid={},查询事件id为空，忽略取消！", mailBean.getUuid());
@@ -132,12 +141,12 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     event.body = body;
 
     DateTimeTimeZone start = new DateTimeTimeZone();
-    start.dateTime = formatDate(schedule.getStartDate(), schedule.getTimeZone());
+    start.dateTime = formatDateByPattern(schedule.getStartDate(), "yyyy-MM-dd'T'HH:mm:ss", schedule.getTimeZone());
     start.timeZone = schedule.getTimeZone();
     event.start = start;
 
     DateTimeTimeZone end = new DateTimeTimeZone();
-    end.dateTime = formatDate(schedule.getEndDate(), schedule.getTimeZone());
+    end.dateTime = formatDateByPattern(schedule.getEndDate(), "yyyy-MM-dd'T'HH:mm:ss", schedule.getTimeZone());
     end.timeZone = schedule.getTimeZone();
     event.end = end;
 
@@ -149,28 +158,30 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     event.isReminderOn = true;
 
     LinkedList<Attendee> attendeesList = new LinkedList<>();
-    // 收件人
-    final String[] toEmails = mailBean.getToEmails().split(CommonConstants.COMMA);
-    for (String toEmail : toEmails) {
-      Attendee attendees = new Attendee();
-      EmailAddress emailAddress = new EmailAddress();
-      emailAddress.address = toEmail;
-//      emailAddress.name = toEmail;
-      attendees.emailAddress = emailAddress;
-      attendees.type = AttendeeType.REQUIRED;
-      attendeesList.add(attendees);
+    if (StrUtil.isNotBlank(mailBean.getToEmails())) {
+      // 收件人
+      final String[] toEmails = mailBean.getToEmails().split(CommonConstants.COMMA);
+      for (String toEmail : toEmails) {
+        Attendee attendees = new Attendee();
+        EmailAddress emailAddress = new EmailAddress();
+        emailAddress.address = toEmail;
+        attendees.emailAddress = emailAddress;
+        attendees.type = AttendeeType.REQUIRED;
+        attendeesList.add(attendees);
+      }
     }
 
-    // 抄送人
-    final String[] copyTos = mailBean.getCopyTo().split(CommonConstants.COMMA);
-    for (String copyTo : copyTos) {
-      Attendee attendees = new Attendee();
-      EmailAddress emailAddress = new EmailAddress();
-      emailAddress.address = copyTo;
-//      emailAddress.name = copyTo;
-      attendees.emailAddress = emailAddress;
-      attendees.type = AttendeeType.OPTIONAL;
-      attendeesList.add(attendees);
+    if (StrUtil.isNotBlank(mailBean.getCopyTo())) {
+      // 抄送人
+      final String[] copyTos = mailBean.getCopyTo().split(CommonConstants.COMMA);
+      for (String copyTo : copyTos) {
+        Attendee attendees = new Attendee();
+        EmailAddress emailAddress = new EmailAddress();
+        emailAddress.address = copyTo;
+        attendees.emailAddress = emailAddress;
+        attendees.type = AttendeeType.OPTIONAL;
+        attendeesList.add(attendees);
+      }
     }
 
     event.attendees = attendeesList;
@@ -180,7 +191,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     if (ObjectUtil.isNotNull(schedule.getRecurrenceRuleDTO())) {
       addRecurrence(schedule, event);
     }
-    log.debug("事件邮件体为{}", JSON.toJSONString(event));
+    log.debug("事件邮件体为{}", toJson(event));
     return event;
   }
 
@@ -190,27 +201,31 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     PatternedRecurrence recurrence = new PatternedRecurrence();
     event.recurrence = recurrence;
 
-    // 事件的持续时间
-    RecurrenceRange range = new RecurrenceRange();
-    range.startDate = DateOnly.parse(formatDateByPattern(schedule.getStartDate(), "yyyy-MM-dd"));
-
     // 事件发生的频率
     RecurrencePattern pattern = new RecurrencePattern();
-    pattern.interval = recurrenceDTO.getInterval();
+    if (ObjectUtil.isNotNull(recurrenceDTO.getInterval())) {
+      pattern.interval = recurrenceDTO.getInterval();
+    } else {
+      pattern.interval = 1;
+    }
     if (FreqConstants.DAILY.equals(recurrenceDTO.getFreq())) {
       pattern.type = RecurrencePatternType.DAILY;
-      range.numberOfOccurrences = recurrenceDTO.getCount();
-      range.type = RecurrenceRangeType.NUMBERED;
     } else if (FreqConstants.WEEKLY.equals(recurrenceDTO.getFreq())) {
       pattern.type = RecurrencePatternType.WEEKLY;
-      range.endDate = DateOnly.parse(formatDateByPattern(recurrenceDTO.getUntil(), "yyyy-MM-dd"));
-      range.type = RecurrenceRangeType.END_DATE;
+      final int i = DateUtil.dayOfWeek(new Date(Long.valueOf(schedule.getStartDate())));
+      final String s = Week.of(i).toString();
+      pattern.daysOfWeek = Collections.singletonList(DayOfWeek.valueOf(s));
     } else {
       pattern.type = RecurrencePatternType.ABSOLUTE_MONTHLY;
-      range.numberOfOccurrences = recurrenceDTO.getCount();
-      range.type = RecurrenceRangeType.NUMBERED;
+      pattern.dayOfMonth = DateUtil.dayOfMonth(new Date(Long.valueOf(schedule.getStartDate())));
     }
     recurrence.pattern = pattern;
+
+    // 事件的持续时间
+    RecurrenceRange range = new RecurrenceRange();
+    range.startDate = DateOnly.parse(formatDateByPattern(schedule.getStartDate(), "yyyy-MM-dd", schedule.getTimeZone()));
+    range.endDate = DateOnly.parse(formatDateByPattern(recurrenceDTO.getUntil(), "yyyy-MM-dd", schedule.getTimeZone()));
+    range.type = RecurrenceRangeType.END_DATE;
     recurrence.range = range;
   }
 
@@ -220,14 +235,8 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     return execute;
   }
 
-
-  private void updateEvent(String eventId, String from, String token, String jsonBody) {
-    final HttpResponse execute = patch(DOMAIN + "/users/" + from + "/events/" + eventId, token, jsonBody);
-    log.debug("更新事件，响应状态{}，响应结果{}", execute.getStatus(), execute.body());
-    if (!isOk(execute.getStatus())) {
-      log.error("Microsoft事件邮件修改失败，status={},body={}", execute.getStatus(), execute.body());
-      throw new BusinessException("Microsoft事件邮件修改失败");
-    }
+  private void updateEvent(String eventId, String from, String token, String jsonBody) throws IOException {
+    patch(DOMAIN + "/users/" + from + "/events/" + eventId, token, jsonBody);
   }
 
   /**
@@ -260,7 +269,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   private void sendMail(String from, String token, Message message) {
     final MyMessage myMessage = new MyMessage(message);
     // 发送邮件
-    final HttpResponse execute = post(DOMAIN + "/users/" + from + "/sendMail", token, JSON.toJSONString(myMessage));
+    final HttpResponse execute = post(DOMAIN + "/users/" + from + "/sendMail", token, toJson(myMessage));
     log.debug("发送邮件，响应状态为{}，响应结果为{}", execute.getStatus(), execute.body());
     // 发送结果
     final int status = execute.getStatus();
@@ -286,29 +295,32 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     message.body = body;
 
     // 收件人
-    LinkedList<Recipient> toRecipientsList = new LinkedList<>();
-    final String[] toEmails = mailBean.getToEmails().split(CommonConstants.COMMA);
-    for (String toEmail : toEmails) {
-      Recipient toRecipients = new Recipient();
-      EmailAddress emailAddress = new EmailAddress();
-      emailAddress.address = toEmail;
-      toRecipients.emailAddress = emailAddress;
-      toRecipientsList.add(toRecipients);
+    if (StrUtil.isNotBlank(mailBean.getToEmails())) {
+      LinkedList<Recipient> toRecipientsList = new LinkedList<>();
+      final String[] toEmails = mailBean.getToEmails().split(CommonConstants.COMMA);
+      for (String toEmail : toEmails) {
+        Recipient toRecipients = new Recipient();
+        EmailAddress emailAddress = new EmailAddress();
+        emailAddress.address = toEmail;
+        toRecipients.emailAddress = emailAddress;
+        toRecipientsList.add(toRecipients);
+      }
+      message.toRecipients = toRecipientsList;
     }
-    message.toRecipients = toRecipientsList;
 
     // 抄送人
-    LinkedList<Recipient> ccRecipientsList = new LinkedList<>();
-    final String[] copyTos = mailBean.getCopyTo().split(CommonConstants.COMMA);
-    for (String copyTo : copyTos) {
-      Recipient ccRecipients = new Recipient();
-      EmailAddress emailAddress1 = new EmailAddress();
-      emailAddress1.address = copyTo;
-      ccRecipients.emailAddress = emailAddress1;
-      ccRecipientsList.add(ccRecipients);
+    if (StrUtil.isNotBlank(mailBean.getCopyTo())) {
+      LinkedList<Recipient> ccRecipientsList = new LinkedList<>();
+      final String[] copyTos = mailBean.getCopyTo().split(CommonConstants.COMMA);
+      for (String copyTo : copyTos) {
+        Recipient ccRecipients = new Recipient();
+        EmailAddress emailAddress1 = new EmailAddress();
+        emailAddress1.address = copyTo;
+        ccRecipients.emailAddress = emailAddress1;
+        ccRecipientsList.add(ccRecipients);
+      }
+      message.ccRecipients = ccRecipientsList;
     }
-    message.ccRecipients = ccRecipientsList;
-
     return message;
   }
 
@@ -378,15 +390,23 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
       .execute();
   }
 
-  private HttpResponse patch(String url, String token, String jsonBody) {
+  private void patch(String url, String token, String jsonBody) throws IOException {
     log.debug("patch请求 url={},token={},jsonBody={}", url, token, jsonBody);
-    return HttpRequest.patch(url)
-      .body(jsonBody)
-      .header("Content-type", "application/json")
+    final OkHttpClient client = new OkHttpClient.Builder()
+      .connectTimeout(10000, TimeUnit.SECONDS)
+      .build();
+    final Request request = new Request.Builder()
+      .url(url)
+      .patch(RequestBody.create(MediaType.parse("application/json"), jsonBody))
       .header("Authorization", "Bearer " + token)
-      .header("Accept", "application/json")
-      .timeout(10000)
-      .execute();
+      .build();
+    try (Response execute = client.newCall(request).execute()) {
+      log.debug("更新事件，响应状态{}，响应结果{}", execute.code(), execute.body().string());
+      if (!isOk(execute.code())) {
+        log.error("Microsoft事件邮件修改失败，status={},body={}", execute.code(), execute.body().string());
+        throw new BusinessException("Microsoft事件邮件修改失败");
+      }
+    }
   }
 
   private HttpResponse del(String url, String token) {
@@ -408,4 +428,32 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   private boolean isOk(int status) {
     return status >= 200 && status < 300;
   }
+
+  private String toJson(Object object) {
+    final ObjectSerializer objectSerializer = new ObjectSerializer() {
+      @Override
+      public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {
+        SerializeWriter out = serializer.out;
+
+        if (object == null) {
+          out.writeNull();
+          return;
+        }
+        String strVal = StrUtil.toCamelCase(object.toString());
+        out.writeString(strVal);
+      }
+    };
+    final SerializeConfig conf = new SerializeConfig();
+    // 对DateOnly对象序列化类型定制
+    conf.put(DateOnly.class, ToStringSerializer.instance);
+    conf.put(RecurrencePatternType.class, objectSerializer);
+    // 下划线转驼峰
+    conf.put(RecurrenceRangeType.class, objectSerializer);
+    return JSON.toJSONString(object, conf);
+  }
+
+  /*public static void main(String[] args) {
+    final int i = DateUtil.dayOfMonth(new Date(Long.valueOf("1619076570000")));
+    System.out.println(i);
+  }*/
 }

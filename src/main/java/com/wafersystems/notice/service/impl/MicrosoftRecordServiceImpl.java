@@ -41,7 +41,7 @@ public class MicrosoftRecordServiceImpl implements MicrosoftRecordService {
   }
 
   @Override
-  public void delById(String uuid) {
-    baseDao.delete(MicrosoftRecordDTO.class, uuid);
+  public void delById(Long id) {
+    baseDao.delete(MicrosoftRecordDTO.class, id);
   }
 }

@@ -231,4 +231,18 @@ public abstract class AbstractEmailManager {
     sim.setTimeZone(TimeZone.getTimeZone("UTC"));
     return sim.format(Long.valueOf(date));
   }
+
+  /**
+   * 格式化日期
+   *
+   * @param date     日期
+   * @param pattern  pattern
+   * @param timeZone timeZone
+   * @return 格式化后的日期串
+   */
+  String formatDateByPattern(String date, String pattern, String timeZone) {
+    SimpleDateFormat sim = new SimpleDateFormat(pattern);
+    sim.setTimeZone(TimeZone.getTimeZone(timeZone));
+    return sim.format(Long.valueOf(date));
+  }
 }

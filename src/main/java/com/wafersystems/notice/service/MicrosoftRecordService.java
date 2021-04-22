@@ -26,7 +26,7 @@ public interface MicrosoftRecordService {
   /**
    * 通过id删除
    *
-   * @param uuid uuid
+   * @param id id
    */
-  void delById(String uuid);
+  void delById(Long id);
 }
