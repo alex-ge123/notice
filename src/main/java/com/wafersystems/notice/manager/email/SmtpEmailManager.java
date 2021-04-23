@@ -159,7 +159,7 @@ public class SmtpEmailManager extends AbstractEmailManager {
   }
 
 
-  public Session getSession(MailServerConf mailServerConf) {
+  private Session getSession(MailServerConf mailServerConf) {
     Properties props = System.getProperties();
     int i = 465;
     if (mailServerConf.getPort() == i) {

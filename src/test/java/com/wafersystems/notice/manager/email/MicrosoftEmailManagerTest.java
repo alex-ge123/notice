@@ -200,6 +200,96 @@ public class MicrosoftEmailManagerTest extends BaseTest {
    * @throws Exception
    */
   @Test
+  public void send5() throws Exception {
+    final RecurrenceRuleDTO ruleDTO = new RecurrenceRuleDTO();
+    ruleDTO.setUntil("1629535770000");
+    ruleDTO.setFreq("WEEKLY");
+    ruleDTO.setInterval(1);
+
+    final MailScheduleDto scheduleDto = new MailScheduleDto();
+    scheduleDto.setUuid("1234567");
+    scheduleDto.setSquence(1);
+    scheduleDto.setStartDate("1629535770000");
+    scheduleDto.setEndDate("1629535770000");
+    scheduleDto.setEnventType("REQUEST");
+    scheduleDto.setTimeZone("Asia/Shanghai");
+    scheduleDto.setRecurrenceRuleDTO(ruleDTO);
+
+
+    final MailDTO mailDTO = new MailDTO();
+    mailDTO.setUuid("1234567");
+    mailDTO.setRouterKey("router_key");
+    mailDTO.setSubject("单元测试");
+    mailDTO.setToMail("shennan@wafersystems.com");
+    mailDTO.setCopyTo("shennan1@wafersystems.com");
+    mailDTO.setTempName("commonForgetPwd");
+    mailDTO.setLang("zh_CN");
+    mailDTO.setTenantId(1001);
+    mailDTO.setMailScheduleDto(scheduleDto);
+    mailDTO.setSystemName("系统");
+
+    final MailBean mailBean = MailBean.builder()
+      .type(ConfConstant.TypeEnum.FM)
+      .template("commonForgetPwd")
+      .mailDTO(mailDTO)
+      .subject("单元测试")
+      .toEmails("shennan@wafersystems.com")
+      .copyTo("shennan1@wafersystems.com")
+      .build();
+    microsoft.send(mailBean, mailServerConf);
+  }
+
+  /**
+   * 发送日程事件邮件
+   *
+   * @throws Exception
+   */
+  @Test
+  public void send6() throws Exception {
+    final RecurrenceRuleDTO ruleDTO = new RecurrenceRuleDTO();
+    ruleDTO.setUntil("1629535770000");
+    ruleDTO.setFreq("DAILY");
+    ruleDTO.setInterval(1);
+
+    final MailScheduleDto scheduleDto = new MailScheduleDto();
+    scheduleDto.setUuid("1234567");
+    scheduleDto.setSquence(1);
+    scheduleDto.setStartDate("1629535770000");
+    scheduleDto.setEndDate("1629535770000");
+    scheduleDto.setEnventType("REQUEST");
+    scheduleDto.setTimeZone("Asia/Shanghai");
+    scheduleDto.setRecurrenceRuleDTO(ruleDTO);
+
+
+    final MailDTO mailDTO = new MailDTO();
+    mailDTO.setUuid("1234567");
+    mailDTO.setRouterKey("router_key");
+    mailDTO.setSubject("单元测试");
+    mailDTO.setToMail("shennan@wafersystems.com");
+    mailDTO.setCopyTo("shennan1@wafersystems.com");
+    mailDTO.setTempName("commonForgetPwd");
+    mailDTO.setLang("zh_CN");
+    mailDTO.setTenantId(1001);
+    mailDTO.setMailScheduleDto(scheduleDto);
+    mailDTO.setSystemName("系统");
+
+    final MailBean mailBean = MailBean.builder()
+      .type(ConfConstant.TypeEnum.FM)
+      .template("commonForgetPwd")
+      .mailDTO(mailDTO)
+      .subject("单元测试")
+      .toEmails("shennan@wafersystems.com")
+      .copyTo("shennan1@wafersystems.com")
+      .build();
+    microsoft.send(mailBean, mailServerConf);
+  }
+
+  /**
+   * 发送日程事件邮件
+   *
+   * @throws Exception
+   */
+  @Test
   public void check() {
     final BaseCheckDTO dto = new BaseCheckDTO();
     dto.setToMail("shennan@wafersystems.com");
