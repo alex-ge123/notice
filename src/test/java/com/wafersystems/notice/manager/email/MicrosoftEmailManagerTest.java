@@ -23,15 +23,15 @@ import org.testng.annotations.Test;
 public class MicrosoftEmailManagerTest extends BaseTest {
   @Autowired
   private MicrosoftEmailManager microsoft;
-  private MailServerConf mailServerConf;
+  private static MailServerConf mailServerConf;
 
-  {
+  static {
     mailServerConf = new MailServerConf();
     mailServerConf.setClientId("clientid");
     mailServerConf.setClientSecret("clientsecret");
     mailServerConf.setOfficeTenantId("tenantid");
     mailServerConf.setScope("scope");
-    mailServerConf.setFrom("from");
+    mailServerConf.setMicrosoftFrom("from");
   }
 
   @BeforeClass
