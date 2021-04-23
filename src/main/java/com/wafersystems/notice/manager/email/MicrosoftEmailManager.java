@@ -60,8 +60,8 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   @Autowired
   private StringRedisTemplate redisTemplate;
 
-
-  private final static String DOMAIN = "https://graph.microsoft.com/v1.0";
+  public static String DOMAIN = "https://graph.microsoft.com/v1.0";
+  public static String LOGIN = "https://login.microsoftonline.com";
 
   @Override
   public void send(MailBean mailBean, MailServerConf conf) throws Exception {
@@ -332,7 +332,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     if (StrUtil.isNotBlank(token)) {
       return token;
     }
-    final HttpResponse execute = HttpRequest.post("https://login.microsoftonline.com/" + conf.getOfficeTenantId() + "/oauth2/v2.0/token")
+    final HttpResponse execute = HttpRequest.post(LOGIN + "/" + conf.getOfficeTenantId() + "/oauth2/v2.0/token")
       .header("Content-type", "application/x-www-form-urlencoded")
       .form("grant_type", "client_credentials")
       .form("client_id", conf.getClientId())
