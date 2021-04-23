@@ -60,8 +60,8 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
   @Autowired
   private StringRedisTemplate redisTemplate;
 
-  public static String DOMAIN = "https://graph.microsoft.com/v1.0";
-  public static String LOGIN = "https://login.microsoftonline.com";
+  static final String DOMAIN = "https://graph.microsoft.com/v1.0";
+  static final String LOGIN = "https://login.microsoftonline.com";
 
   @Override
   public void send(MailBean mailBean, MailServerConf conf) throws Exception {

@@ -163,13 +163,13 @@ public class SmsSendController {
   /**
    * 添加/修改短信模板
    *
-   * @param dto 邮件模板
+   * @param smsTemplate 邮件模板
    * @return R
    */
   @PostMapping("/template/add")
   @PreAuthorize("@pms.hasPermission('')")
-  public R templateAdd(@RequestBody SmsTemplateDTO dto) {
-    smsService.saveTemp(dto);
+  public R templateAdd(@RequestBody SmsTemplateDTO smsTemplate) {
+    smsService.saveTemp(smsTemplate);
     return R.ok();
   }
 
