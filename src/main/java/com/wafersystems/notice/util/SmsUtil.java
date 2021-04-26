@@ -304,7 +304,13 @@ public class SmsUtil {
       HttpGet method = new HttpGet(url);
       method.addHeader("Content-type", "application/json; charset=utf-8");
       method.setHeader("Accept", "application/json");
-      httpClient = HttpClientBuilder.create().build();
+
+      RequestConfig defaultRequestConfig = RequestConfig.custom()
+        .setSocketTimeout(5000)
+        .setConnectTimeout(5000)
+        .setConnectionRequestTimeout(5000)
+        .build();
+      httpClient = HttpClientBuilder.create().setDefaultRequestConfig(defaultRequestConfig).build();
       response = httpClient.execute(method);
       if (response != null && response.getStatusLine() != null) {
         responseStatusCode = response.getStatusLine().getStatusCode();

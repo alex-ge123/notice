@@ -2,6 +2,7 @@ package com.wafersystems.notice.receiver;
 
 import com.wafersystems.notice.BaseTest;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.virsical.common.core.config.SystemProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,6 +23,8 @@ public class ReceiverTest extends BaseTest {
   private Receiver receiver;
   @Autowired
   private StringRedisTemplate redisTemplate;
+  @Autowired
+  private SystemProperties systemProperties;
 
   @BeforeClass
   public void initData() {
@@ -42,6 +45,8 @@ public class ReceiverTest extends BaseTest {
   @Test
   public void testSms() throws Exception {
     String message = "{\"clientId\":\"+8615529360323\",\"data\":{\"paramList\":[\"11\",\"2019-12-26 10:35\",\"访客\",\"\",\"\",\"\"],\"phoneList\":[\"+8615529360323\"],\"smsSign\":\"威发系统\",\"templateId\":\"105856\"},\"lang\":\"zh\",\"msgAction\":\"ADD\",\"msgId\":\"9773bdf1-d844-4278-ab85-ea896535ab43\",\"msgTime\":1577327459154,\"msgType\":\"ONE\",\"product\":\"vst\"}";
+    receiver.sms(message);
+    systemProperties.setCloudService(true);
     receiver.sms(message);
   }
 
