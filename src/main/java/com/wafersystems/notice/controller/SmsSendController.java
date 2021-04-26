@@ -8,6 +8,7 @@ import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.model.PaginationDTO;
 import com.wafersystems.notice.model.SmsTemplateDTO;
+import com.wafersystems.notice.model.SmsTemplateVO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.notice.util.SmsUtil;
@@ -18,6 +19,7 @@ import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.virsical.common.security.annotation.Inner;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -163,13 +165,15 @@ public class SmsSendController {
   /**
    * 添加/修改短信模板
    *
-   * @param smsTemplate 邮件模板
+   * @param vo 邮件模板
    * @return R
    */
   @PostMapping("/template/add")
   @PreAuthorize("@pms.hasPermission('')")
-  public R templateAdd(@RequestBody SmsTemplateDTO smsTemplate) {
-    smsService.saveTemp(smsTemplate);
+  public R templateAdd(@RequestBody SmsTemplateVO vo) {
+    SmsTemplateDTO dto = new SmsTemplateDTO();
+    BeanUtils.copyProperties(vo, dto);
+    smsService.saveTemp(dto);
     return R.ok();
   }
 
