@@ -2,6 +2,7 @@ package com.wafersystems.notice.manager.email;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.Week;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
@@ -14,6 +15,7 @@ import com.alibaba.fastjson.serializer.SerializeWriter;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.microsoft.graph.core.DateOnly;
 import com.microsoft.graph.models.*;
+import com.microsoft.graph.requests.AttachmentCollectionPage;
 import com.wafersystems.notice.constants.MailConstants;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.model.MailBean;
@@ -32,6 +34,7 @@ import com.wafersystems.virsical.common.core.util.R;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import microsoft.exchange.webservices.data.core.service.item.Item;
 import okhttp3.Request;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +44,10 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -352,10 +355,10 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
     try {
       // 构造邮件体
       Message message = new Message();
-      message.subject = "邮件配置测试";
+      message.subject = checkMailSubject;
       ItemBody body = new ItemBody();
       body.contentType = BodyType.TEXT;
-      body.content = "该邮件用于验证邮件配置，收到该邮件，则您的邮箱配置正确！";
+      body.content = checkMailBodyText;
       message.body = body;
 
       // 收件人
@@ -373,11 +376,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
       sendCheckLog(null, null, CommonConstants.SUCCESS, tenantId);
       return R.ok();
     } catch (Exception e) {
-      log.warn("邮箱检测失败！", e);
-      StringWriter stringWriter = new StringWriter();
-      e.printStackTrace(new PrintWriter(stringWriter));
-      sendCheckLog(e.getMessage(), stringWriter.toString(), CommonConstants.FAIL, tenantId);
-      return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
+      return checkFail(tenantId, e);
     }
   }
 

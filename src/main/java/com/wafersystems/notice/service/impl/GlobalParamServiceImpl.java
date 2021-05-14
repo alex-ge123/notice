@@ -308,7 +308,20 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * @return MailServerConf
    */
   private MailServerConf getEwsConf(List<GlobalParameter> systemParamList) {
-    return null;
+    MailServerConf conf = new MailServerConf();
+    conf.setServerType(MailConstants.MAIL_SERVER_TYPE_EWS);
+    for (GlobalParameter p : systemParamList) {
+      // 解密参数
+      String value = stringEncryptor.decrypt(p.getParamValue());
+      if (MailConstants.MAIL_EWS_URL.equals(p.getParamKey())) {
+        conf.setEwsUrl(value);
+      } else if (MailConstants.MAIL_EWS_ACCOUNT.equals(p.getParamKey())) {
+        conf.setEwsAccount(value);
+      } else if (MailConstants.MAIL_EWS_PASSWORD.equals(p.getParamKey())) {
+        conf.setEwsPassword(value);
+      }
+    }
+    return conf;
   }
 
   /**

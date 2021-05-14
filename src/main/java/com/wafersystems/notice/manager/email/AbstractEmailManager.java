@@ -11,6 +11,7 @@ import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
+import com.wafersystems.virsical.common.core.constant.SysDictConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.dto.*;
@@ -25,8 +26,10 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -59,6 +62,12 @@ public abstract class AbstractEmailManager {
 
   @Autowired
   private AsyncTaskManager asyncTaskManager;
+
+  @Autowired
+  private StringRedisTemplate redisTemplate;
+
+  String checkMailBodyText = "该邮件用于验证邮件配置，收到该邮件，则您的邮箱配置正确！";
+  String checkMailSubject = "邮件配置测试";
 
   /**
    * 发送邮件
@@ -244,5 +253,28 @@ public abstract class AbstractEmailManager {
     SimpleDateFormat sim = new SimpleDateFormat(pattern);
     sim.setTimeZone(TimeZone.getTimeZone(timeZone));
     return sim.format(Long.valueOf(date));
+  }
+
+  /**
+   * 获取用户域
+   *
+   * @return 域
+   */
+  String getDomain() {
+    try {
+      return (String) redisTemplate.opsForHash().get(CommonConstants.SYS_DICT + SysDictConstants.DOMAIN_TYPE,
+        SysDictConstants.DOMAIN_TYPE);
+    } catch (Exception e) {
+      log.error("【系统未配置域名，请联系管理员！】");
+      return null;
+    }
+  }
+
+  R checkFail(Integer tenantId, Exception e) {
+    log.warn("邮箱检测失败！", e);
+    StringWriter stringWriter = new StringWriter();
+    e.printStackTrace(new PrintWriter(stringWriter));
+    sendCheckLog(e.getMessage(), stringWriter.toString(), CommonConstants.FAIL, tenantId);
+    return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
   }
 }

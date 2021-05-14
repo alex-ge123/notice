@@ -83,4 +83,18 @@ public class MailServerConf {
    */
   private String scope;
   ////**************************************ews配置***************************
+  /**
+   * ewsUrl
+   */
+  private String ewsUrl;
+
+  /**
+   * 邮箱账号
+   */
+  private String ewsAccount;
+
+  /**
+   * 密码
+   */
+  private String ewsPassword;
 }

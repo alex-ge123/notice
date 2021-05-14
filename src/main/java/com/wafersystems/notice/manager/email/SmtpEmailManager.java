@@ -11,7 +11,6 @@ import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.enums.MailScheduleStatusEnum;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
-import com.wafersystems.virsical.common.core.constant.SysDictConstants;
 import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
@@ -43,9 +42,6 @@ import java.util.Properties;
 @Primary
 @Service(MailConstants.MAIL_SERVER_TYPE_SMTP)
 public class SmtpEmailManager extends AbstractEmailManager {
-
-  @Autowired
-  private StringRedisTemplate redisTemplate;
 
   /**
    * 发送邮件
@@ -142,22 +138,6 @@ public class SmtpEmailManager extends AbstractEmailManager {
       }
     });
   }
-
-  /**
-   * 获取用户域
-   *
-   * @return 域
-   */
-  private String getDomain() {
-    try {
-      return (String) redisTemplate.opsForHash().get(CommonConstants.SYS_DICT + SysDictConstants.DOMAIN_TYPE,
-        SysDictConstants.DOMAIN_TYPE);
-    } catch (Exception e) {
-      log.error("【系统未配置域名，请联系管理员！】");
-      return null;
-    }
-  }
-
 
   private Session getSession(MailServerConf mailServerConf) {
     Properties props = System.getProperties();
@@ -312,21 +292,17 @@ public class SmtpEmailManager extends AbstractEmailManager {
       transport.connect(conf.getHost(), conf.getPort(), conf.getFrom(), "true".equals(conf.getAuth()) ? conf.getPassword() : null);
       // 构造邮件消息对象
       MimeMessage message = new MimeMessage(session);
-      message.setSubject("邮件配置测试");
+      message.setSubject(checkMailSubject);
       // 发件人
       message.setFrom(new InternetAddress(conf.getFrom(), conf.getName()));
       // 收件人
       message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(dto.getToMail()));
-      message.setContent("该邮件用于验证邮件配置，收到该邮件，则您的邮箱配置正确！", "text/html;charset=UTF-8");
+      message.setContent(checkMailBodyText, "text/html;charset=UTF-8");
       transport.sendMessage(message, message.getAllRecipients());
       sendCheckLog(null, null, CommonConstants.SUCCESS, tenantId);
       return R.ok();
     } catch (Exception e) {
-      log.warn("邮箱检测失败！", e);
-      StringWriter stringWriter = new StringWriter();
-      e.printStackTrace(new PrintWriter(stringWriter));
-      sendCheckLog(e.getMessage(), stringWriter.toString(), CommonConstants.FAIL, tenantId);
-      return R.builder().code(CommonConstants.FAIL).msg(e.getMessage()).data(stringWriter.toString()).build();
+      return checkFail(tenantId, e);
     } finally {
       if (ObjectUtil.isNotNull(transport)) {
         try {
