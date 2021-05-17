@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.constants.MailConstants;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
@@ -50,7 +49,7 @@ import java.util.*;
  * @author wafer
  */
 @Slf4j
-@Service(MailConstants.MAIL_SERVER_TYPE_MICROSOFT)
+@Service(MailConstants.MAIL_SERVER_TYPE_EWS)
 public class EwsEmailManager extends AbstractEmailManager {
   @Autowired
   private MicrosoftRecordService microsoftRecordService;
@@ -70,7 +69,7 @@ public class EwsEmailManager extends AbstractEmailManager {
         // 修改
         final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(schedule.getUuid());
         if (ObjectUtil.isNotNull(recordDTO) && StrUtil.isNotBlank(recordDTO.getEventid())) {
-          final Appointment meeting = mailBeanToAppointment(mailBean, service);
+          final Appointment meeting = mailBeanToAppointment(mailBean, service, recordDTO.getEventid());
           meeting.update(ConflictResolutionMode.AlwaysOverwrite, SendInvitationsOrCancellationsMode.SendToAllAndSaveCopy);
         } else {
           send(mailBean, service, schedule);
@@ -99,7 +98,7 @@ public class EwsEmailManager extends AbstractEmailManager {
 
   private void send(MailBean mailBean, ExchangeService service, MailScheduleDto schedule) throws Exception {
     // 构造Appointment
-    final Appointment meeting = mailBeanToAppointment(mailBean, service);
+    final Appointment meeting = mailBeanToAppointment(mailBean, service, null);
     // 发送
     meeting.save(SendInvitationsMode.SendToAllAndSaveCopy);
     // 保存邮件id
@@ -115,10 +114,21 @@ public class EwsEmailManager extends AbstractEmailManager {
     microsoftRecordService.saveTemp(microsoftRecordDTO);
   }
 
-  private Appointment mailBeanToAppointment(MailBean mailBean, ExchangeService service) throws Exception {
+  /**
+   * @param mailBean mailBean
+   * @param service  service
+   * @return
+   * @throws Exception
+   */
+  private Appointment mailBeanToAppointment(MailBean mailBean, ExchangeService service, String id) throws Exception {
     final MailDTO mailDTO = mailBean.getMailDTO();
     final MailScheduleDto schedule = mailDTO.getMailScheduleDto();
-    Appointment meeting = new Appointment(service);
+    Appointment meeting;
+    if (StrUtil.isBlank(id)) {
+      meeting = new Appointment(service);
+    } else {
+      meeting = Appointment.bind(service, ItemId.getItemIdFromString(id), new PropertySet());
+    }
     meeting.setSubject(mailBean.getSubject());
     meeting.getRequiredAttendees().clear();
     meeting.getResources().clear();
@@ -166,8 +176,6 @@ public class EwsEmailManager extends AbstractEmailManager {
 
     // 附件
     addAccessory(mailDTO, meeting);
-
-    log.debug("事件邮件体为{}", JSON.toJSONString(meeting));
     return meeting;
   }
 
