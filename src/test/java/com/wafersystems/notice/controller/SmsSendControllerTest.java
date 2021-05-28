@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.wafersystems.notice.BaseTest;
 import com.wafersystems.notice.constants.ParamConstant;
-import com.wafersystems.notice.model.SmsTemplateDTO;
+import com.wafersystems.notice.entity.SmsTemplate;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
@@ -90,7 +90,7 @@ public class SmsSendControllerTest extends BaseTest {
   @Test
   public void testTemplateAdd() throws Exception {
     String url = "/sms/template/add";
-    final SmsTemplateDTO template = new SmsTemplateDTO();
+    final SmsTemplate template = new SmsTemplate();
     template.setId("55555");
     template.setName("测试模板");
     template.setContent("我是要给测试模板");

@@ -1,6 +1,6 @@
 package com.wafersystems.notice.service;
 
-import com.wafersystems.notice.model.MicrosoftRecordDTO;
+import com.wafersystems.notice.entity.MailMicrosoftRecord;
 
 /**
  * MicrosoftRecord记录接口
@@ -13,7 +13,7 @@ public interface MicrosoftRecordService {
    *
    * @param dto dto
    */
-  void saveTemp(MicrosoftRecordDTO dto);
+  void saveTemp(MailMicrosoftRecord dto);
 
   /**
    * 通过id查询
@@ -21,12 +21,12 @@ public interface MicrosoftRecordService {
    * @param uuid uuid
    * @return
    */
-  MicrosoftRecordDTO getById(String uuid);
+  MailMicrosoftRecord getById(String uuid);
 
   /**
    * 通过id删除
    *
    * @param id id
    */
-  void delById(Long id);
+  void delById(Integer id);
 }

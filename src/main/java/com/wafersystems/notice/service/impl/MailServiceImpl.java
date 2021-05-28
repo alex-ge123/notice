@@ -3,14 +3,21 @@ package com.wafersystems.notice.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.config.SendInterceptProperties;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.constants.RedisKeyConstants;
-import com.wafersystems.notice.dao.impl.BaseDaoImpl;
+import com.wafersystems.notice.entity.MailTemplate;
 import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.manager.email.AbstractEmailManager;
-import com.wafersystems.notice.model.*;
+import com.wafersystems.notice.mapper.MailTemplateMapper;
+import com.wafersystems.notice.model.MailBean;
+import com.wafersystems.notice.model.MailServerConf;
+import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.StrUtil;
@@ -28,10 +35,6 @@ import com.wafersystems.virsical.common.entity.TenantDTO;
 import com.wafersystems.virsical.common.feign.RemoteTenantService;
 import com.wafersystems.virsical.common.util.AesUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -49,10 +52,7 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Service
-public class MailServiceImpl implements MailService {
-
-  @Autowired
-  private BaseDaoImpl baseDao;
+public class MailServiceImpl extends ServiceImpl<MailTemplateMapper, MailTemplate> implements MailService {
 
   @Autowired
   private RemoteTenantService tenantService;
@@ -98,7 +98,7 @@ public class MailServiceImpl implements MailService {
     }
 
     // 校验邮件状态
-    final MailTemplateDTO template = this.getTempByName(mailBean.getTemplate());
+    final MailTemplate template = this.getTempByName(mailBean.getTemplate());
     if (ObjectUtil.isNotNull(template) && ObjectUtil.equal(template.getState(), 1)) {
       log.warn("邮件模板[{}]禁用，邮件[{}]不发送！", mailBean.getTemplate(), mailBean.getSubject());
       return;
@@ -138,70 +138,75 @@ public class MailServiceImpl implements MailService {
   }
 
   @Override
-  public void saveTemp(MailTemplateDTO mailTemplateDto) {
-    MailTemplateDTO dto = getTempByName(mailTemplateDto.getName());
+  public void saveTemp(MailTemplate mailTemplate) {
+    MailTemplate dto = getTempByName(mailTemplate.getName());
     if (null == dto) {
-      baseDao.save(mailTemplateDto);
-      sendLog(mailTemplateDto.getName(), "模板:[" + mailTemplateDto.getName() + "]新增。");
+      this.save(mailTemplate);
+      sendLog(mailTemplate.getName(), "模板:[" + mailTemplate.getName() + "]新增。");
     } else {
-      dto.setDescription(mailTemplateDto.getDescription());
-      dto.setCategory(mailTemplateDto.getCategory());
-      dto.setContent(mailTemplateDto.getContent());
+      dto.setDescription(mailTemplate.getDescription());
+      dto.setCategory(mailTemplate.getCategory());
+      dto.setContent(mailTemplate.getContent());
       dto.setModtime(null);
-      baseDao.update(dto);
-      sendLog(mailTemplateDto.getName(), "模板:[" + mailTemplateDto.getName() + "]更新。");
+      this.updateById(dto);
+      sendLog(mailTemplate.getName(), "模板:[" + mailTemplate.getName() + "]更新。");
     }
-    log.debug("新增/修改{}模板成功！", mailTemplateDto.getName());
+    log.debug("新增/修改{}模板成功！", mailTemplate.getName());
   }
 
   @Override
-  public void updateTemp(MailTemplateDTO mailTemplateDto) {
-    MailTemplateDTO dto = getTempById(mailTemplateDto.getId());
+  public void updateTemp(MailTemplate mailTemplate) {
+    MailTemplate dto = getTempById(mailTemplate.getId());
     if (null != dto) {
-      if (!StrUtil.isEmptyStr(mailTemplateDto.getName())) {
-        dto.setName(mailTemplateDto.getName());
+      if (!StrUtil.isEmptyStr(mailTemplate.getName())) {
+        dto.setName(mailTemplate.getName());
       }
-      if (!StrUtil.isEmptyStr(mailTemplateDto.getDescription())) {
-        dto.setDescription(mailTemplateDto.getDescription());
+      if (!StrUtil.isEmptyStr(mailTemplate.getDescription())) {
+        dto.setDescription(mailTemplate.getDescription());
       }
-      if (!StrUtil.isEmptyStr(mailTemplateDto.getCategory())) {
-        dto.setCategory(mailTemplateDto.getCategory());
+      if (!StrUtil.isEmptyStr(mailTemplate.getCategory())) {
+        dto.setCategory(mailTemplate.getCategory());
       }
-      if (!StrUtil.isEmptyStr(mailTemplateDto.getContent())) {
-        dto.setContent(mailTemplateDto.getContent());
+      if (!StrUtil.isEmptyStr(mailTemplate.getContent())) {
+        dto.setContent(mailTemplate.getContent());
       }
       dto.setModtime(null);
-      baseDao.update(dto);
-      sendLog(mailTemplateDto.getName(), "模板:[" + dto.getName() + "]更新。");
-      log.debug("修改{}模板成功！", mailTemplateDto.getName());
+      this.updateById(dto);
+      sendLog(mailTemplate.getName(), "模板:[" + dto.getName() + "]更新。");
+      log.debug("修改{}模板成功！", mailTemplate.getName());
     } else {
-      throw new RuntimeException("未查询到id为[" + mailTemplateDto.getId() + "]的邮件模板");
+      throw new RuntimeException("未查询到id为[" + mailTemplate.getId() + "]的邮件模板");
 
     }
   }
 
   @Override
-  public PaginationDTO<MailTemplateSearchListDTO> getTemp(Long id, String category, String name, Integer pageSize, Integer startIndex) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateSearchListDTO.class);
+  public Page<MailTemplate> getTemp(Long id, String category, String name, Integer pageSize, Integer startIndex) {
+    final LambdaQueryWrapper<MailTemplate> query = new LambdaQueryWrapper<>();
+    query.select(i -> !"content".equals(i.getColumn()));
     if (null != id) {
-      criteria.add(Restrictions.eq("id", id));
+      query.eq(MailTemplate::getId, id);
     }
     if (null != name) {
-      criteria.add(Restrictions.ilike("name", name.trim(), MatchMode.ANYWHERE));
+      query.like(MailTemplate::getName, "%" + name.trim() + "%");
     }
     if (null != category) {
-      criteria.add(Restrictions.eq("category", category.trim()));
+      query.eq(MailTemplate::getCategory, category.trim());
     }
-    criteria.addOrder(Order.desc("modtime"));
-    criteria.addOrder(Order.asc("id"));
-    return baseDao.selectPage(criteria, pageSize, startIndex);
+    query.orderByDesc(MailTemplate::getModtime);
+    query.orderByAsc(MailTemplate::getId);
+    final Page<MailTemplate> page = new Page<>();
+    page.setCurrent(startIndex);
+    page.setSize(pageSize);
+
+    return this.page(page, query);
   }
 
   @Override
-  public MailTemplateDTO getTempById(Long id) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDTO.class);
-    criteria.add(Restrictions.eq("id", id));
-    List<MailTemplateDTO> list = baseDao.findByCriteria(criteria);
+  public MailTemplate getTempById(Integer id) {
+    final LambdaQueryWrapper<MailTemplate> query = new LambdaQueryWrapper<>();
+    query.eq(MailTemplate::getId, id);
+    List<MailTemplate> list = this.list(query);
     if (CollUtil.isNotEmpty(list)) {
       return list.get(0);
     }
@@ -209,10 +214,10 @@ public class MailServiceImpl implements MailService {
   }
 
   @Override
-  public MailTemplateDTO getTempByName(String name) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(MailTemplateDTO.class);
-    criteria.add(Restrictions.eq("name", name));
-    List<MailTemplateDTO> list = baseDao.findByCriteria(criteria);
+  public MailTemplate getTempByName(String name) {
+    final LambdaQueryWrapper<MailTemplate> query = new LambdaQueryWrapper<>();
+    query.eq(MailTemplate::getName, name);
+    List<MailTemplate> list = this.list(query);
     if (CollUtil.isNotEmpty(list)) {
       return list.get(0);
     }
@@ -288,14 +293,17 @@ public class MailServiceImpl implements MailService {
 
   @Override
   public boolean updateTempState(TemplateStateUpdateDTO dto) {
+    final LambdaUpdateWrapper<MailTemplate> update = new LambdaUpdateWrapper<>();
+    update.set(MailTemplate::getState, dto.getState());
+    update.ne(MailTemplate::getCategory, "common");
     if (dto.isUpdateAll()) {
       //全部修改
-      baseDao.updateBySql("update MailTemplateSearchListDTO as m set m.state = " + dto.getState() + " where m.category != 'common'");
+      this.update(update);
       sendLog("all", "修改全部邮件模板状态为：" + dto.getState());
       log.debug("修改邮件模板状态：{}", dto.getState());
     } else {
       //通过id修改
-      baseDao.updateBySql("update MailTemplateSearchListDTO as m set m.state = " + dto.getState() + " where  m.category != 'common' and m.id = " + dto.getId());
+      update.eq(MailTemplate::getId, dto.getId());
       sendLog(dto.getId(), "修改邮件模板状态为：" + dto.getState());
       log.debug("修改邮件模板:{}状态：{}", dto.getId(), dto.getState());
     }

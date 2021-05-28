@@ -1,12 +1,14 @@
 package com.wafersystems.notice.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wafersystems.notice.config.MailProperties;
 import com.wafersystems.notice.constants.MailConstants;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.constants.RedisKeyConstants;
-import com.wafersystems.notice.dao.BaseDao;
-import com.wafersystems.notice.model.GlobalParameter;
+import com.wafersystems.notice.entity.NtcParameter;
+import com.wafersystems.notice.mapper.NtcParameterMapper;
 import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.ParameterDTO;
 import com.wafersystems.notice.service.GlobalParamService;
@@ -15,8 +17,6 @@ import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.security.util.AesUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +35,7 @@ import java.util.*;
  */
 @Slf4j
 @Service
-public class GlobalParamServiceImpl implements GlobalParamService {
-
-  @Autowired
-  private BaseDao<GlobalParameter> baseDao;
+public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcParameter> implements GlobalParamService {
 
   @Autowired
   private StringEncryptor stringEncryptor;
@@ -56,8 +53,8 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * 保存SystemParam
    */
   @Override
-  public void save(GlobalParameter gp) {
-    baseDao.update(gp);
+  public void saveParameter(NtcParameter gp) {
+    this.updateById(gp);
   }
 
   /**
@@ -68,13 +65,13 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   @Override
   public void saveBatch(List<ParameterDTO> list) {
     list.forEach(dto -> {
-      GlobalParameter globalParameter = new GlobalParameter();
+      NtcParameter globalParameter = new NtcParameter();
       BeanUtils.copyProperties(dto, globalParameter);
       globalParameter.setTenantId(TenantContextHolder.getTenantId());
       String value = AesUtils.decryptAes(dto.getParamValue(),
         aesKeyProperties.getKey());
       globalParameter.setParamValue(stringEncryptor.encrypt(value));
-      baseDao.saveOrUpdate(globalParameter);
+      this.saveOrUpdate(globalParameter);
     });
   }
 
@@ -85,7 +82,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    */
   @Override
   public void del(Integer id) {
-    baseDao.delete(GlobalParameter.class, id.longValue());
+    this.del(id);
   }
 
   /**
@@ -95,11 +92,11 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * @return
    */
   @Override
-  public GlobalParameter getSystemParamByParamKey(String paramKey) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
-    criteria.add(Restrictions.eq("paramKey", paramKey));
-    criteria.add(Restrictions.eq("tenantId", TenantContextHolder.getTenantId()));
-    List<GlobalParameter> list = baseDao.findByCriteria(criteria);
+  public NtcParameter getSystemParamByParamKey(String paramKey) {
+    final LambdaQueryWrapper<NtcParameter> query = new LambdaQueryWrapper<>();
+    query.eq(NtcParameter::getParamKey, paramKey);
+    query.eq(NtcParameter::getTenantId, TenantContextHolder.getTenantId());
+    List<NtcParameter> list = this.list(query);
     if (!list.isEmpty()) {
       return list.get(0);
     }
@@ -114,14 +111,14 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * @return list
    */
   @Override
-  public List<GlobalParameter> getSystemParamList(Integer tenantId, String type) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
+  public List<NtcParameter> getSystemParamList(Integer tenantId, String type) {
+    final LambdaQueryWrapper<NtcParameter> query = new LambdaQueryWrapper<>();
+    query.eq(NtcParameter::getTenantId, tenantId);
     // 查询全局配置
-    criteria.add(Restrictions.eq("tenantId", tenantId));
     if (StrUtil.isNotBlank(type)) {
-      criteria.add(Restrictions.eq("type", type));
+      query.eq(NtcParameter::getType, type);
     }
-    return baseDao.findByCriteria(criteria);
+    return this.list(query);
   }
 
   /**
@@ -131,10 +128,10 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   @EventListener({WebServerInitializedEvent.class})
   public void initSystemParam() {
     log.info("开始加载系统数据库配置相关参数");
-    DetachedCriteria criteria = DetachedCriteria.forClass(GlobalParameter.class);
     // 查询全局配置
-    criteria.add(Restrictions.eq("tenantId", CommonConstants.PLATFORM_ADMIN_TENANT_ID));
-    List<GlobalParameter> list = baseDao.findByCriteria(criteria);
+    final LambdaQueryWrapper<NtcParameter> query = new LambdaQueryWrapper<>();
+    query.eq(NtcParameter::getTenantId, CommonConstants.PLATFORM_ADMIN_TENANT_ID);
+    List<NtcParameter> list = this.list(query);
     Map<String, String> map = new HashMap<>(30);
     // 清空系统全局参数缓存
     Optional.ofNullable(list).orElse(Arrays.asList()).forEach(globalParameter -> {
@@ -212,13 +209,13 @@ public class GlobalParamServiceImpl implements GlobalParamService {
   @Override
   public MailServerConf getMailServerConf(Integer tenantId) {
     // 查询租户邮件配置
-    List<GlobalParameter> systemParamList = getSystemParamList(tenantId, MailConstants.TYPE);
+    List<NtcParameter> systemParamList = getSystemParamList(tenantId, MailConstants.TYPE);
 
     // 租户配置不为空，走租户配置
     if (systemParamList != null && !systemParamList.isEmpty()) {
       String serverType = MailConstants.MAIL_SERVER_TYPE_SMTP;
       //判断邮件服务器类型
-      for (GlobalParameter p : systemParamList) {
+      for (NtcParameter p : systemParamList) {
         if (MailConstants.MAIL_SERVER_TYPE.equals(p.getParamKey())) {
           serverType = stringEncryptor.decrypt(p.getParamValue());
           break;
@@ -231,7 +228,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     return smtpDefaultConf();
   }
 
-  private MailServerConf getServerConf(List<GlobalParameter> systemParamList, String serverType) {
+  private MailServerConf getServerConf(List<NtcParameter> systemParamList, String serverType) {
     if (MailConstants.MAIL_SERVER_TYPE_MICROSOFT.equals(serverType)) {
       return getMicrosoftConf(systemParamList);
     } else if (MailConstants.MAIL_SERVER_TYPE_EWS.equals(serverType)) {
@@ -263,10 +260,10 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * @param systemParamList systemParamList
    * @return MailServerConf
    */
-  private MailServerConf getSmtpConf(List<GlobalParameter> systemParamList) {
+  private MailServerConf getSmtpConf(List<NtcParameter> systemParamList) {
     MailServerConf conf = new MailServerConf();
     Map<String, Object> props = new HashMap<>(10);
-    for (GlobalParameter p : systemParamList) {
+    for (NtcParameter p : systemParamList) {
       // 解密参数
       String value = stringEncryptor.decrypt(p.getParamValue());
       if (MailConstants.MAIL_HOST.equals(p.getParamKey())) {
@@ -307,10 +304,10 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * @param systemParamList systemParamList
    * @return MailServerConf
    */
-  private MailServerConf getEwsConf(List<GlobalParameter> systemParamList) {
+  private MailServerConf getEwsConf(List<NtcParameter> systemParamList) {
     MailServerConf conf = new MailServerConf();
     conf.setServerType(MailConstants.MAIL_SERVER_TYPE_EWS);
-    for (GlobalParameter p : systemParamList) {
+    for (NtcParameter p : systemParamList) {
       // 解密参数
       String value = stringEncryptor.decrypt(p.getParamValue());
       if (MailConstants.MAIL_EWS_URL.equals(p.getParamKey())) {
@@ -330,10 +327,10 @@ public class GlobalParamServiceImpl implements GlobalParamService {
    * @param systemParamList systemParamList
    * @return MailServerConf
    */
-  private MailServerConf getMicrosoftConf(List<GlobalParameter> systemParamList) {
+  private MailServerConf getMicrosoftConf(List<NtcParameter> systemParamList) {
     MailServerConf conf = new MailServerConf();
     conf.setServerType(MailConstants.MAIL_SERVER_TYPE_MICROSOFT);
-    for (GlobalParameter p : systemParamList) {
+    for (NtcParameter p : systemParamList) {
       // 解密参数
       String value = stringEncryptor.decrypt(p.getParamValue());
       if (MailConstants.MAIL_MICROSOFT_CLIENTID.equals(p.getParamKey())) {

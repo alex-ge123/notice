@@ -4,7 +4,7 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.NoticeMsgConstants;
-import com.wafersystems.notice.model.GlobalParameter;
+import com.wafersystems.notice.entity.NtcParameter;
 import com.wafersystems.notice.model.ParameterDTO;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.virsical.common.core.config.AesKeyProperties;
@@ -67,7 +67,7 @@ public class GlobalParamController {
   @GetMapping("/get")
   @PreAuthorize("@pms.hasPermission('')")
   public R get(String type) {
-    List<GlobalParameter> systemParamList = globalParamService.getSystemParamList(TenantContextHolder.getTenantId(),
+    List<NtcParameter> systemParamList = globalParamService.getSystemParamList(TenantContextHolder.getTenantId(),
       type);
     systemParamList.forEach(globalParameter -> {
       String value = globalParameter.getParamValue();
@@ -90,7 +90,7 @@ public class GlobalParamController {
   @PostMapping("/set")
   @PreAuthorize("@pms.hasPermission('')")
   public R set(@RequestBody @Valid ParameterDTO param) {
-    GlobalParameter gp = globalParamService.getSystemParamByParamKey(param.getParamKey());
+    NtcParameter gp = globalParamService.getSystemParamByParamKey(param.getParamKey());
     if (gp == null) {
       return R.fail("当前配置参数key不存在：" + param.getParamKey());
     }
@@ -101,7 +101,7 @@ public class GlobalParamController {
     gp.setParamValue(stringEncryptor.encrypt(param.getParamValue()));
     gp.setParamDesc(param.getParamDesc());
     gp.setTenantId(TenantContextHolder.getTenantId());
-    globalParamService.save(gp);
+    globalParamService.saveParameter(gp);
     if (CommonConstants.PLATFORM_ADMIN_TENANT_ID.equals(TenantContextHolder.getTenantId())) {
       initSysParam();
     }

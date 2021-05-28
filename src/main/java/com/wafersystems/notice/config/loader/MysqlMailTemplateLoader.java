@@ -1,6 +1,6 @@
 package com.wafersystems.notice.config.loader;
 
-import com.wafersystems.notice.model.MailTemplateDTO;
+import com.wafersystems.notice.entity.MailTemplate;
 import com.wafersystems.notice.service.MailService;
 import freemarker.cache.TemplateLoader;
 import lombok.Data;
@@ -25,8 +25,8 @@ public class MysqlMailTemplateLoader implements TemplateLoader {
   @Override
   public Object findTemplateSource(String name) {
     try {
-      MailTemplateDTO mailTemplateDto = mailService.getTempByName(name);
-      return new StringTemplateSource(name, mailTemplateDto.getContent(), mailTemplateDto.getModtime().getTime());
+      MailTemplate mailTemplate = mailService.getTempByName(name);
+      return new StringTemplateSource(name, mailTemplate.getContent(), mailTemplate.getModtime().getSecond());
     } catch (Exception e) {
       return null;
     }

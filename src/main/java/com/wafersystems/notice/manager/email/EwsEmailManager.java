@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.constants.MailConstants;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
-import com.wafersystems.notice.model.MicrosoftRecordDTO;
+import com.wafersystems.notice.entity.MailMicrosoftRecord;
 import com.wafersystems.notice.model.enums.MailScheduleStatusEnum;
 import com.wafersystems.notice.service.MicrosoftRecordService;
 import com.wafersystems.notice.service.impl.CustomExchangeService;
@@ -67,7 +67,7 @@ public class EwsEmailManager extends AbstractEmailManager {
         send(mailBean, service, schedule);
       } else if (MailScheduleStatusEnum.REQUEST.getEventType().equals(eventType) && 1 < sequence) {
         // 修改
-        final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(schedule.getUuid());
+        final MailMicrosoftRecord recordDTO = microsoftRecordService.getById(schedule.getUuid());
         if (ObjectUtil.isNotNull(recordDTO) && StrUtil.isNotBlank(recordDTO.getEventid())) {
           final Appointment meeting = mailBeanToAppointment(mailBean, service, recordDTO.getEventid());
           meeting.update(ConflictResolutionMode.AlwaysOverwrite, SendInvitationsOrCancellationsMode.SendToAllAndSaveCopy);
@@ -76,7 +76,7 @@ public class EwsEmailManager extends AbstractEmailManager {
         }
       } else if (MailScheduleStatusEnum.CANCEL.getEventType().equals(eventType)) {
         // 取消
-        final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(schedule.getUuid());
+        final MailMicrosoftRecord recordDTO = microsoftRecordService.getById(schedule.getUuid());
         if (ObjectUtil.isNotNull(recordDTO)) {
           Appointment appointment = Appointment.bind(service, ItemId.getItemIdFromString(recordDTO.getEventid()), new PropertySet());
           // Delete the meeting by using the Delete method.
@@ -108,7 +108,7 @@ public class EwsEmailManager extends AbstractEmailManager {
   private void saveMeetingId(MailScheduleDto schedule, Appointment meeting) throws ServiceLocalException {
     // 保存邮件id
     final ItemId id = meeting.getId();
-    final MicrosoftRecordDTO microsoftRecordDTO = new MicrosoftRecordDTO();
+    final MailMicrosoftRecord microsoftRecordDTO = new MailMicrosoftRecord();
     microsoftRecordDTO.setEventid(id.toString());
     microsoftRecordDTO.setUuid(schedule.getUuid());
     microsoftRecordService.saveTemp(microsoftRecordDTO);

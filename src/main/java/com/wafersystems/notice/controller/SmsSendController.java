@@ -6,8 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
-import com.wafersystems.notice.model.PaginationDTO;
-import com.wafersystems.notice.model.SmsTemplateDTO;
+import com.wafersystems.notice.entity.SmsTemplate;
 import com.wafersystems.notice.model.SmsTemplateVO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.SmsService;
@@ -158,8 +157,7 @@ public class SmsSendController {
   public R templatePage(String id, String category, String name,
                         @RequestParam(defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize,
                         @RequestParam(defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
-    PaginationDTO<SmsTemplateDTO> list = smsService.getTemp(id, category, name, pageSize, startIndex);
-    return R.ok(list);
+    return R.ok(smsService.getTemp(id, category, name, pageSize, startIndex));
   }
 
   /**
@@ -171,7 +169,7 @@ public class SmsSendController {
   @PostMapping("/template/add")
   @PreAuthorize("@pms.hasPermission('')")
   public R templateAdd(@RequestBody SmsTemplateVO vo) {
-    SmsTemplateDTO dto = new SmsTemplateDTO();
+    SmsTemplate dto = new SmsTemplate();
     BeanUtils.copyProperties(vo, dto);
     smsService.saveTemp(dto);
     return R.ok();

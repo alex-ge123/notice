@@ -1,6 +1,6 @@
 package com.wafersystems.notice.service;
 
-import com.wafersystems.notice.model.GlobalParameter;
+import com.wafersystems.notice.entity.NtcParameter;
 import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.ParameterDTO;
 
@@ -25,7 +25,7 @@ public interface GlobalParamService {
    * @param paramKey
    * @return
    */
-  GlobalParameter getSystemParamByParamKey(String paramKey);
+  NtcParameter getSystemParamByParamKey(String paramKey);
 
   /**
    * 查询租户配置参数
@@ -34,14 +34,14 @@ public interface GlobalParamService {
    * @param type     类型
    * @return list
    */
-  List<GlobalParameter> getSystemParamList(Integer tenantId, String type);
+  List<NtcParameter> getSystemParamList(Integer tenantId, String type);
 
   /**
    * 保存SystemParam
    *
    * @param gp
    */
-  void save(GlobalParameter gp);
+  void saveParameter(NtcParameter gp);
 
   /**
    * 批量保存SystemParam

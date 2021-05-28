@@ -2,7 +2,6 @@ package com.wafersystems.notice.manager.email;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.Week;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
@@ -15,12 +14,11 @@ import com.alibaba.fastjson.serializer.SerializeWriter;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.microsoft.graph.core.DateOnly;
 import com.microsoft.graph.models.*;
-import com.microsoft.graph.requests.AttachmentCollectionPage;
 import com.wafersystems.notice.constants.MailConstants;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
-import com.wafersystems.notice.model.MicrosoftRecordDTO;
+import com.wafersystems.notice.entity.MailMicrosoftRecord;
 import com.wafersystems.notice.model.enums.MailScheduleStatusEnum;
 import com.wafersystems.notice.service.MicrosoftRecordService;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
@@ -34,7 +32,6 @@ import com.wafersystems.virsical.common.core.util.R;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import microsoft.exchange.webservices.data.core.service.item.Item;
 import okhttp3.Request;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +39,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -90,21 +83,21 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
         // 新增
         Event event = mailBeanToEvent(mailBean);
         final String eventId = createEvent(conf.getMicrosoftFrom(), token, toJson(event));
-        final MicrosoftRecordDTO microsoftRecordDTO = new MicrosoftRecordDTO();
+        final MailMicrosoftRecord microsoftRecordDTO = new MailMicrosoftRecord();
         microsoftRecordDTO.setEventid(eventId);
         microsoftRecordDTO.setUuid(schedule.getUuid());
         microsoftRecordService.saveTemp(microsoftRecordDTO);
 
       } else if (MailScheduleStatusEnum.REQUEST.getEventType().equals(eventType) && 1 < sequence) {
         // 修改
-        final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(schedule.getUuid());
+        final MailMicrosoftRecord recordDTO = microsoftRecordService.getById(schedule.getUuid());
         Event event = mailBeanToEvent(mailBean);
         if (ObjectUtil.isNotNull(recordDTO) && StrUtil.isNotBlank(recordDTO.getEventid())) {
           event.transactionId = null;
           updateEvent(recordDTO.getEventid(), conf.getMicrosoftFrom(), token, toJson(event));
         } else {
           final String newEventId = createEvent(conf.getMicrosoftFrom(), token, toJson(event));
-          final MicrosoftRecordDTO microsoftRecordDTO = new MicrosoftRecordDTO();
+          final MailMicrosoftRecord microsoftRecordDTO = new MailMicrosoftRecord();
           microsoftRecordDTO.setEventid(newEventId);
           microsoftRecordDTO.setUuid(schedule.getUuid());
           microsoftRecordService.saveTemp(microsoftRecordDTO);
@@ -112,7 +105,7 @@ public class MicrosoftEmailManager extends AbstractEmailManager {
 
       } else if (MailScheduleStatusEnum.CANCEL.getEventType().equals(eventType)) {
         // 取消
-        final MicrosoftRecordDTO recordDTO = microsoftRecordService.getById(schedule.getUuid());
+        final MailMicrosoftRecord recordDTO = microsoftRecordService.getById(schedule.getUuid());
         if (ObjectUtil.isNotNull(recordDTO)) {
           final HttpResponse response = delEvent(recordDTO.getEventid(), conf.getMicrosoftFrom(), token);
           if (isOk(response.getStatus())) {

@@ -3,8 +3,11 @@ package com.wafersystems.notice.controller;
 import cn.hutool.core.util.ObjectUtil;
 import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
+import com.wafersystems.notice.entity.MailTemplate;
 import com.wafersystems.notice.manager.email.AbstractEmailManager;
-import com.wafersystems.notice.model.*;
+import com.wafersystems.notice.model.MailBean;
+import com.wafersystems.notice.model.TemplateStateUpdateDTO;
+import com.wafersystems.notice.model.TestSendMailDTO;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.DateUtil;
@@ -67,8 +70,7 @@ public class MailController {
   public R templateList(Long id, String category, String name, @RequestParam(
     defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize, @RequestParam(
     defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
-    PaginationDTO<MailTemplateSearchListDTO> list = mailService.getTemp(id, category, name, pageSize, startIndex);
-    return R.ok(list);
+    return R.ok(mailService.getTemp(id, category, name, pageSize, startIndex));
   }
 
   /**
@@ -86,12 +88,12 @@ public class MailController {
       log.info("上传的文件名为：" + fileName);
       byte[] bytes = file.getBytes();
       String content = new String(bytes);
-      MailTemplateDTO mailTemplateDto = new MailTemplateDTO();
-      mailTemplateDto.setName(fileName);
-      mailTemplateDto.setContent(content);
-      mailTemplateDto.setCategory(new String(category.getBytes(), StandardCharsets.UTF_8));
-      mailTemplateDto.setDescription(new String(description.getBytes(), StandardCharsets.UTF_8));
-      mailService.saveTemp(mailTemplateDto);
+      MailTemplate mailTemplate = new MailTemplate();
+      mailTemplate.setName(fileName);
+      mailTemplate.setContent(content);
+      mailTemplate.setCategory(new String(category.getBytes(), StandardCharsets.UTF_8));
+      mailTemplate.setDescription(new String(description.getBytes(), StandardCharsets.UTF_8));
+      mailService.saveTemp(mailTemplate);
     } catch (Exception e) {
       log.error("上传邮件模板失败", e);
       return R.fail(e.getMessage());
@@ -112,23 +114,23 @@ public class MailController {
   @PreAuthorize("@pms.hasPermission('')")
   public R templateUpdate(MultipartFile file, @RequestParam Integer id, String category, String description) {
     try {
-      MailTemplateDTO mailTemplateDto = new MailTemplateDTO();
-      mailTemplateDto.setId(id.longValue());
+      MailTemplate mailTemplate = new MailTemplate();
+      mailTemplate.setId(id);
       if (ObjectUtil.isNotNull(file)) {
         String fileName = StrUtil.getFileNameNoEx(file.getOriginalFilename());
         log.info("上传的文件名为：" + fileName);
         byte[] bytes = file.getBytes();
         String content = new String(bytes);
-        mailTemplateDto.setContent(content);
-        mailTemplateDto.setName(fileName);
+        mailTemplate.setContent(content);
+        mailTemplate.setName(fileName);
       }
       if (!cn.hutool.core.util.StrUtil.isEmpty(category)) {
-        mailTemplateDto.setCategory(new String(category.getBytes(), StandardCharsets.UTF_8));
+        mailTemplate.setCategory(new String(category.getBytes(), StandardCharsets.UTF_8));
       }
       if (!cn.hutool.core.util.StrUtil.isEmpty(description)) {
-        mailTemplateDto.setDescription(new String(description.getBytes(), StandardCharsets.UTF_8));
+        mailTemplate.setDescription(new String(description.getBytes(), StandardCharsets.UTF_8));
       }
-      mailService.updateTemp(mailTemplateDto);
+      mailService.updateTemp(mailTemplate);
     } catch (Exception e) {
       log.error("更新邮件模板失败", e);
       return R.fail(e.getMessage());

@@ -1,5 +1,7 @@
 package com.wafersystems.notice.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wafersystems.notice.entity.SmsTemplate;
 import com.wafersystems.notice.model.*;
 
 /**
@@ -14,7 +16,7 @@ public interface SmsService {
    *
    * @param dto dto
    */
-  void saveTemp(SmsTemplateDTO dto);
+  void saveTemp(SmsTemplate dto);
 
   /**
    * 删除短信模板
@@ -33,7 +35,7 @@ public interface SmsService {
    * @param row
    * @return
    */
-  PaginationDTO<SmsTemplateDTO> getTemp(String id, String category, String name, Integer page, Integer row);
+  Page<SmsTemplate> getTemp(String id, String category, String name, Integer page, Integer row);
 
   /**
    * 通过id查询邮件模板详细信息
@@ -41,7 +43,7 @@ public interface SmsService {
    * @param id
    * @return
    */
-  SmsTemplateDTO getTempById(String id);
+  SmsTemplate getTempById(String id);
 
   /**
    * 修改模板状态

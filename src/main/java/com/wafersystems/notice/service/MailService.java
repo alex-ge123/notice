@@ -1,6 +1,10 @@
 package com.wafersystems.notice.service;
 
-import com.wafersystems.notice.model.*;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wafersystems.notice.entity.MailTemplate;
+import com.wafersystems.notice.model.MailBean;
+import com.wafersystems.notice.model.MailServerConf;
+import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.util.R;
 
@@ -25,16 +29,16 @@ public interface MailService {
   /**
    * 新增/修改邮件模板
    *
-   * @param mailTemplateDto
+   * @param mailTemplate
    */
-  void saveTemp(MailTemplateDTO mailTemplateDto);
+  void saveTemp(MailTemplate mailTemplate);
 
   /**
    * 修改邮件模板
    *
-   * @param mailTemplateDto
+   * @param mailTemplate
    */
-  void updateTemp(MailTemplateDTO mailTemplateDto);
+  void updateTemp(MailTemplate mailTemplate);
 
   /**
    * 查询邮件模板列表(不包含content)
@@ -46,7 +50,7 @@ public interface MailService {
    * @param row
    * @return
    */
-  PaginationDTO<MailTemplateSearchListDTO> getTemp(Long id, String category, String name, Integer page, Integer row);
+  Page<MailTemplate> getTemp(Long id, String category, String name, Integer page, Integer row);
 
   /**
    * 通过id查询邮件模板详细信息
@@ -54,7 +58,7 @@ public interface MailService {
    * @param id
    * @return
    */
-  MailTemplateDTO getTempById(Long id);
+  MailTemplate getTempById(Integer id);
 
   /**
    * 查询name邮件模板详细信息
@@ -62,7 +66,7 @@ public interface MailService {
    * @param name
    * @return
    */
-  MailTemplateDTO getTempByName(String name);
+  MailTemplate getTempByName(String name);
 
   /**
    * 填充租户信息

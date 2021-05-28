@@ -11,7 +11,7 @@ import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.constants.SmsConstants;
 import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.model.SmsRecordVO;
-import com.wafersystems.notice.model.SmsTemplateDTO;
+import com.wafersystems.notice.entity.SmsTemplate;
 import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.security.SecurityUtils;
 import com.wafersystems.virsical.common.core.config.AesKeyProperties;
@@ -127,7 +127,7 @@ public class SmsUtil {
    */
   private String sendSms(String templetId, String phoneNum, List<String> params,
                          String domain, String smsSign) {
-    final SmsTemplateDTO template = smsService.getTempById(templetId);
+    final SmsTemplate template = smsService.getTempById(templetId);
     if (ObjectUtil.isNotNull(template) && ObjectUtil.equal(template.getState(), 1)) {
       log.warn("短信模板[{}]禁用，将不向电话[{}]发送短信！", templetId, phoneNum);
       return "1";

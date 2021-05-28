@@ -1,13 +1,12 @@
 package com.wafersystems.notice.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.wafersystems.notice.dao.impl.BaseDaoImpl;
-import com.wafersystems.notice.model.MicrosoftRecordDTO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wafersystems.notice.entity.MailMicrosoftRecord;
+import com.wafersystems.notice.mapper.MailMicrosoftRecordMapper;
 import com.wafersystems.notice.service.MicrosoftRecordService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,21 +18,18 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class MicrosoftRecordServiceImpl implements MicrosoftRecordService {
-
-  @Autowired
-  private BaseDaoImpl baseDao;
+public class MicrosoftRecordServiceImpl extends ServiceImpl<MailMicrosoftRecordMapper, MailMicrosoftRecord> implements MicrosoftRecordService {
 
   @Override
-  public void saveTemp(MicrosoftRecordDTO dto) {
-    baseDao.save(dto);
+  public void saveTemp(MailMicrosoftRecord dto) {
+    this.saveOrUpdate(dto);
   }
 
   @Override
-  public MicrosoftRecordDTO getById(String uuid) {
-    DetachedCriteria criteria = DetachedCriteria.forClass(MicrosoftRecordDTO.class);
-    criteria.add(Restrictions.eq("uuid", uuid));
-    List<MicrosoftRecordDTO> list = baseDao.findByCriteria(criteria);
+  public MailMicrosoftRecord getById(String uuid) {
+    final LambdaQueryWrapper<MailMicrosoftRecord> query = new LambdaQueryWrapper<>();
+    query.eq(MailMicrosoftRecord::getUuid, uuid);
+    List<MailMicrosoftRecord> list = this.list(query);
     if (CollUtil.isNotEmpty(list)) {
       return list.get(0);
     }
@@ -41,7 +37,7 @@ public class MicrosoftRecordServiceImpl implements MicrosoftRecordService {
   }
 
   @Override
-  public void delById(Long id) {
-    baseDao.delete(MicrosoftRecordDTO.class, id);
+  public void delById(Integer id) {
+    this.removeById(id);
   }
 }
