@@ -2,6 +2,9 @@ package com.wafersystems.notice.mapper;
 
 import com.wafersystems.notice.entity.AlertConf;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2021-05-28
  */
 public interface AlertConfMapper extends BaseMapper<AlertConf> {
+
+  /**
+   * 通过租户Id查询告警配置
+   *
+   * @param tenantId 租户ID
+   * @return 告警配置
+   */
+  List<AlertConf> getConfByTenant(@Param("tenantId") Integer tenantId);
 
 }

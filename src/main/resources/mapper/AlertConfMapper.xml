@@ -4,12 +4,23 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.wafersystems.notice.entity.AlertConf">
-    <result column="id" property="id" />
-        <result column="tenant_id" property="tenantId" />
-        <result column="type" property="type" />
-        <result column="state" property="state" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <result column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="type" property="type"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ResultMap" type="com.wafersystems.notice.entity.AlertConf">
+        <result column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="type" property="type"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <collection column="recipients" property="recipients" javaType="ArrayList"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -18,4 +29,14 @@
         tenant_id, type, state, create_time, update_time
     </sql>
 
+    <select id="getConfByTenant" resultMap="ResultMap">
+        SELECT
+            ac.* ,
+            ar.recipient
+        FROM
+            alert_conf AS ac
+            LEFT JOIN alert_recipient ar ON ac.id = ar.alert_conf_id
+        WHERE
+            ac.tenant_id = #{tenantId};
+    </select>
 </mapper>

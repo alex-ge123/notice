@@ -6,18 +6,23 @@ import com.wafersystems.notice.constants.ConfConstant;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.service.GlobalParamService;
+import com.wafersystems.notice.service.IAlertConfService;
 import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.SmsUtil;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
+import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
+import com.wafersystems.virsical.common.entity.SysTenant;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.MDC;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
@@ -54,6 +59,9 @@ public class Receiver {
 
   @Autowired
   private TaskExecutor taskExecutor;
+
+  @Autowired
+  private IAlertConfService alertConfService;
 
   /**
    * 监听邮件消息队列
@@ -157,5 +165,32 @@ public class Receiver {
         log.error("消息监听处理异常", e);
       }
     });
+  }
+
+  /**
+   * 监听租户消息队列
+   *
+   * @param message 消息
+   */
+  @RabbitHandler
+  @RabbitListener(bindings = @QueueBinding(
+    value = @Queue(value = RabbitMqConfig.QUEUE_NOTICE_UPMS_TENANT, durable = "true"),
+    exchange = @Exchange(value = UpmsMqConstants.EXCHANGE_FANOUT_UPMS_TENANT, type = ExchangeTypes.FANOUT)
+  ))
+  public void tenantListener(@Payload String message) {
+    log.info("【{}监听租户消息】{}", RabbitMqConfig.QUEUE_NOTICE_UPMS_TENANT, message);
+    try {
+      MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
+      if (MsgActionEnum.ADD.name().equals(messageDTO.getMsgAction())) {
+        final SysTenant sysTenant = JSON.parseObject(messageDTO.getData().toString(), SysTenant.class);
+        // 初始化租户提醒配置
+        alertConfService.initTenantConf(sysTenant.getId());
+        log.info("初始化租户提醒配置成功, 租户id: {}", sysTenant.getId());
+      } else {
+        log.warn("监听租户消息，接收到[{}]动作消息，不处理", messageDTO.getMsgAction());
+      }
+    } catch (Exception e) {
+      log.error("监听租户消息处理异常", e);
+    }
   }
 }

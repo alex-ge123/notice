@@ -1,14 +1,17 @@
 package com.wafersystems.notice.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.wafersystems.virsical.common.entity.SysUser;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -53,5 +56,17 @@ public class AlertConf extends Model<AlertConf> {
    * 修改时间
    */
   private LocalDateTime updateTime;
+
+  /**
+   * 接收人列表
+   */
+  @TableField(exist = false)
+  private List<String> recipients;
+
+  /**
+   * 站内接收人详细信息
+   */
+  @TableField(exist = false)
+  private List<SysUser> users;
 
 }
