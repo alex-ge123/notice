@@ -17,6 +17,7 @@ import com.wafersystems.notice.manager.email.AbstractEmailManager;
 import com.wafersystems.notice.mapper.MailTemplateMapper;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
+import com.wafersystems.notice.model.PaginationDTO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.MailService;
@@ -181,8 +182,9 @@ public class MailServiceImpl extends ServiceImpl<MailTemplateMapper, MailTemplat
   }
 
   @Override
-  public Page<MailTemplate> getTemp(Long id, String category, String name, Integer pageSize, Integer startIndex) {
+  public PaginationDTO<MailTemplate> getTemp(Long id, String category, String name, Integer pageSize, Integer startIndex) {
     final LambdaQueryWrapper<MailTemplate> query = new LambdaQueryWrapper<>();
+    query.setEntity(new MailTemplate());
     query.select(i -> !"content".equals(i.getColumn()));
     if (null != id) {
       query.eq(MailTemplate::getId, id);
@@ -198,8 +200,14 @@ public class MailServiceImpl extends ServiceImpl<MailTemplateMapper, MailTemplat
     final Page<MailTemplate> page = new Page<>();
     page.setCurrent(startIndex);
     page.setSize(pageSize);
-
-    return this.page(page, query);
+    final Page<MailTemplate> result = this.page(page, query);
+    final PaginationDTO<MailTemplate> resultDto = new PaginationDTO<>();
+    resultDto.setRows(result.getRecords());
+    resultDto.setLimit(Long.valueOf(result.getSize()).intValue());
+    resultDto.setPage(Long.valueOf(result.getCurrent()).intValue());
+    resultDto.setRecords(Long.valueOf(result.getTotal()).intValue());
+    resultDto.setTotal(Long.valueOf(result.getPages()).intValue());
+    return resultDto;
   }
 
   @Override
@@ -304,6 +312,7 @@ public class MailServiceImpl extends ServiceImpl<MailTemplateMapper, MailTemplat
     } else {
       //通过id修改
       update.eq(MailTemplate::getId, dto.getId());
+      this.update(update);
       sendLog(dto.getId(), "修改邮件模板状态为：" + dto.getState());
       log.debug("修改邮件模板:{}状态：{}", dto.getId(), dto.getState());
     }

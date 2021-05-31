@@ -1,8 +1,8 @@
 package com.wafersystems.notice.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wafersystems.notice.entity.SmsTemplate;
-import com.wafersystems.notice.model.*;
+import com.wafersystems.notice.model.PaginationDTO;
+import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 
 /**
  * 短信接口
@@ -35,7 +35,7 @@ public interface SmsService {
    * @param row
    * @return
    */
-  Page<SmsTemplate> getTemp(String id, String category, String name, Integer page, Integer row);
+  PaginationDTO<SmsTemplate> getTemp(String id, String category, String name, Integer page, Integer row);
 
   /**
    * 通过id查询邮件模板详细信息

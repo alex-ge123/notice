@@ -1,9 +1,9 @@
 package com.wafersystems.notice.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wafersystems.notice.entity.MailTemplate;
 import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.model.MailServerConf;
+import com.wafersystems.notice.model.PaginationDTO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.util.R;
@@ -50,7 +50,7 @@ public interface MailService {
    * @param row
    * @return
    */
-  Page<MailTemplate> getTemp(Long id, String category, String name, Integer page, Integer row);
+  PaginationDTO<MailTemplate> getTemp(Long id, String category, String name, Integer page, Integer row);
 
   /**
    * 通过id查询邮件模板详细信息

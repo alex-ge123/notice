@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.entity.SmsTemplate;
 import com.wafersystems.notice.mapper.SmsTemplateMapper;
+import com.wafersystems.notice.model.PaginationDTO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
@@ -58,7 +59,7 @@ public class SmsServiceImpl extends ServiceImpl<SmsTemplateMapper, SmsTemplate> 
 
 
   @Override
-  public Page<SmsTemplate> getTemp(String id, String category, String name, Integer pageSize, Integer row) {
+  public PaginationDTO<SmsTemplate> getTemp(String id, String category, String name, Integer pageSize, Integer row) {
     final LambdaQueryWrapper<SmsTemplate> query = new LambdaQueryWrapper<>();
     if (null != id) {
       query.eq(SmsTemplate::getId, id);
@@ -72,9 +73,16 @@ public class SmsServiceImpl extends ServiceImpl<SmsTemplateMapper, SmsTemplate> 
     query.orderByDesc(SmsTemplate::getModtime);
 
     final Page<SmsTemplate> page = new Page<>();
-    page.setCurrent(pageSize);
-    page.setSize(row);
-    return this.page(page, query);
+    page.setCurrent(row);
+    page.setSize(pageSize);
+    final Page<SmsTemplate> result = this.page(page, query);
+    final PaginationDTO<SmsTemplate> resultDto = new PaginationDTO<>();
+    resultDto.setRows(result.getRecords());
+    resultDto.setLimit(Long.valueOf(result.getSize()).intValue());
+    resultDto.setPage(Long.valueOf(result.getCurrent()).intValue());
+    resultDto.setRecords(Long.valueOf(result.getTotal()).intValue());
+    resultDto.setTotal(Long.valueOf(result.getPages()).intValue());
+    return resultDto;
   }
 
   @Override
@@ -97,6 +105,7 @@ public class SmsServiceImpl extends ServiceImpl<SmsTemplateMapper, SmsTemplate> 
     } else {
       //通过id修改
       update.eq(SmsTemplate::getId, dto.getId());
+      this.update(update);
       sendLog(dto.getId(), "修改短信模板状态为：" + dto.getState());
       log.debug("修改短信模板:{}状态：{}", dto.getId(), dto.getState());
     }
