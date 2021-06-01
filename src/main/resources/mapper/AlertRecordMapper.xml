@@ -4,23 +4,24 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.wafersystems.notice.entity.AlertRecord">
-    <result column="id" property="id" />
-        <result column="alert_id" property="alertId" />
-        <result column="product" property="product" />
-        <result column="title" property="title" />
-        <result column="content" property="content" />
-        <result column="alert_type" property="alertType" />
-        <result column="recipient" property="recipient" />
-        <result column="status" property="status" />
-        <result column="tenant_id" property="tenantId" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <result column="id" property="id"/>
+        <result column="alert_id" property="alertId"/>
+        <result column="product" property="product"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="alert_type" property="alertType"/>
+        <result column="recipient" property="recipient"/>
+        <result column="status" property="status"/>
+        <result column="delivery_status" property="deliveryStatus"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        alert_id, product, title, content, alert_type, recipient, status, tenant_id, create_time, update_time
+        alert_id, product, title, content, alert_type, recipient, status, delivery_status, tenant_id, create_time, update_time
     </sql>
 
 </mapper>

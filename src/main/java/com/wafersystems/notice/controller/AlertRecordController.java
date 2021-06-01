@@ -3,6 +3,8 @@ package com.wafersystems.notice.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wafersystems.notice.constants.AlertConstants;
+import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.notice.entity.AlertRecord;
 import com.wafersystems.notice.service.IAlertRecordService;
@@ -49,15 +51,33 @@ public class AlertRecordController {
   }
 
   @GetMapping("/list")
-  public R
-    <List<AlertRecord>> list(AlertRecord alertRecord) {
+  public R<List<AlertRecord>> list(AlertRecord alertRecord) {
     return R.ok(alertRecordService.list(Wrappers.query(alertRecord)));
   }
 
   @GetMapping("/page")
   public R
     <IPage<AlertRecord>> page(Page page, AlertRecord alertRecord) {
+    alertRecord.setTenantId(TenantContextHolder.getTenantId());
     return R.ok(alertRecordService.page(page, Wrappers.query(alertRecord)));
+  }
+
+  @GetMapping("/current/page")
+  public R<IPage<AlertRecord>> currentPage(Page page, AlertRecord alertRecord) {
+    alertRecord.setTenantId(TenantContextHolder.getTenantId());
+    alertRecord.setAlertType(AlertConstants.LOCAL.getType());
+    alertRecord.setRecipient(String.valueOf(TenantContextHolder.getUserId()));
+    return R.ok(alertRecordService.page(page, Wrappers.query(alertRecord)));
+  }
+
+  @GetMapping("/current/unread")
+  public R<List<AlertRecord>> currentUnread() {
+    final AlertRecord alertRecord = new AlertRecord();
+    alertRecord.setTenantId(TenantContextHolder.getTenantId());
+    alertRecord.setAlertType(AlertConstants.LOCAL.getType());
+    alertRecord.setRecipient(String.valueOf(TenantContextHolder.getUserId()));
+    alertRecord.setStatus(AlertConstants.ALERT_RECORD_STATUS_UNREAD);
+    return R.ok(alertRecordService.list(Wrappers.query(alertRecord)));
   }
 
 }
