@@ -20,7 +20,9 @@
         <result column="state" property="state"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
-        <collection column="recipients" property="recipients" javaType="ArrayList"/>
+        <collection property="recipients" javaType="ArrayList" ofType="String">
+            <result property="recipients" column="recipient"/>
+        </collection>
     </resultMap>
 
     <!-- 通用查询结果列 -->
