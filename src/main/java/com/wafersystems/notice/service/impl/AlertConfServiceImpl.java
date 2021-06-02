@@ -97,6 +97,11 @@ public class AlertConfServiceImpl extends ServiceImpl<AlertConfMapper, AlertConf
   }
 
   @Override
+  public AlertConf getConf(Integer tenantId, Integer type) {
+    return baseMapper.getConfByTenantAndType(tenantId, type);
+  }
+
+  @Override
   @Transactional(rollbackFor = Exception.class)
   public void updateConf(List<AlertConf> list) {
     if (CollUtil.isNotEmpty(list)) {

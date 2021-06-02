@@ -42,6 +42,11 @@ public class RabbitMqConfig {
   public static final String QUEUE_NOTICE_UPMS_TENANT = "queue.notice.upms.tenant";
 
   /**
+   * 告警通知消息队列
+   */
+  public static final String QUEUE_NOTICE_ALERT = "queue.notice.alert";
+
+  /**
    * DirectExchange
    *
    * @return DirectExchange

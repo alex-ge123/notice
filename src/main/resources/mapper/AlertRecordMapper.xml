@@ -13,6 +13,7 @@
         <result column="recipient" property="recipient"/>
         <result column="status" property="status"/>
         <result column="delivery_status" property="deliveryStatus"/>
+        <result column="failed_info" property="failedInfo"/>
         <result column="tenant_id" property="tenantId"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
@@ -21,7 +22,7 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        alert_id, product, title, content, alert_type, recipient, status, delivery_status, tenant_id, create_time, update_time
+        alert_id, product, title, content, alert_type, recipient, status, delivery_status,failed_info, tenant_id, create_time, update_time
     </sql>
 
 </mapper>

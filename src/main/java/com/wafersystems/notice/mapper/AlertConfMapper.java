@@ -24,4 +24,13 @@ public interface AlertConfMapper extends BaseMapper<AlertConf> {
    */
   List<AlertConf> getConfByTenant(@Param("tenantId") Integer tenantId);
 
+
+  /**
+   * 查询配置
+   *
+   * @param tenantId 租户ID
+   * @param type     类型
+   * @return alertType
+   */
+  AlertConf getConfByTenantAndType(@Param("tenantId") Integer tenantId, @Param("type") Integer type);
 }

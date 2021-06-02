@@ -83,6 +83,11 @@ public class AlertRecord extends Model<AlertRecord> {
   private Integer deliveryStatus;
 
   /**
+   * 投递失败原因
+   */
+  private String failedInfo;
+
+  /**
    * 租户id
    */
   private Integer tenantId;

@@ -28,6 +28,7 @@ CREATE TABLE `alert_record`  (
   `recipient` varchar(255) NOT NULL COMMENT '接收人信息用户ID/手机号/邮箱',
   `status` int(1) NOT NULL DEFAULT 1 COMMENT '状态1-未读，2-已读',
   `delivery_status` int(1) NOT NULL DEFAULT 1 COMMENT '投递状态 1-已投递，2-未投递，3-投递异常',
+  `failed_info` varchar(255) NULL COMMENT '投递失败原因',
   `tenant_id` int(11) NOT NULL COMMENT '租户id',
   `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `update_time` timestamp(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',

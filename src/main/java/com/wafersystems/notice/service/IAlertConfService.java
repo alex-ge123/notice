@@ -35,6 +35,15 @@ public interface IAlertConfService extends IService<AlertConf> {
   List<AlertConf> getConf();
 
   /**
+   * 通过类型及租户id获取告警配置
+   *
+   * @param tenantID tenantId
+   * @param type     type
+   * @return alertConf
+   */
+  AlertConf getConf(Integer tenantID, Integer type);
+
+  /**
    * 修改当前租户告警通知配置
    */
   void updateConf(List<AlertConf> list);

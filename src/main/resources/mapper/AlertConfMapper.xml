@@ -41,4 +41,16 @@
         WHERE
             ac.tenant_id = #{tenantId};
     </select>
+
+    <select id="getConfByTenantAndType" resultMap="ResultMap">
+        SELECT
+            ac.*,
+            ar.recipient
+        FROM
+            alert_conf AS ac
+            LEFT JOIN alert_recipient ar ON ac.id = ar.alert_conf_id
+        WHERE
+            ac.tenant_id = #{tenantId} AND ac.type = #{type}
+    </select>
+
 </mapper>
