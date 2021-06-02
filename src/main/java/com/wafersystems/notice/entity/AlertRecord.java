@@ -1,6 +1,7 @@
 package com.wafersystems.notice.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -40,6 +41,12 @@ public class AlertRecord extends Model<AlertRecord> {
   private String product;
 
   /**
+   * 产品名称
+   */
+  @TableField(exist = false)
+  private String productName;
+
+  /**
    * 标题
    */
   private String title;
@@ -58,6 +65,12 @@ public class AlertRecord extends Model<AlertRecord> {
    * 接收人信息用户ID/手机号/邮箱
    */
   private String recipient;
+
+  /**
+   * 产品名称
+   */
+  @TableField(exist = false)
+  private String userName;
 
   /**
    * 状态1-未读，2-已读

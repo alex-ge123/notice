@@ -1,17 +1,17 @@
 package com.wafersystems.notice.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wafersystems.notice.constants.AlertConstants;
-import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
-import com.wafersystems.virsical.common.core.util.R;
 import com.wafersystems.notice.entity.AlertRecord;
 import com.wafersystems.notice.service.IAlertRecordService;
+import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
+import com.wafersystems.virsical.common.core.util.R;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -30,54 +30,66 @@ public class AlertRecordController {
 
   private final IAlertRecordService alertRecordService;
 
-  @PostMapping("/add")
-  public R add(@RequestBody AlertRecord alertRecord) {
-    return alertRecordService.save(alertRecord) ? R.ok() : R.fail();
+  @PostMapping("/read")
+  public R add(@RequestBody List<Integer> readList) {
+    final AlertRecord alertRecord = new AlertRecord();
+    alertRecord.setStatus(AlertConstants.ALERT_RECORD_STATUS_READ);
+    final LambdaUpdateWrapper<AlertRecord> update = new LambdaUpdateWrapper<>();
+    update.in(AlertRecord::getId, readList);
+    update.eq(AlertRecord::getAlertType, AlertConstants.LOCAL.getType());
+    update.eq(AlertRecord::getRecipient, String.valueOf(TenantContextHolder.getUserId()));
+    update.set(AlertRecord::getStatus, AlertConstants.ALERT_RECORD_STATUS_READ);
+    return alertRecordService.update(update) ? R.ok() : R.fail();
   }
 
-  @PostMapping("/update")
-  public R update(@RequestBody AlertRecord alertRecord) {
-    return alertRecordService.updateById(alertRecord) ? R.ok() : R.fail();
-  }
-
-  @PostMapping("/delete/{id}")
-  public R delete(@PathVariable Integer id) {
-    return alertRecordService.removeById(id) ? R.ok() : R.fail();
-  }
-
-  @GetMapping("/{id}")
-  public R<AlertRecord> get(@PathVariable Integer id) {
-    return R.ok(alertRecordService.getById(id));
-  }
-
-  @GetMapping("/list")
-  public R<List<AlertRecord>> list(AlertRecord alertRecord) {
-    return R.ok(alertRecordService.list(Wrappers.query(alertRecord)));
-  }
-
+  /**
+   * 分页查询当前租户下所有消息
+   *
+   * @param page        page
+   * @param alertRecord alertRecord
+   * @return page
+   */
   @GetMapping("/page")
-  public R
-    <IPage<AlertRecord>> page(Page page, AlertRecord alertRecord) {
+  public R<IPage<AlertRecord>> page(Page page, AlertRecord alertRecord) {
     alertRecord.setTenantId(TenantContextHolder.getTenantId());
-    return R.ok(alertRecordService.page(page, Wrappers.query(alertRecord)));
+    final QueryWrapper<AlertRecord> query = Wrappers.query(alertRecord);
+    query.orderByDesc("create_time");
+    return R.ok(alertRecordService.alertPage(page, query));
   }
 
+  /**
+   * 分页查询当前用户下所有站内消息
+   *
+   * @param page        page
+   * @param alertRecord alertRecord
+   * @return page
+   */
   @GetMapping("/current/page")
   public R<IPage<AlertRecord>> currentPage(Page page, AlertRecord alertRecord) {
-    alertRecord.setTenantId(TenantContextHolder.getTenantId());
-    alertRecord.setAlertType(AlertConstants.LOCAL.getType());
-    alertRecord.setRecipient(String.valueOf(TenantContextHolder.getUserId()));
-    return R.ok(alertRecordService.page(page, Wrappers.query(alertRecord)));
+    final QueryWrapper<AlertRecord> query = getQuery(alertRecord);
+    return R.ok(alertRecordService.alertPage(page, query));
   }
 
-  @GetMapping("/current/unread")
-  public R<List<AlertRecord>> currentUnread() {
-    final AlertRecord alertRecord = new AlertRecord();
-    alertRecord.setTenantId(TenantContextHolder.getTenantId());
-    alertRecord.setAlertType(AlertConstants.LOCAL.getType());
-    alertRecord.setRecipient(String.valueOf(TenantContextHolder.getUserId()));
+  /**
+   * 分页查询当前用户下所有站内未读消息
+   *
+   * @param page        page
+   * @param alertRecord alertRecord
+   * @return page
+   */
+  @GetMapping("/current/unread/page")
+  public R<List<AlertRecord>> currentUnread(Page page, AlertRecord alertRecord) {
     alertRecord.setStatus(AlertConstants.ALERT_RECORD_STATUS_UNREAD);
-    return R.ok(alertRecordService.list(Wrappers.query(alertRecord)));
+    final QueryWrapper<AlertRecord> query = getQuery(alertRecord);
+    return R.ok(alertRecordService.alertPage(page, query));
   }
 
+  private QueryWrapper<AlertRecord> getQuery(AlertRecord alertRecord) {
+    alertRecord.setTenantId(TenantContextHolder.getTenantId());
+    alertRecord.setAlertType(AlertConstants.LOCAL.getType());
+    alertRecord.setRecipient(String.valueOf(TenantContextHolder.getUserId()));
+    final QueryWrapper<AlertRecord> query = Wrappers.query(alertRecord);
+    query.orderByDesc("create_time");
+    return query;
+  }
 }
