@@ -78,7 +78,7 @@ public class AlertRecord extends Model<AlertRecord> {
   private Integer status;
 
   /**
-   * 投递状态 1-已投递，2-未投递(投递开关关闭)，3-投递异常
+   * 投递状态 1-已投递，2-未投递，3-投递异常
    */
   private Integer deliveryStatus;
 

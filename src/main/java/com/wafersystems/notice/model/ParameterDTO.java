@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 public class ParameterDTO implements Serializable {
-  private Long id;
+  private Integer id;
   @NotNull
   @Size(max = 250)
   private String paramKey;

@@ -1,5 +1,6 @@
 package com.wafersystems.notice.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -35,7 +36,9 @@ public class AlertRecordController {
     final AlertRecord alertRecord = new AlertRecord();
     alertRecord.setStatus(AlertConstants.ALERT_RECORD_STATUS_READ);
     final LambdaUpdateWrapper<AlertRecord> update = new LambdaUpdateWrapper<>();
-    update.in(AlertRecord::getId, readList);
+    if (CollUtil.isNotEmpty(readList)) {
+      update.in(AlertRecord::getId, readList);
+    }
     update.eq(AlertRecord::getAlertType, AlertConstants.LOCAL.getType());
     update.eq(AlertRecord::getRecipient, String.valueOf(TenantContextHolder.getUserId()));
     update.set(AlertRecord::getStatus, AlertConstants.ALERT_RECORD_STATUS_READ);
