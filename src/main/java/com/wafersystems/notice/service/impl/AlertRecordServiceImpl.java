@@ -127,10 +127,16 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
           if (ObjectUtil.equal(AlertConstants.LOCAL.getType(), alertDTO.getAlertType())) {
             // 站内消息
             sendMqtt(alertDTO, alertRecord);
-          } else if (ObjectUtil.equal(AlertConstants.LOCAL.getType(), alertDTO.getAlertType())) {
+          } else if (ObjectUtil.equal(AlertConstants.MAIL.getType(), alertDTO.getAlertType())) {
+            if (StrUtil.isBlank(alertDTO.getTemplateId())) {
+              alertDTO.setTemplateId("commonAlert");
+            }
+            if (StrUtil.isBlank(alertDTO.getLang())) {
+              alertDTO.setLang("zh_CN");
+            }
             // 邮件
             sendMail(alertDTO, alertRecord);
-          } else if (ObjectUtil.equal(AlertConstants.LOCAL.getType(), alertDTO.getAlertType())) {
+          } else if (ObjectUtil.equal(AlertConstants.SMS.getType(), alertDTO.getAlertType())) {
             // 短信
             sendSms(alertDTO, alertRecord);
           } else {
