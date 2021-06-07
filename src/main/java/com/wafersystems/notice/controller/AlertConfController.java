@@ -33,4 +33,11 @@ public class AlertConfController {
     alertConfService.updateConf(list);
     return R.ok();
   }
+
+//  private final AmqpTemplate rabbitTemplate;
+//  @RequestMapping("test")
+//  public Object test(@RequestBody String str, @RequestParam String exchange, @RequestParam String key) {
+//    rabbitTemplate.convertAndSend(exchange, key, str);
+//    return R.ok();
+//  }
 }

@@ -1,5 +1,4 @@
 package com.wafersystems.notice.receiver;
-
 import com.alibaba.fastjson.JSON;
 import com.wafersystems.notice.config.RabbitMqConfig;
 import com.wafersystems.notice.service.IAlertRecordService;

@@ -4,6 +4,7 @@ import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,12 +21,17 @@ import com.wafersystems.notice.service.IAlertRecordService;
 import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.RedisHelper;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.constant.PushMqConstants;
 import com.wafersystems.virsical.common.core.constant.SysDictConstants;
+import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
+import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.dto.AlertDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
+import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.entity.SysUser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -58,6 +64,9 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
 
   @Autowired
   private GlobalParamService globalParamService;
+
+  @Autowired
+  private AmqpTemplate rabbitTemplate;
 
   /**
    * 产品标识本地缓存 一小时
@@ -124,6 +133,9 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
           } else if (ObjectUtil.equal(AlertConstants.LOCAL.getType(), alertDTO.getAlertType())) {
             // 短信
             sendSms(alertDTO, alertRecord);
+          } else {
+            log.error("消息类型异常。{}", JSON.toJSONString(alertDTO));
+            return;
           }
           // 发送成功，修改投递状态
           alertRecord.setDeliveryStatus(AlertConstants.ALERT_RECORD_DELIVERY_STATUS_SEND);
@@ -140,11 +152,14 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
   }
 
   private void sendMqtt(AlertDTO alertDTO, AlertRecord alertRecord) {
-
+    MessageDTO dto = new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.SHOW.name(), alertRecord);
+    dto.setClientId("user_id_" + alertRecord.getRecipient());
+    rabbitTemplate.convertAndSend(PushMqConstants.EXCHANGE_FANOUT_PUSH_MESSAGE, "", JSON.toJSONString(dto));
+    log.info("站内消息推送完成：[{}] | [{}]", PushMqConstants.EXCHANGE_FANOUT_PUSH_MESSAGE, JSON.toJSONString(dto));
   }
 
   private void sendSms(AlertDTO alertDTO, AlertRecord alertRecord) {
-
+    // todo
   }
 
   private void sendMail(AlertDTO alertDTO, AlertRecord alertRecord) throws Exception {
