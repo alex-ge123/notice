@@ -5,7 +5,6 @@ import com.wafersystems.virsical.common.security.annotation.EnableCustomResource
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * SpringBoot启动类
@@ -15,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringCloudApplication
 @EnableCustomFeignClients
 @EnableCustomResourceServer
-@EnableWebMvc
+//@EnableWebMvc
 @MapperScan("com.wafersystems.*.mapper")
 public class NoticeApplication {
 
