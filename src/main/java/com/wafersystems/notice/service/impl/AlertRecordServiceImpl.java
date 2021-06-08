@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wafersystems.notice.constants.AlertConstants;
 import com.wafersystems.notice.constants.ConfConstant;
+import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.entity.AlertConf;
 import com.wafersystems.notice.entity.AlertRecord;
 import com.wafersystems.notice.mapper.AlertRecordMapper;
@@ -131,9 +132,6 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
             if (StrUtil.isBlank(alertDTO.getTemplateId())) {
               alertDTO.setTemplateId("commonAlert");
             }
-            if (StrUtil.isBlank(alertDTO.getLang())) {
-              alertDTO.setLang("zh_CN");
-            }
             // 邮件
             sendMail(alertDTO, alertRecord);
           } else if (ObjectUtil.equal(AlertConstants.SMS.getType(), alertDTO.getAlertType())) {
@@ -177,6 +175,9 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
     mailDTO.setLang(alertDTO.getLang());
     mailDTO.setTenantId(alertDTO.getTenantId());
     mailDTO.setUseBaseTemplate(true);
+    if (StrUtil.isNotBlank(alertDTO.getLang())) {
+      mailDTO.setLocale(ParamConstant.getLocaleByStr(alertDTO.getLang()));
+    }
     final HashMap<String, Object> paramMap = new HashMap<>(2);
     paramMap.put("title", alertDTO.getTitle());
     paramMap.put("content", alertDTO.getContent());
@@ -242,7 +243,7 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
     }
     if (CollUtil.isNotEmpty(alertRecords)) {
       // 批量保存
-      returnFlag.set(this.saveBatch(alertRecords));
+      this.saveBatch(alertRecords);
     }
     return returnFlag.get();
   }
