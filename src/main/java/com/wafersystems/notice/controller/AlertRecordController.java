@@ -70,6 +70,7 @@ public class AlertRecordController {
   @GetMapping("/current/page")
   public R<IPage<AlertRecord>> currentPage(Page page, AlertRecord alertRecord) {
     final QueryWrapper<AlertRecord> query = getQuery(alertRecord);
+    query.ne("delivery_status", AlertConstants.ALERT_RECORD_DELIVERY_STATUS_ERROR);
     return R.ok(alertRecordService.alertPage(page, query));
   }
 
