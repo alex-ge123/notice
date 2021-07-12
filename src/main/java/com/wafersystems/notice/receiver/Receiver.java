@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 消息消费者
@@ -40,6 +42,8 @@ public class Receiver {
 
   @Autowired
   private SmsUtil smsUtil;
+
+  private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(5);
 
   /**
    * 监听邮件消息队列
@@ -76,20 +80,23 @@ public class Receiver {
         mailDTO.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
         mailDTO.setImgPathBanner(ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg");
         mailDTO.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
-        try {
-          mailNoticeService.sendMail(MailBean.builder()
-            .uuid(mailDTO.getUuid())
-            .routerKey(mailDTO.getRouterKey())
-            .subject(mailDTO.getSubject())
-            .toEmails(mailDTO.getToMail())
-            .copyTo(mailDTO.getCopyTo())
-            .type(ConfConstant.TypeEnum.FM)
-            .template(mailDTO.getTempName())
-            .mailDTO(mailDTO)
-            .build(), 0);
-        } catch (Exception e) {
-          log.error("发送邮件失败：", e);
-        }
+        fixedThreadPool.submit(() -> {
+            try {
+              mailNoticeService.sendMail(MailBean.builder()
+                .uuid(mailDTO.getUuid())
+                .routerKey(mailDTO.getRouterKey())
+                .subject(mailDTO.getSubject())
+                .toEmails(mailDTO.getToMail())
+                .copyTo(mailDTO.getCopyTo())
+                .type(ConfConstant.TypeEnum.FM)
+                .template(mailDTO.getTempName())
+                .mailDTO(mailDTO)
+                .build(), 0);
+            } catch (Exception ex) {
+              log.error("邮件发送异常:", ex);
+            }
+          }
+        );
       } else {
         log.warn("消息类型未识别，无法发送邮件");
       }

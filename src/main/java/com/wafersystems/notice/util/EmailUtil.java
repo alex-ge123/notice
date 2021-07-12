@@ -114,6 +114,9 @@ public class EmailUtil {
       props.put("mail.mime.charset", ParamConstant.getDEFAULT_MAIL_CHARSET());
       // 设置认证模式
       props.put("mail.smtp.auth", ParamConstant.getDEFAULT_MAIL_AUTH());
+      props.put("mail.smtp.connectiontimeout", ParamConstant.getDEFAULT_MAIL_CONNECTIONTIMEOUT());
+      props.put("mail.smtp.timeout", ParamConstant.getDEFAULT_MAIL_TIMEOUT());
+      props.put("mail.smtp.writetimeout", ParamConstant.getDEFAULT_MAIL_WRITETIMEOUT());
       // 获取会话信息
       Session session = Session.getDefaultInstance(props, null);
       // 构造邮件消息对象

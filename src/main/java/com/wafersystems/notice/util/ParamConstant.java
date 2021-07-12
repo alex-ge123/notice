@@ -93,11 +93,25 @@ public class ParamConstant {
   private static String DEFAULT_MAIL_AUTH;
 
   /**
-   * 系统邮件超时时间.
+   * 系统邮件收超时时间.
    */
   @Getter
   @Setter
   private static String DEFAULT_MAIL_TIMEOUT;
+
+  /**
+   * 系统邮件连接超时时间.
+   */
+  @Getter
+  @Setter
+  private static String DEFAULT_MAIL_CONNECTIONTIMEOUT;
+
+  /**
+   * 系统邮件写超时时间.
+   */
+  @Getter
+  @Setter
+  private static String DEFAULT_MAIL_WRITETIMEOUT;
 
   /**
    * 系统邮件编码.

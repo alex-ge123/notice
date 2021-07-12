@@ -149,18 +149,19 @@ public class GlobalParamServiceImpl implements GlobalParamService {
           : "威思客预约服务");
       ParamConstant.setDEFAULT_MAIL_PASSWORD(map.get("DEFAULT_MAIL_PASSWORD"));
       ParamConstant.setDEFAULT_MAIL_TIMEOUT(
-        StrUtil.isNotBlank(map.get("DEFAULT_MAIL_TIMEOUT")) ? map.get("DEFAULT_MAIL_TIMEOUT")
-          : "25000");
-      ParamConstant.setDEFAULT_REPEAT_COUNT(StrUtil.isNotBlank(map.get("DEFAULT_REPEAT_COUNT"))
-        ? Integer.parseInt(map.get("DEFAULT_REPEAT_COUNT"))
-        : 0);
+        StrUtil.isNotBlank(map.get("DEFAULT_MAIL_TIMEOUT")) ? map.get("DEFAULT_MAIL_TIMEOUT"): "10000");
+      ParamConstant.setDEFAULT_MAIL_CONNECTIONTIMEOUT(
+        StrUtil.isNotBlank(map.get("DEFAULT_MAIL_CONNECTIONTIMEOUT")) ? map.get("DEFAULT_MAIL_CONNECTIONTIMEOUT"): "5000");
+      ParamConstant.setDEFAULT_MAIL_WRITETIMEOUT(
+        StrUtil.isNotBlank(map.get("DEFAULT_MAIL_WRITETIMEOUT")) ? map.get("DEFAULT_MAIL_WRITETIMEOUT"): "10000");
+      ParamConstant.setDEFAULT_REPEAT_COUNT(
+        StrUtil.isNotBlank(map.get("DEFAULT_REPEAT_COUNT")) ? Integer.parseInt(map.get("DEFAULT_REPEAT_COUNT")) : 0);
       ParamConstant.setDEFAULT_TIMEZONE(map.get("DEFAULT_TIMEZONE"));
       ParamConstant.setGETUI_APPID(map.get("GETUI_APPID"));
       ParamConstant.setGETUI_APPKEY(map.get("GETUI_APPKEY"));
       ParamConstant.setGETUI_MASTRE_SECRET(map.get("GETUI_MASTRE_SECRET"));
       ParamConstant.setGETUI_OFFLINE_TIME(
-        StrUtil.isNotBlank(map.get("GETUI_OFFLINE_TIME")) ? map.get("GETUI_OFFLINE_TIME")
-          : "24");
+        StrUtil.isNotBlank(map.get("GETUI_OFFLINE_TIME")) ? map.get("GETUI_OFFLINE_TIME") : "24");
       ParamConstant.setGETUI_URL(map.get("GETUI_URL"));
       ParamConstant.setLOGO_DEFALUT(map.get("LOGO_DEFALUT"));
       ParamConstant.setIMAGE_DIRECTORY(map.get("IMAGE_DIRECTORY"));
