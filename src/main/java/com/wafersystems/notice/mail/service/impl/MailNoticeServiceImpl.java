@@ -60,7 +60,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
    */
   @Override
   public void sendMail(MailBean mailBean, Integer count) throws Exception {
-    log.debug("开始发送邮件。");
+    log.info("开始发送邮件 {}", mailBean.getUuid());
     //填充租户信息
     mailBean = this.fillTenantInfo(mailBean);
     // 发送邮件
@@ -72,7 +72,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
         log.debug("主题[" + mailBean.getSubject() + "],发往[" + mailBean.getToEmails() + "]的邮件第" + count + "次重发......");
         this.sendMail(mailBean, count);
       } else {
-        log.error("邮件发送失败：", exception);
+        log.error("邮件发送失败：" + mailBean.getUuid(), exception);
         throw exception;
       }
     }

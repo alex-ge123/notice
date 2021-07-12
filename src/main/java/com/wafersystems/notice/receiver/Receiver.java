@@ -52,7 +52,7 @@ public class Receiver {
    */
   @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_MAIL)
   public void mail(@Payload String message) {
-    log.debug("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, message);
+    log.info("【{}监听到邮件消息】{}", RabbitMqConfig.QUEUE_NOTICE_MAIL, message);
     try {
       MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
       if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
