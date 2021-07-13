@@ -60,7 +60,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
    */
   @Override
   public void sendMail(MailBean mailBean, Integer count) throws Exception {
-    log.info("开始发送邮件 {}", mailBean.getUuid());
+    log.info("开始发送邮件 {} {}",mailBean.getToEmails(), mailBean.getSubject());
     //填充租户信息
     mailBean = this.fillTenantInfo(mailBean);
     // 发送邮件

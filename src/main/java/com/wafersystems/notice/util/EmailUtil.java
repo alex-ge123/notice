@@ -169,8 +169,9 @@ public class EmailUtil {
         redisKey, JSON.toJSONString(mailBean), properties.getMailTimeHorizon(), TimeUnit.MINUTES);
       //发送 发送结果(成功)
       sendResult(mailBean.getUuid(), mailBean.getRouterKey(), true);
+      log.info("发送邮件发送结果tomail={}，subject={}", mailBean.getToEmails(), mailBean.getSubject());
     } catch (Exception ex) {
-      log.error("发送邮件异常【" + mailBean.getSubject() + "】", ex);
+      log.error("发送邮件异常【" + mailBean.getToEmails() + " | " + mailBean.getSubject() + "】", ex);
       //发送 发送结果(失败)
       sendResult(mailBean.getUuid(), mailBean.getRouterKey(), false);
       throw ex;
@@ -188,7 +189,6 @@ public class EmailUtil {
     if (StrUtil.isNotBlank(uuid) && StrUtil.isNotBlank(routerKey)) {
       MessageDTO dto = new MessageDTO(MsgTypeEnum.ONE.name(), MsgActionEnum.SHOW.name(), new MailResultDTO(uuid, result));
       rabbitTemplate.convertAndSend(NoticeMqConstants.EXCHANGE_DIRECT_NOTICE_RESULT_MAIL, routerKey, JSON.toJSONString(dto));
-      log.debug("发送邮件发送结果uuid={}，result={}", uuid, result);
     }
   }
 
