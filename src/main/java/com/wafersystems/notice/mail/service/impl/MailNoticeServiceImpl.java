@@ -36,6 +36,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -127,6 +128,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   }
 
   @Scheduled(cron = "0 0/1 * * * ?")
+  @Transactional
   protected void handleInstance() {
     if(redisTemplate.hasKey(RedisKeyConstants.MAIL_SCHEDULED)) {
       return;
