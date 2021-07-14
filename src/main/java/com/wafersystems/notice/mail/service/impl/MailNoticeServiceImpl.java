@@ -135,6 +135,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
     List<MailSendLogDto> lists = getLogDtoByTime();
     for (MailSendLogDto logDto : lists) {
       MailBean mailBean = JSONObject.parseObject(logDto.getMailStr(), MailBean.class);
+      log.info("开始补发邮件 {} {}", mailBean.getToEmails(), mailBean.getSubject());
       try {
         this.sendMail(mailBean, 0, logDto.getMailKey());
       } catch (Exception ex) {
