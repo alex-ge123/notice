@@ -127,7 +127,7 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   }
 
   @Scheduled(cron = "0 0/1 * * * ?")
-  protected synchronized void handleInstance() {
+  protected void handleInstance() {
     if(redisTemplate.hasKey(RedisKeyConstants.MAIL_SCHEDULED)) {
       return;
     }
