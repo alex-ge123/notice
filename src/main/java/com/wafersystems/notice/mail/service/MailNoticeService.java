@@ -19,7 +19,7 @@ public interface MailNoticeService {
    * @param count   邮件重发次数
    * @throws Exception
    */
-  void sendMail(MailBean mailBean, Integer count) throws Exception;
+  void sendMail(MailBean mailBean, Integer count, String msgId) throws Exception;
 
 
   /**

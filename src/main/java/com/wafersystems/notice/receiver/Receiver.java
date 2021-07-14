@@ -16,13 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 消息消费者
@@ -43,7 +42,8 @@ public class Receiver {
   @Autowired
   private SmsUtil smsUtil;
 
-  private ExecutorService fixedThreadPool = Executors.newFixedThreadPool(5);
+  @Autowired
+  private TaskExecutor taskExecutor;
 
   /**
    * 监听邮件消息队列
@@ -80,7 +80,7 @@ public class Receiver {
         mailDTO.setImageDirectory(ParamConstant.getIMAGE_DIRECTORY());
         mailDTO.setImgPathBanner(ParamConstant.getIMAGE_DIRECTORY() + "/top_banner.jpg");
         mailDTO.setImgPathDimcode(ParamConstant.getIMAGE_DIRECTORY() + "/virsical_dimcode.jpg");
-        fixedThreadPool.submit(() -> {
+        taskExecutor.execute(() -> {
             try {
               mailNoticeService.sendMail(MailBean.builder()
                 .uuid(mailDTO.getUuid())
@@ -91,7 +91,7 @@ public class Receiver {
                 .type(ConfConstant.TypeEnum.FM)
                 .template(mailDTO.getTempName())
                 .mailDTO(mailDTO)
-                .build(), 0);
+                .build(), 0, messageDTO.getMsgId());
             } catch (Exception ex) {
               log.error("邮件发送异常:", ex);
             }

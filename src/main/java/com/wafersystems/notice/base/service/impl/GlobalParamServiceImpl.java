@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.GlobalParameter;
 import com.wafersystems.notice.base.service.GlobalParamService;
+import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.util.ParamConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.DetachedCriteria;
@@ -12,6 +13,7 @@ import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -31,6 +33,9 @@ public class GlobalParamServiceImpl implements GlobalParamService {
 
   @Autowired
   private StringEncryptor stringEncryptor;
+
+  @Autowired
+  private StringRedisTemplate redisTemplate;
 
   /**
    * 保存SystemParam
@@ -96,6 +101,7 @@ public class GlobalParamServiceImpl implements GlobalParamService {
     this.setValue(map);
     this.checkValue();
     log.debug("系统数据库配置相关参数加载完毕");
+
   }
 
   private void checkValue() {

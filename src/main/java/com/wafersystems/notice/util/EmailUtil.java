@@ -85,11 +85,11 @@ public class EmailUtil {
    * @param mailBean 邮件对象
    * @throws Exception Exception
    */
-  public void send(MailBean mailBean) throws Exception {
+  public int send(MailBean mailBean) throws Exception {
     //重复发送拦截
     if (sendIntercept.mailBoolIntercept(mailBean)) {
       log.error("拦截重复发送邮件[{}]", mailBean.toString());
-      return;
+      return -1;
     }
     try {
       Properties props = System.getProperties();
@@ -169,7 +169,8 @@ public class EmailUtil {
         redisKey, JSON.toJSONString(mailBean), properties.getMailTimeHorizon(), TimeUnit.MINUTES);
       //发送 发送结果(成功)
       sendResult(mailBean.getUuid(), mailBean.getRouterKey(), true);
-      log.info("发送邮件发送结果tomail={}，subject={}", mailBean.getToEmails(), mailBean.getSubject());
+      log.info("发送邮件发送成功 tomail={}，subject={}", mailBean.getToEmails(), mailBean.getSubject());
+      return 0;
     } catch (Exception ex) {
       log.error("发送邮件异常【" + mailBean.getToEmails() + " | " + mailBean.getSubject() + "】", ex);
       //发送 发送结果(失败)

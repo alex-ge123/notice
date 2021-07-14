@@ -254,7 +254,7 @@ public class MailSendController {
           .type(ConfConstant.TypeEnum.FM)
           .template(tempName)
           .mailDTO(con)
-          .build(), 0);
+          .build(), 0, null);
       } catch (Exception ex) {
         throw new RuntimeException();
       }

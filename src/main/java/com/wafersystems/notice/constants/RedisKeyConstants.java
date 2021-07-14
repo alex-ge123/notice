@@ -23,4 +23,6 @@ public class RedisKeyConstants {
    */
   public static final String MAIL_KEY = "base:notice:mail:%s:%s:%s:%s";
 
+  public static final String MAIL_SCHEDULED = "base:notice:mail:scheduled";
+
 }

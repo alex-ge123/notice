@@ -1,11 +1,15 @@
 package com.wafersystems.notice.mail.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.base.dao.BaseDao;
 import com.wafersystems.notice.base.model.PaginationDto;
 import com.wafersystems.notice.config.AsyncTaskManager;
+import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.mail.model.MailBean;
+import com.wafersystems.notice.mail.model.MailSendLogDto;
 import com.wafersystems.notice.mail.model.MailTemplateDto;
 import com.wafersystems.notice.mail.model.MailTemplateSearchListDto;
 import com.wafersystems.notice.mail.service.MailNoticeService;
@@ -27,9 +31,13 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 邮件接口实现
@@ -52,6 +60,9 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   @Autowired
   private AsyncTaskManager asyncTaskManager;
 
+  @Autowired
+  private StringRedisTemplate redisTemplate;
+
   /**
    * Description: 邮件发送 author waferzy DateTime 2016-3-10 下午2:37:55.
    *
@@ -59,23 +70,87 @@ public class MailNoticeServiceImpl implements MailNoticeService {
    * @param count    邮件重发次数
    */
   @Override
-  public void sendMail(MailBean mailBean, Integer count) throws Exception {
+  public void sendMail(MailBean mailBean, Integer count, String msgId) throws Exception {
     log.info("开始发送邮件 {} {}",mailBean.getToEmails(), mailBean.getSubject());
     //填充租户信息
     mailBean = this.fillTenantInfo(mailBean);
     // 发送邮件
     try {
-      mailUtil.send(mailBean);
+      int status = mailUtil.send(mailBean);
+      saveOrUpdateMailLog(mailBean, status, msgId);
     } catch (Exception exception) {
       count++;
+      saveOrUpdateMailLog(mailBean, count, msgId);
       if (count < ParamConstant.getDEFAULT_REPEAT_COUNT()) {
         log.debug("主题[" + mailBean.getSubject() + "],发往[" + mailBean.getToEmails() + "]的邮件第" + count + "次重发......");
-        this.sendMail(mailBean, count);
+        this.sendMail(mailBean, count, msgId);
       } else {
         log.error("邮件发送失败：" + mailBean.getUuid(), exception);
         throw exception;
       }
     }
+  }
+
+  private void saveOrUpdateMailLog(MailBean mailBean, int status, String mailKey) {
+    if(StrUtil.isEmptyStr(mailKey)){ //使用msgid做为邮件key值，无msgkey使用邮件内容拼接
+      mailKey = String.format("%s:%s:%s", mailBean.hashCode(), mailBean.getSubject(),
+        mailBean.getToEmails().length() > 50 ? mailBean.getToEmails().substring(0, 50) : mailBean.getToEmails());
+    }
+    MailSendLogDto logDto = getLogDtoByMailKey(mailKey);
+    if (null == logDto) {
+      logDto = new MailSendLogDto();
+      logDto.setMailKey(mailKey);
+      logDto.setMailStr(JSONObject.toJSONString(mailBean));
+      logDto.setSendTime(new Date());
+      logDto.setStatus(status);
+      baseDao.save(logDto);
+    } else {
+      logDto.setStatus(status);
+      baseDao.update(logDto);
+    }
+  }
+
+  private MailSendLogDto getLogDtoByMailKey(String mailKey) {
+    DetachedCriteria criteria = DetachedCriteria.forClass(MailSendLogDto.class);
+    criteria.add(Restrictions.eq("mailKey", mailKey));
+    List<MailSendLogDto> list = baseDao.findByCriteria(criteria);
+    if (CollUtil.isNotEmpty(list)) {
+      return list.get(0);
+    }
+    return null;
+  }
+
+  @EventListener({WebServerInitializedEvent.class})
+  protected void initMailSchedule() {
+    redisTemplate.delete(RedisKeyConstants.MAIL_SCHEDULED); //删除邮件定时任务锁
+    log.info("启动清理邮件发送定时任务缓存完成");
+  }
+
+  @Scheduled(cron = "0 0/1 * * * ?")
+  protected synchronized void handleInstance() {
+    if(redisTemplate.hasKey(RedisKeyConstants.MAIL_SCHEDULED)) {
+      return;
+    }
+    redisTemplate.opsForValue().set(RedisKeyConstants.MAIL_SCHEDULED, "running");
+    List<MailSendLogDto> lists = getLogDtoByTime();
+    for (MailSendLogDto logDto : lists) {
+      MailBean mailBean = JSONObject.parseObject(logDto.getMailStr(), MailBean.class);
+      try {
+        this.sendMail(mailBean, 0, logDto.getMailKey());
+      } catch (Exception ex) {
+        log.error("邮件定时任务补发异常：{} {} {}", mailBean.getToEmails(), mailBean.getSubject(), ex.getMessage());
+      }
+    }
+    redisTemplate.delete(RedisKeyConstants.MAIL_SCHEDULED);
+  }
+
+  private List<MailSendLogDto> getLogDtoByTime() {
+    DetachedCriteria criteria = DetachedCriteria.forClass(MailSendLogDto.class);
+    criteria.add(Restrictions.gt("status", 0));
+    criteria.add(Restrictions.gt("sendTime", DateUtil.offsetMinute(new Date(), -10)));
+    criteria.addOrder(Order.asc("sendTime"));
+    List<MailSendLogDto> list = baseDao.findByCriteria(criteria);
+    return list;
   }
 
   @Override
