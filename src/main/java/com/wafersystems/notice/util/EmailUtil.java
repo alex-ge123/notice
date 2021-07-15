@@ -117,6 +117,7 @@ public class EmailUtil {
       props.put("mail.smtp.connectiontimeout", ParamConstant.getDEFAULT_MAIL_CONNECTIONTIMEOUT());
       props.put("mail.smtp.timeout", ParamConstant.getDEFAULT_MAIL_TIMEOUT());
       props.put("mail.smtp.writetimeout", ParamConstant.getDEFAULT_MAIL_WRITETIMEOUT());
+      props.put("mail.smtp.ssl.trust", ParamConstant.getDEFAULT_MAIL_HOST());
       // 获取会话信息
       Session session = Session.getDefaultInstance(props, null);
       // 构造邮件消息对象
