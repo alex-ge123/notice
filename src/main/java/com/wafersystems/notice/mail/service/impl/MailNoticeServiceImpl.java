@@ -148,7 +148,8 @@ public class MailNoticeServiceImpl implements MailNoticeService {
   private List<MailSendLogDto> getLogDtoByTime() {
     DetachedCriteria criteria = DetachedCriteria.forClass(MailSendLogDto.class);
     criteria.add(Restrictions.gt("status", 0));
-    criteria.add(Restrictions.gt("sendTime", DateUtil.offsetMinute(new Date(), -10)));
+    criteria.add(Restrictions.gt("sendTime",
+      DateUtil.offsetMinute(new Date(), -Integer.parseInt(ParamConstant.getDEFAULT_MAIL_EXPIRE()))));
     criteria.addOrder(Order.asc("sendTime"));
     List<MailSendLogDto> list = baseDao.findByCriteria(criteria);
     return list;

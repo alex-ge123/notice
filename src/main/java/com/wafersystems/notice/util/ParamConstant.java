@@ -114,6 +114,13 @@ public class ParamConstant {
   private static String DEFAULT_MAIL_WRITETIMEOUT;
 
   /**
+   * 系统邮件重发过期时间.
+   */
+  @Getter
+  @Setter
+  private static String DEFAULT_MAIL_EXPIRE;
+
+  /**
    * 系统邮件编码.
    */
   @Getter

@@ -160,6 +160,8 @@ public class GlobalParamServiceImpl implements GlobalParamService {
         StrUtil.isNotBlank(map.get("DEFAULT_MAIL_CONNECTIONTIMEOUT")) ? map.get("DEFAULT_MAIL_CONNECTIONTIMEOUT"): "5000");
       ParamConstant.setDEFAULT_MAIL_WRITETIMEOUT(
         StrUtil.isNotBlank(map.get("DEFAULT_MAIL_WRITETIMEOUT")) ? map.get("DEFAULT_MAIL_WRITETIMEOUT"): "10000");
+      ParamConstant.setDEFAULT_MAIL_EXPIRE(
+        StrUtil.isNotBlank(map.get("DEFAULT_MAIL_EXPIRE")) ? map.get("DEFAULT_MAIL_EXPIRE"): "10");
       ParamConstant.setDEFAULT_REPEAT_COUNT(
         StrUtil.isNotBlank(map.get("DEFAULT_REPEAT_COUNT")) ? Integer.parseInt(map.get("DEFAULT_REPEAT_COUNT")) : 0);
       ParamConstant.setDEFAULT_TIMEZONE(map.get("DEFAULT_TIMEZONE"));
