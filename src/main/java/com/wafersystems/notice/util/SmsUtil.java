@@ -211,7 +211,7 @@ public class SmsUtil {
     int responseStatusCode = 0;
     if (response != null && response.getStatusLine() != null) {
       responseStatusCode = response.getStatusLine().getStatusCode();
-      log.info("发送https短信结果：状态码[{}]，响应结果[{}]", responseStatusCode, response.getHeaders("responseResult"));
+      log.info("发送https短信结果：状态码[{}]，响应结果[{}]", responseStatusCode, response.getFirstHeader("responseResult").getValue());
     } else {
       log.warn("response == null 或 response.getStatusLine() == null");
     }
@@ -219,11 +219,11 @@ public class SmsUtil {
       if (responseStatusCode == SmsConstants.SUCCESS_CODE) {
         if (systemProperties.isCloudService()) {
           // 解析返回内容中剩余短信数量并更新缓存
-          parseSmsBalanceCacheRedis(domain, Arrays.toString(response.getHeaders("responseResult")), true);
+          parseSmsBalanceCacheRedis(domain, response.getFirstHeader("responseResult").getValue(), true);
         }
         return "0";
       } else {
-        log.error("发送短信失败，状态码[{}]，响应结果[{}]", responseStatusCode, response.getHeaders("responseResult"));
+        log.error("发送短信失败，状态码[{}]，响应结果[{}]", responseStatusCode, response.getFirstHeader("responseResult").getValue());
       }
     }
     return "1";
