@@ -17,17 +17,13 @@ import com.wafersystems.virsical.common.core.dto.MailScheduleDto;
 import com.wafersystems.virsical.common.core.dto.RecurrenceRuleDTO;
 import com.wafersystems.virsical.common.core.util.R;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.security.Security;
 import java.util.List;
@@ -289,7 +285,8 @@ public class SmtpEmailManager extends AbstractEmailManager {
     try {
       final Session session = this.getSession(conf);
       transport = session.getTransport("smtp");
-      transport.connect(conf.getHost(), conf.getPort(), conf.getFrom(), "true".equals(conf.getAuth()) ? conf.getPassword() : null);
+      String username = StrUtil.isBlank(conf.getUsername()) ? conf.getFrom() : conf.getUsername();
+      transport.connect(conf.getHost(), conf.getPort(), username, "true".equals(conf.getAuth()) ? conf.getPassword() : null);
       // 构造邮件消息对象
       MimeMessage message = new MimeMessage(session);
       message.setSubject(checkMailSubject);
