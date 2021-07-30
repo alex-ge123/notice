@@ -1,7 +1,14 @@
 package com.wafersystems.notice.config;
 
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -94,6 +101,17 @@ public class RabbitMqConfig {
   @Bean
   public Binding smsQueueBinding() {
     return BindingBuilder.bind(queueNoticeSms()).to(noticeDirectExchange()).with(NoticeMqConstants.ROUTINT_KEY_SMS);
+  }
+
+  @Bean
+  public RabbitListenerContainerFactory<SimpleMessageListenerContainer> prefetchTenRabbitListenerContainerFactory(
+    ConnectionFactory rabbitConnectionFactory,
+    MessageConverter messageConverter) {
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(rabbitConnectionFactory);
+    factory.setPrefetchCount(1);
+    factory.setMessageConverter(messageConverter);
+    return factory;
   }
 
 }

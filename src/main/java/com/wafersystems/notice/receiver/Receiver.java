@@ -68,7 +68,7 @@ public class Receiver {
    *
    * @param message 消息
    */
-  @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_MAIL)
+  @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_MAIL, containerFactory = "prefetchTenRabbitListenerContainerFactory")
   public void mail(@Payload String message) {
     taskExecutor.execute(() -> {
       try {
@@ -86,6 +86,9 @@ public class Receiver {
         // 业务追踪id
         MDC.put(CommonConstants.LOG_BIZ_ID, messageDTO.getBizId());
         log.debug("监听到邮件消息，MsgId:{}", messageDTO.getMsgId());
+        if (this.isExpired(messageDTO)) {
+          return;
+        }
         if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
           MailDTO mailDTO = JSON.parseObject(messageDTO.getData().toString(), MailDTO.class);
           Locale locale = ParamConstant.getLocaleByStr(mailDTO.getLang());
@@ -129,7 +132,7 @@ public class Receiver {
    *
    * @param message 消息
    */
-  @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_SMS)
+  @RabbitListener(queues = RabbitMqConfig.QUEUE_NOTICE_SMS, containerFactory = "prefetchTenRabbitListenerContainerFactory")
   public void sms(@Payload String message) {
     taskExecutor.execute(() -> {
       try {
@@ -147,6 +150,9 @@ public class Receiver {
         // 业务追踪id
         MDC.put(CommonConstants.LOG_BIZ_ID, messageDTO.getBizId());
         log.debug("监听到短信消息，msgId:{}", messageDTO.getMsgId());
+        if (this.isExpired(messageDTO)) {
+          return;
+        }
         if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
           SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
           smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
@@ -165,6 +171,21 @@ public class Receiver {
         log.error("消息监听处理异常", e);
       }
     });
+  }
+
+  /**
+   * 消息是否过期
+   *
+   * @param messageDTO messageDTO
+   * @return boolean
+   */
+  private boolean isExpired(MessageDTO messageDTO) {
+    if (cn.hutool.core.util.StrUtil.isNotBlank(messageDTO.getExpiry())
+      && System.currentTimeMillis() > Long.parseLong(messageDTO.getExpiry())) {
+      log.warn("消息{}已过期，过期时间{}，停止发送!", messageDTO.getMsgId(), messageDTO.getExpiry());
+      return true;
+    }
+    return false;
   }
 
   /**
