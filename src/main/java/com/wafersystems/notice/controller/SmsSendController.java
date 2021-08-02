@@ -86,8 +86,7 @@ public class SmsSendController {
       return R.fail(resource.getMessage("msg.msg.recipientIdNull", null,
         ParamConstant.getLocaleByStr(lang)));
     }
-    smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
-      smsDTO.getDomain(), smsDTO.getSmsSign());
+    smsUtil.batchSendSms(smsDTO);
     return R.ok();
   }
 

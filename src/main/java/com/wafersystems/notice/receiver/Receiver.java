@@ -17,6 +17,7 @@ import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
+import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.entity.SysTenant;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
@@ -107,6 +108,7 @@ public class Receiver {
           }
           mailDTO.setLocale(cn.hutool.core.util.StrUtil.isBlank(mailDTO.getLang()) ? null : locale);
           mailDTO.setResource(resource);
+          TenantContextHolder.setTenantId(mailDTO.getTenantId());
           mailService.send(MailBean.builder()
             .uuid(mailDTO.getUuid())
             .routerKey(mailDTO.getRouterKey())
@@ -123,6 +125,8 @@ public class Receiver {
         }
       } catch (Exception e) {
         log.error("消息监听处理异常", e);
+      } finally {
+        TenantContextHolder.clearTenantId();
       }
     });
   }
@@ -155,13 +159,11 @@ public class Receiver {
         }
         if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
           SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
-          smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
-            smsDTO.getDomain(), smsDTO.getSmsSign());
+          smsUtil.batchSendSms(smsDTO);
         } else if (MsgTypeEnum.BATCH.name().equals(messageDTO.getMsgType())) {
           final List<SmsDTO> dtoList = JSON.parseArray(messageDTO.getData().toString(), SmsDTO.class);
           dtoList.forEach(smsDTO ->
-            smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(),
-              smsDTO.getParamList(), smsDTO.getDomain(), smsDTO.getSmsSign())
+            smsUtil.batchSendSms(smsDTO)
           );
         } else {
           log.warn("消息类型未识别，无法发送短信");
@@ -169,6 +171,8 @@ public class Receiver {
         log.debug("短信消息处理完成，msgId:{}", messageDTO.getMsgId());
       } catch (Exception e) {
         log.error("消息监听处理异常", e);
+      } finally {
+        TenantContextHolder.clearTenantId();
       }
     });
   }

@@ -5,18 +5,20 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wafersystems.notice.config.SendInterceptProperties;
-import com.wafersystems.notice.constants.ConfConstant;
-import com.wafersystems.notice.constants.ParamConstant;
-import com.wafersystems.notice.constants.RedisKeyConstants;
-import com.wafersystems.notice.constants.SmsConstants;
+import com.wafersystems.notice.constants.*;
+import com.wafersystems.notice.entity.SmsTemplate;
 import com.wafersystems.notice.intercept.SendIntercept;
 import com.wafersystems.notice.model.SmsRecordVO;
-import com.wafersystems.notice.entity.SmsTemplate;
+import com.wafersystems.notice.service.IAlertRecordService;
 import com.wafersystems.notice.service.SmsService;
 import com.wafersystems.security.SecurityUtils;
 import com.wafersystems.virsical.common.core.config.AesKeyProperties;
 import com.wafersystems.virsical.common.core.config.SystemProperties;
+import com.wafersystems.virsical.common.core.constant.CommonConstants;
+import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
+import com.wafersystems.virsical.common.core.dto.AlertDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
+import com.wafersystems.virsical.common.entity.TenantDTO;
 import com.wafersystems.virsical.common.util.AesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +39,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,6 +74,9 @@ public class SmsUtil {
   @Autowired
   private StringEncryptor stringEncryptor;
 
+  @Autowired
+  private IAlertRecordService recordService;
+
   @Value("${sms-num-search-url}")
   private String searchUrl;
 
@@ -78,31 +86,26 @@ public class SmsUtil {
   /**
    * 批量发送短信
    *
-   * @param templateId 模板id
-   * @param phoneList  电话集合
-   * @param params     参数集合
-   * @param domain     域名
-   * @param smsSign    短信签名
+   * @param smsDTO smsDTO
    */
-  public void batchSendSms(String templateId, List<String> phoneList, List<String> params,
-                           String domain, String smsSign) {
-    if (phoneList == null || phoneList.isEmpty()) {
+  public void batchSendSms(SmsDTO smsDTO) {
+    if (smsDTO.getPhoneList() == null || smsDTO.getPhoneList().isEmpty()) {
       log.warn("接收短信的手机号不能为空！");
       return;
     }
     if (systemProperties.isCloudService()) {
-      int smsNumFromCache = getSmsNumFromCache(domain);
+      int smsNumFromCache = getSmsNumFromCache(smsDTO.getDomain());
       if (smsNumFromCache <= 0) {
-        int num = cacheSmsNumFromSmsService(domain);
+        int num = cacheSmsNumFromSmsService(smsDTO.getDomain());
         if (num <= 0) {
           log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache);
           return;
         }
       }
     }
-    for (String phone : phoneList) {
+    for (String phone : smsDTO.getPhoneList()) {
       if (systemProperties.isCloudService()) {
-        int smsNumFromCache1 = getSmsNumFromCache(domain);
+        int smsNumFromCache1 = getSmsNumFromCache(smsDTO.getDomain());
         if (smsNumFromCache1 <= 0) {
           log.info("短信可发送数量[{}]不足，不发短信", smsNumFromCache1);
           return;
@@ -113,7 +116,7 @@ public class SmsUtil {
         phone = AesUtils.decryptAes(phone, aesKeyProperties.getKey());
       } catch (Exception ignore) {
       }
-      String result = sendSms(templateId, phone, params, domain, smsSign);
+      String result = sendSms(smsDTO.getTemplateId(), phone, smsDTO.getParamList(), smsDTO.getDomain(), smsDTO.getSmsSign());
       log.info("电话号码" + StrUtil.hide(phone, phone.length() - 4, phone.length()) + "发送短信的结果为：" + result);
     }
   }
@@ -142,7 +145,7 @@ public class SmsUtil {
     String redisKey = String.format(RedisKeyConstants.SMS_KEY,
       phoneNum, templetId, smsSign, smsDto.hashCode());
     if (sendIntercept.smsBoolIntercept(smsDto, redisKey)) {
-      log.error("拦截重复发送短信[{}]", smsDto.toString());
+      log.error("拦截重复发送短信[{}]", smsDto);
       return "1";
     }
 
@@ -196,7 +199,7 @@ public class SmsUtil {
     url = url + sign;
     log.debug("发送短信的服务接口为:{}", url);
 
-    String result = send(url, privateKey, hashMap, domain);
+    String result = send(url, privateKey, hashMap, domain, smsDto);
     //记录发送信息
     if (ConfConstant.RESULT_SUCCESS.toString().equals(result)) {
       redisTemplate.opsForValue().set(
@@ -205,8 +208,8 @@ public class SmsUtil {
     return result;
   }
 
-  private String send(String url, String privateKey, Map<String, String> hashMap, String domain) {
-    HttpResponse response = send(0, url, privateKey, hashMap);
+  private String send(String url, String privateKey, Map<String, String> hashMap, String domain, SmsDTO smsDto) {
+    HttpResponse response = send(0, url, privateKey, hashMap, smsDto);
     // 响应码
     int responseStatusCode = 0;
     if (response != null && response.getStatusLine() != null) {
@@ -229,7 +232,7 @@ public class SmsUtil {
     return "1";
   }
 
-  private HttpResponse send(Integer count, String url, String privateKey, Map<String, String> hashMap) {
+  private HttpResponse send(Integer count, String url, String privateKey, Map<String, String> hashMap, SmsDTO smsDto) {
     HttpResponse response = null;
     CloseableHttpClient httpClient = null;
     try {
@@ -256,9 +259,11 @@ public class SmsUtil {
         String phone = hashMap.get("calleeNbr");
         phone = StrUtil.hide(phone, phone.length() - 4, phone.length());
         log.warn("模板ID[" + hashMap.get("templetId") + "],发往[" + phone + "]的短信第" + count + "次重发......");
-        response = this.send(count, url, privateKey, hashMap);
+        response = this.send(count, url, privateKey, hashMap, smsDto);
       } else {
         log.error("短信发送失败：", exception);
+        // 失败处理
+        failProcessor(smsDto, exception);
       }
     } finally {
       if (null != httpClient) {
@@ -270,6 +275,34 @@ public class SmsUtil {
       }
     }
     return response;
+  }
+
+  private void failProcessor(SmsDTO smsDto, Exception exception) {
+    //记录失败邮件信息
+    final String smsDtoJSONStr = JSON.toJSONString(smsDto);
+    String id = "SMS-FAIL-" + System.currentTimeMillis();
+    redisTemplate.opsForHash().put(RedisKeyConstants.SMS_FAIL_KEY, id, smsDtoJSONStr);
+    //发送站内通知系统运维人员
+    final AlertDTO alertDTO = new AlertDTO();
+    alertDTO.setAlertType(AlertConstants.LOCAL.getType());
+
+    // 通过domain获取租户ID
+    Integer tenantId = 0;
+    if (StrUtil.isNotBlank(smsDto.getDomain())) {
+      String tenantJson = (String) redisTemplate.opsForHash().get(CommonConstants.TENANT_DOMAIN_INFO_KEY, smsDto.getDomain());
+      if (StrUtil.isNotBlank(tenantJson)) {
+        TenantDTO tenantDTO = JSON.parseObject(tenantJson, TenantDTO.class);
+        if (ObjectUtil.isNotEmpty(tenantDTO)) {
+          tenantId = tenantDTO.getId();
+        }
+      }
+    }
+    alertDTO.setTenantId(tenantId);
+    alertDTO.setAlertId(id);
+    alertDTO.setProduct(ProductCodeEnum.COMMON.getCode());
+    alertDTO.setTitle("发送短信至[" + smsDto.getPhoneList().get(0) + "]失败！");
+    alertDTO.setContent("发送短信至[" + smsDto.getPhoneList().get(0) + "]失败！,失败原因[" + exception.getMessage() + "]");
+    recordService.processAlertMessage(alertDTO);
   }
 
   /**

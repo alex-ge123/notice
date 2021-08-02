@@ -221,6 +221,7 @@ public class MailController {
       MailDTO finalMailDto = mailDto;
       taskExecutor.execute(() -> {
         try {
+          TenantContextHolder.setTenantId(tenantId);
           final MailBean mailBean = MailBean.builder()
             .subject(subject)
             .toEmails(toMail)
@@ -232,6 +233,8 @@ public class MailController {
           mailService.send(mailBean, 0, globalParamService.getMailServerConf(tenantId));
         } catch (Exception ex) {
           throw new RuntimeException();
+        } finally {
+          TenantContextHolder.clearTenantId();
         }
       });
       return R.ok();

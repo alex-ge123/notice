@@ -34,4 +34,9 @@ public class RedisKeyConstants {
    */
   public static final String CACHE_MICROSOFT_TOKEN = "base:notice:microsoft:token:";
 
+  /**
+   * 失败记录key
+   */
+  public static final String SMS_FAIL_KEY = "base:notice:sms:failed";
+  public static final String MAIL_FAIL_KEY = "base:notice:mail:failed";
 }

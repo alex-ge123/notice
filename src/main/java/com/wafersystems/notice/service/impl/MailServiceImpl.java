@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wafersystems.notice.config.AsyncTaskManager;
 import com.wafersystems.notice.config.SendInterceptProperties;
+import com.wafersystems.notice.constants.AlertConstants;
 import com.wafersystems.notice.constants.ParamConstant;
 import com.wafersystems.notice.constants.RedisKeyConstants;
 import com.wafersystems.notice.entity.MailTemplate;
@@ -20,6 +21,7 @@ import com.wafersystems.notice.model.MailServerConf;
 import com.wafersystems.notice.model.PaginationDTO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.GlobalParamService;
+import com.wafersystems.notice.service.IAlertRecordService;
 import com.wafersystems.notice.service.MailService;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.config.AesKeyProperties;
@@ -27,6 +29,7 @@ import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.SecurityConstants;
 import com.wafersystems.virsical.common.core.constant.SysDictConstants;
 import com.wafersystems.virsical.common.core.constant.enums.ProductCodeEnum;
+import com.wafersystems.virsical.common.core.dto.AlertDTO;
 import com.wafersystems.virsical.common.core.dto.BaseCheckDTO;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
@@ -78,6 +81,9 @@ public class MailServiceImpl extends ServiceImpl<MailTemplateMapper, MailTemplat
 
   @Autowired
   private Map<String, AbstractEmailManager> emailManagerMap;
+
+  @Autowired
+  private IAlertRecordService recordService;
 
   /**
    * 邮件发送
@@ -133,9 +139,27 @@ public class MailServiceImpl extends ServiceImpl<MailTemplateMapper, MailTemplat
         log.error("邮件发送失败：", exception);
         //发送 发送结果(失败)
         emailManager.sendResult(mailBean.getUuid(), mailBean.getRouterKey(), false);
+        // 失败处理
+        failProcessor(mailBean, exception);
         throw exception;
       }
     }
+  }
+
+  private void failProcessor(MailBean mailBean, Exception exception) {
+    //记录失败邮件信息
+    final String mailBeanJSONStr = JSON.toJSONString(mailBean);
+    String id = "MAIL-FAIL-" + System.currentTimeMillis();
+    redisTemplate.opsForHash().put(RedisKeyConstants.MAIL_FAIL_KEY, id, mailBeanJSONStr);
+    //发送站内通知系统运维人员
+    final AlertDTO alertDTO = new AlertDTO();
+    alertDTO.setAlertType(AlertConstants.LOCAL.getType());
+    alertDTO.setTenantId(ObjectUtil.isNull(TenantContextHolder.getTenantId()) ? 0 : TenantContextHolder.getTenantId());
+    alertDTO.setAlertId(id);
+    alertDTO.setProduct(ProductCodeEnum.COMMON.getCode());
+    alertDTO.setTitle("邮件[" + mailBean.getSubject() + "]发送失败！");
+    alertDTO.setContent("邮件[" + mailBean.getSubject() + "]发送失败！,失败原因[" + exception.getMessage() + "]");
+    recordService.processAlertMessage(alertDTO);
   }
 
   @Override
