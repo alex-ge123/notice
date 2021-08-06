@@ -244,7 +244,7 @@ public class SmsUtil {
       method.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(hashMap),
         StandardCharsets.UTF_8));
       RequestConfig defaultRequestConfig = RequestConfig.custom()
-        .setSocketTimeout(5000)
+        .setSocketTimeout(65000)
         .setConnectTimeout(5000)
         .setConnectionRequestTimeout(5000)
         .build();
@@ -256,6 +256,7 @@ public class SmsUtil {
     } catch (Exception exception) {
       count++;
       if (count < ParamConstant.getSmsRepeatCount()) {
+        log.warn("短信发送失败：", exception);
         String phone = hashMap.get("calleeNbr");
         phone = StrUtil.hide(phone, phone.length() - 4, phone.length());
         log.warn("模板ID[" + hashMap.get("templetId") + "],发往[" + phone + "]的短信第" + count + "次重发......");
