@@ -66,7 +66,7 @@ public class MailController {
    * @return
    */
   @GetMapping("/template/list")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_mail_template')")
   public R templateList(Long id, String category, String name, @RequestParam(
     defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize, @RequestParam(
     defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
@@ -80,7 +80,7 @@ public class MailController {
    * @return R
    */
   @PostMapping("/template/upload")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_mail_template')")
   public R templateUpload(@RequestParam MultipartFile file, @RequestParam String category,
                           @RequestParam String description) {
     try {
@@ -111,7 +111,7 @@ public class MailController {
    * @return
    */
   @PostMapping("/template/update")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_mail_template')")
   public R templateUpdate(MultipartFile file, @RequestParam Integer id, String category, String description) {
     try {
       MailTemplate mailTemplate = new MailTemplate();
@@ -139,7 +139,7 @@ public class MailController {
   }
 
   @PostMapping("/template/update/state")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_mail_template')")
   public R templateUpdateState(@RequestBody TemplateStateUpdateDTO dto) {
     return mailService.updateTempState(dto) ? R.ok() : R.fail();
   }
@@ -155,7 +155,7 @@ public class MailController {
    * @throws Exception Exception
    */
   @GetMapping("/template/preview")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_mail_template')")
   public void templatePreview(String title, String toMail, String copyTo,
                               @RequestParam String tempName, String[] params,
                               String lang, HttpServletResponse response) throws Exception {
@@ -251,7 +251,7 @@ public class MailController {
    * @return Object
    */
   @PostMapping("/testSend")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_mail_template')")
   public R testMailSend(@RequestBody TestSendMailDTO testSendMailDTO) throws Exception {
     log.info("发送测试邮件【{}】", testSendMailDTO.getTitle());
     sendMail(testSendMailDTO.getTitle(), testSendMailDTO.getToMail(), null, testSendMailDTO.getTempName(),
@@ -325,7 +325,7 @@ public class MailController {
    * @return R
    */
   @PostMapping("/check")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_parameter,admin@common@mail_setting,admin@common@upms_sys_env')")
   public R check(@RequestBody(required = false) BaseCheckDTO dto) throws Exception {
     return mailService.check(dto);
   }

@@ -65,7 +65,7 @@ public class GlobalParamController {
    * @return Object
    */
   @GetMapping("/get")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@common@mail_setting,admin@platform@notice_parameter')")
   public R get(String type) {
     List<NtcParameter> systemParamList = globalParamService.getSystemParamList(TenantContextHolder.getTenantId(),
       type);
@@ -88,7 +88,7 @@ public class GlobalParamController {
    * @return Object
    */
   @PostMapping("/set")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@common@mail_setting,admin@platform@notice_parameter')")
   public R set(@RequestBody @Valid ParameterDTO param) {
     NtcParameter gp = globalParamService.getSystemParamByParamKey(param.getParamKey());
     if (gp == null) {
@@ -115,7 +115,7 @@ public class GlobalParamController {
    * @return Object
    */
   @PostMapping("/batch-set")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@common@mail_setting,admin@platform@notice_parameter')")
   public R set(@RequestBody List<ParameterDTO> list) {
     if (list != null && !list.isEmpty()) {
       globalParamService.saveBatch(list);
@@ -134,7 +134,7 @@ public class GlobalParamController {
    * @return R
    */
   @PostMapping("/del")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@common@mail_setting,admin@platform@notice_parameter')")
   public R del(@RequestParam Integer id) {
     if (id != null) {
       globalParamService.del(id);

@@ -152,7 +152,7 @@ public class SmsSendController {
    * @return
    */
   @GetMapping("/template/page")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_sms_template')")
   public R templatePage(String id, String category, String name,
                         @RequestParam(defaultValue = ConfConstant.DATA_DEFAULT_LENGTH) Integer pageSize,
                         @RequestParam(defaultValue = ConfConstant.PAGE_DEFAULT_LENGTH) Integer startIndex) {
@@ -166,7 +166,7 @@ public class SmsSendController {
    * @return R
    */
   @PostMapping("/template/add")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_sms_template')")
   public R templateAdd(@RequestBody SmsTemplateVO vo) {
     SmsTemplate dto = new SmsTemplate();
     BeanUtils.copyProperties(vo, dto);
@@ -189,13 +189,13 @@ public class SmsSendController {
 
 
   @PostMapping("/template/update/state")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_sms_template')")
   public R templateUpdateState(@RequestBody TemplateStateUpdateDTO dto) {
     return smsService.updateTempState(dto) ? R.ok() : R.fail();
   }
 
   @PostMapping("/check")
-  @PreAuthorize("@pms.hasPermission('')")
+  @PreAuthorize("@pms.hasPermission('admin@platform@notice_parameter,admin@common@upms_sys_env')")
   public R check() {
     try {
       URL url = new URL(ParamConstant.getUrlSmsServer());

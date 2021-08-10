@@ -4,6 +4,7 @@ import com.wafersystems.notice.entity.AlertConf;
 import com.wafersystems.notice.service.IAlertConfService;
 import com.wafersystems.virsical.common.core.util.R;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,11 +25,13 @@ public class AlertConfController {
   private final IAlertConfService alertConfService;
 
   @GetMapping("/list")
+  @PreAuthorize("@pms.hasPermission('admin@common@alert_setting,admin@platform@notice_parameter')")
   public R add() {
     return R.ok(alertConfService.getConf());
   }
 
   @PostMapping("/update")
+  @PreAuthorize("@pms.hasPermission('admin@common@alert_setting,admin@platform@notice_parameter')")
   public R update(@RequestBody List<AlertConf> list) {
     alertConfService.updateConf(list);
     return R.ok();

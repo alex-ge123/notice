@@ -12,6 +12,7 @@ import com.wafersystems.notice.service.IAlertRecordService;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
 import com.wafersystems.virsical.common.core.util.R;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class AlertRecordController {
   private final IAlertRecordService alertRecordService;
 
   @PostMapping("/read")
+  @PreAuthorize("@pms.hasPermission('')")
   public R add(@RequestBody List<Integer> readList) {
     final AlertRecord alertRecord = new AlertRecord();
     alertRecord.setStatus(AlertConstants.ALERT_RECORD_STATUS_READ);
@@ -53,6 +55,7 @@ public class AlertRecordController {
    * @return page
    */
   @GetMapping("/page")
+  @PreAuthorize("@pms.hasPermission('admin@platform@upms_sys_alert')")
   public R<IPage<AlertRecord>> page(Page page, AlertRecord alertRecord) {
     alertRecord.setTenantId(TenantContextHolder.getTenantId());
     final QueryWrapper<AlertRecord> query = Wrappers.query(alertRecord);
@@ -68,6 +71,7 @@ public class AlertRecordController {
    * @return page
    */
   @GetMapping("/current/page")
+  @PreAuthorize("@pms.hasPermission('')")
   public R<IPage<AlertRecord>> currentPage(Page page, AlertRecord alertRecord) {
     final QueryWrapper<AlertRecord> query = getQuery(alertRecord);
     query.ne("delivery_status", AlertConstants.ALERT_RECORD_DELIVERY_STATUS_ERROR);
@@ -82,6 +86,7 @@ public class AlertRecordController {
    * @return page
    */
   @GetMapping("/current/unread/page")
+  @PreAuthorize("@pms.hasPermission('')")
   public R<List<AlertRecord>> currentUnread(Page page, AlertRecord alertRecord) {
     alertRecord.setStatus(AlertConstants.ALERT_RECORD_STATUS_UNREAD);
     final QueryWrapper<AlertRecord> query = getQuery(alertRecord);
