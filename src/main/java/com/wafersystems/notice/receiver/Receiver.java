@@ -8,7 +8,7 @@ import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.IAlertConfService;
 import com.wafersystems.notice.service.MailService;
-import com.wafersystems.notice.util.SmsUtil;
+import com.wafersystems.notice.util.SmsHttpUtil;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
@@ -49,7 +49,7 @@ public class Receiver {
   private ApplicationContext resource;
 
   @Autowired
-  private SmsUtil smsUtil;
+  private SmsHttpUtil smsHttpUtil;
 
   @Autowired
   private StringEncryptor stringEncryptor;
@@ -149,12 +149,12 @@ public class Receiver {
         log.debug("监听到短信消息，msgId:{}", messageDTO.getMsgId());
         if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
           SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
-          smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
+          smsHttpUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(), smsDTO.getParamList(),
             smsDTO.getDomain(), smsDTO.getSmsSign());
         } else if (MsgTypeEnum.BATCH.name().equals(messageDTO.getMsgType())) {
           final List<SmsDTO> dtoList = JSON.parseArray(messageDTO.getData().toString(), SmsDTO.class);
           dtoList.forEach(smsDTO ->
-            smsUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(),
+            smsHttpUtil.batchSendSms(smsDTO.getTemplateId(), smsDTO.getPhoneList(),
               smsDTO.getParamList(), smsDTO.getDomain(), smsDTO.getSmsSign())
           );
         } else {
