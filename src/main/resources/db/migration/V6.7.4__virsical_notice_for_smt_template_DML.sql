@@ -91,3 +91,16 @@ INSERT INTO sms_template(id,name,content,description,category) VALUES(2020061808
 INSERT INTO sms_template(id,name,content,description,category) VALUES(20200618083,'威发系统','Maintenance Reminder: The meeting room {1} is available now. Please pay attention to your meeting {2} on {3}','','');
 INSERT INTO sms_template(id,name,content,description,category) VALUES(20200618084,'威发系统','Maintenance Reminder: The meeting room of {1} is out of service. You can change the meeting {2} on {3} about {4} to meeting room {5}','','');
 INSERT INTO sms_template(id,name,content,description,category) VALUES(2020061903,'威发系统','Meeting Reminder: New seating arrangement received.  Meeting time: {1}，Location：{2}，Subject：{3}. Please click on {4} to check seating details.','','');
+
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20210919001,'威发系统','会议提醒：会议已开始，目前无人签到。会议时间：{1}，会议地点：{2}，会议主题：{3}。','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20210919003,'威发系统','Meeting Reminder: The meeting has begun and no sign-in is present.  Meeting time: {1}，Location：{2}，Subject：{3}.','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20200919005,'威发系统','會議提醒：會議已開始，目前無人簽到。會議時間：{1}，會議地點：{2}，會議主題：{3}。','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20210619011,'威发系统','会议提醒：会议已开始10分钟，目前无人签到，会议即将取消。会议时间：{1}，会议地点：{2}，会议主题：{3}。','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20210619013,'威发系统','Meeting Reminder: The meeting has been started for 10 minutes, no one has signed in, the meeting will be cancelled.  Meeting time: {1}，Location：{2}，Subject：{3}.','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20210619015,'威发系统','會議提醒：會議已開始10分鐘，目前無人簽到，會議即將取消。會議時間：{1}，會議地點：{2}，會議主題：{3}。','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(2021061921,'威发系统','会议提醒：会议已开始，目前您未签到。会议时间：{1}，会议地点：{2}，会议主题：{3}。','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(2021061923,'威发系统','Meeting Reminder: The meeting has started and you have not signed in at present. Meeting time: {1}，Location：{2}，Subject：{3}.','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(2021061925,'威发系统','會議提醒：會議已開始，目前您未簽到。會議時間：{1}，會議地點：{2}，會議主題：{3}。','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20210619031,'威发系统','会议提醒：会议已开始15分钟，无人签到，会议被取消。会议时间：{1}，会议地点：{2}，会议主题：{3}。','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20210619033,'威发系统','Meeting Reminder: Meeting reminder: The meeting was cancelled due to no sign-in after 15 minutes . Meeting time: {1}，Location：{2}，Subject：{3}. ','','');
+INSERT INTO sms_template(id,name,content,description,category) VALUES(20210619035,'威发系统','會議提醒：會議已開始5分鐘，無人簽到，會議被取消。會議時間：{1}，會議地點：{2}，會議主題：{3}。','','');
