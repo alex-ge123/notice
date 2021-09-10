@@ -1,5 +1,3 @@
-USE virsical_notice;
-
 DELETE FROM `mail_template` WHERE `category` = 'cloud' AND NAME LIKE 'cloudSubscribeSuccessEmail%' ;
 
 INSERT INTO `mail_template` (`name`, `content`, `description`, `category`, `modtime`, `createtime`, `state`) VALUES

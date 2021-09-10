@@ -1,4 +1,3 @@
-USE `virsical_notice`;
 
 -- ----------------------------
 -- Table structure for ntc_parameter
