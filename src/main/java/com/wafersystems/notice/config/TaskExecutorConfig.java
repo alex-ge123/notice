@@ -1,10 +1,12 @@
 package com.wafersystems.notice.config;
 
+import com.alibaba.ttl.threadpool.TtlExecutors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
 
 /**
  * 异步任务线程池配置
@@ -36,7 +38,7 @@ public class TaskExecutorConfig {
   private static final int KEEP_ALIVE = 300;
 
   @Bean
-  public TaskExecutor taskExecutor() {
+  public Executor taskExecutor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setCorePoolSize(CORE_POOL_SIZE);
     executor.setMaxPoolSize(MAX_POOL_SIZE);
@@ -44,6 +46,6 @@ public class TaskExecutorConfig {
     executor.setKeepAliveSeconds(KEEP_ALIVE);
     executor.setThreadNamePrefix("taskExecutor-");
     executor.initialize();
-    return executor;
+    return TtlExecutors.getTtlExecutor(executor);
   }
 }
