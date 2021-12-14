@@ -5,7 +5,7 @@
 
   <groupId>com.wafersystems</groupId>
   <artifactId>virsical-notice</artifactId>
-  <version>6.12.100</version>
+  <version>7.1.100</version>
   <packaging>jar</packaging>
 
   <name>notice</name>
@@ -21,7 +21,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <virsical-common-security.version>6.12.103</virsical-common-security.version>
+    <virsical-common-security.version>7.1.103</virsical-common-security.version>
     <xmlFileName>testng.xml</xmlFileName>
     <sonar.exclusions>
       src/main/java/com/wafersystems/notice/config/**,
