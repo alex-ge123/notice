@@ -53,6 +53,14 @@ public class MailServerConf {
   private String from;
 
   /**
+   * 加密方式
+   * 0： 不加密
+   * 1： ssl
+   * 2:  tls
+   */
+  private Integer encryMode;
+
+  /**
    * 邮件配置额外参数
    */
   private Map<String, Object> props;

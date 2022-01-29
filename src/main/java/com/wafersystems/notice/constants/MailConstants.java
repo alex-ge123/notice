@@ -22,6 +22,7 @@ public class MailConstants {
   public static final String MAIL_USERNAME = "MAIL_USERNAME";
   public static final String MAIL_PORT = "MAIL_PORT";
   public static final String MAIL_PROPS = "MAIL_PROPS";
+  public static final String MAIL_ENCRYMODE = "MAIL_ENCRYMODE";
 
   /**
    * microsoft相关配置

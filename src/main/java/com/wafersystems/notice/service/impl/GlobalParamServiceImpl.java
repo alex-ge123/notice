@@ -134,7 +134,7 @@ public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcP
     List<NtcParameter> list = this.list(query);
     Map<String, String> map = new HashMap<>(30);
     // 清空系统全局参数缓存
-    Optional.ofNullable(list).orElse(Arrays.asList()).forEach(globalParameter -> {
+    Optional.ofNullable(list).orElse(Collections.emptyList()).forEach(globalParameter -> {
       if (StrUtil.isBlank(globalParameter.getParamValue())) {
         log.info("Param [" + globalParameter.getParamKey() + "] is null, ignore!");
       } else {
@@ -197,6 +197,9 @@ public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcP
       ParamConstant.setSmsRepeatCount(StrUtil.isNotBlank(
         map.get("SMS_REPEAT_COUNT")) ? Integer.parseInt(map.get("SMS_REPEAT_COUNT")) : 0);
       ParamConstant.setDefaultMailUsername(map.get("DEFAULT_MAIL_USERNAME"));
+      // 邮件传输加密方式
+      ParamConstant.setDefaultMailEncryMode(StrUtil.isNotBlank(
+        map.get("DEFAULT_MAIL_ENCRYMODEN")) ? Integer.parseInt(map.get("DEFAULT_MAIL_ENCRYMODEN")) : 0);
     }
   }
 
@@ -250,6 +253,7 @@ public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcP
     conf.setPassword(ParamConstant.getDefaultMailPassword());
     conf.setAuth(ParamConstant.getDefaultMailAuth());
     conf.setName(ParamConstant.getDefaultMailMailName());
+    conf.setEncryMode(ParamConstant.getDefaultMailEncryModen());
     conf.setProps(props);
     return conf;
   }
@@ -285,6 +289,8 @@ public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcP
           conf.setPort(0);
           break;
         }
+      } else if (MailConstants.MAIL_ENCRYMODE.equals(p.getParamKey())) {
+        conf.setEncryMode(Integer.parseInt(value));
       } else {
         props.put(p.getParamKey(), value);
       }

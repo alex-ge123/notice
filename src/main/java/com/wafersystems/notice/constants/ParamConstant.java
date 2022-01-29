@@ -110,13 +110,16 @@ public class ParamConstant {
   /**
    * 默认重发次数.
    */
-
   private static Integer defaultRepeatCount;
+
+  /**
+   * 默认邮件传输加密方式
+   */
+  private static Integer defaultMailEncryMode;
 
   /**
    * 邮件服务是否开启(服务必须参数是否配置).
    */
-
   private static boolean emailSwitch;
 
 
@@ -420,4 +423,16 @@ public class ParamConstant {
     ParamConstant.defaultDomain = defaultDomain;
   }
 
+  public static Integer getDefaultMailEncryModen() {
+    final String value = getCommonCacheByKey(CommonParamConstants.DEFAULT_MAIL_ENCRYMODEN);
+    if (StrUtil.isBlank(value)) {
+      log.debug("redis缓存查询{}为空，取本地缓存值：{}", CommonParamConstants.DEFAULT_MAIL_ENCRYMODEN, defaultMailEncryMode);
+      return defaultMailEncryMode;
+    }
+    return Integer.valueOf(value);
+  }
+
+  public static void setDefaultMailEncryMode(Integer defaultMailEncryMode) {
+    ParamConstant.defaultMailEncryMode = defaultMailEncryMode;
+  }
 }

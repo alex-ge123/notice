@@ -21,6 +21,7 @@ public class CommonParamConstants {
   public static final String DEFAULT_REPEAT_COUNT = "DEFAULT_REPEAT_COUNT";
   public static final String DEFAULT_DOMAIN = "DEFAULT_DOMAIN";
   public static final String DEFAULT_MAIL_PORT = "DEFAULT_MAIL_PORT";
+  public static final String DEFAULT_MAIL_ENCRYMODEN= "DEFAULT_MAIL_ENCRYMODEN";
   public static final String SYSTEM_NAME = "SYSTEM_NAME";
   public static final String PHONE = "PHONE";
   public static final String SMS_REPEAT_COUNT = "SMS_REPEAT_COUNT";
