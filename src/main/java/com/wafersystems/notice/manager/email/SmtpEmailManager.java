@@ -138,12 +138,10 @@ public class SmtpEmailManager extends AbstractEmailManager {
 
   private Session getSession(MailServerConf mailServerConf) {
     final Properties sysProps = System.getProperties();
-    Properties props = new Properties();
-    BeanUtils.copyProperties(sysProps, props);
+    Properties props = (Properties) sysProps.clone();
     if (1 == mailServerConf.getEncryMode()) {
       // 发送SSL加密邮件
       Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-      Security.removeProvider(new com.sun.net.ssl.internal.ssl.Provider().getName());
       props.put("mail.smtp.socketFactory.port", mailServerConf.getPort());
       props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
       props.put("mail.smtp.socketFactory.fallback", "false");
