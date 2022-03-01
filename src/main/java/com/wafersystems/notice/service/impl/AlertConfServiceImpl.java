@@ -45,9 +45,9 @@ public class AlertConfServiceImpl extends ServiceImpl<AlertConfMapper, AlertConf
   @Override
   @EventListener({WebServerInitializedEvent.class})
   public void initTenantConf() {
-    final Set<Object> tenantIds = redisTemplate.opsForHash().keys(CommonConstants.TENANT_ID_DOMAIN_KEY);
-    Optional.ofNullable(tenantIds).orElse(Collections.emptySet())
-      .forEach(id -> initTenantConf(Integer.valueOf(String.valueOf(id))));
+    final Map<Object, Object> map = redisTemplate.opsForHash().entries(CommonConstants.TENANT_ID_DOMAIN_KEY);
+    Optional.of(map).orElse(Collections.emptyMap())
+      .forEach((key, value) -> initTenantConf(Integer.valueOf(String.valueOf(key))));
   }
 
   /**
