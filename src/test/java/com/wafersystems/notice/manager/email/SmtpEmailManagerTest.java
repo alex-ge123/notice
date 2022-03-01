@@ -29,13 +29,14 @@ public class SmtpEmailManagerTest extends BaseTest {
   static {
     mailServerConf = new MailServerConf();
     mailServerConf.setServerType("smtp");
-    mailServerConf.setHost("smtp.exmail.qq.com");
-    mailServerConf.setPort(465);
-    mailServerConf.setUsername("dev@virsical.com");
-    mailServerConf.setPassword("Wafer@c0m!2021");
+    mailServerConf.setHost("smtp.qiye.aliyun.com");
+    mailServerConf.setPort(25);
+    mailServerConf.setUsername("dev@virsical.net");
+    mailServerConf.setPassword("AyBuxa#2033");
     mailServerConf.setAuth("true");
     mailServerConf.setName("单元测试");
-    mailServerConf.setFrom("dev@virsical.com");
+    mailServerConf.setFrom("dev@virsical.net");
+    mailServerConf.setEncryMode(0);
   }
 
 

@@ -82,7 +82,7 @@ public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcP
    */
   @Override
   public void del(Integer id) {
-    this.del(id);
+    baseMapper.deleteById(id);
   }
 
   /**

@@ -61,7 +61,7 @@ public class SmsSendControllerTest extends BaseTest {
     SmsDTO smsDTO = new SmsDTO();
     smsDTO.setTemplateId("105856");
     smsDTO.setSmsSign("威发系统");
-    smsDTO.setPhoneList(Lists.newArrayList("15529360323"));
+    smsDTO.setPhoneList(Lists.newArrayList("15529363333"));
     smsDTO.setParamList(Lists.newArrayList("11", "2019-12-26 10:35", "访客", "", "", ""));
     String content = JSON.toJSONString(smsDTO);
     JSONObject jsonObject = doPost(url, content, null, true, false);

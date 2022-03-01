@@ -53,7 +53,7 @@ public class SmsServiceImpl extends ServiceImpl<SmsTemplateMapper, SmsTemplate> 
 
   @Override
   public void delTemp(String id) {
-    this.delTemp(id);
+    baseMapper.deleteById(id);
     sendLog(id, "模板:[" + id + "]删除。");
   }
 
