@@ -72,7 +72,7 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
   /**
    * 产品标识本地缓存 一小时
    */
-  private static TimedCache<String, String> productLocalCache = new TimedCache<>(1000 * 60 * 60);
+  private static TimedCache<String, String> productLocalCache = new TimedCache<>((long)1000 * 60 * 60);
 
   @Override
   public IPage<AlertRecord> alertPage(Page<AlertRecord> page, QueryWrapper<AlertRecord> query) {

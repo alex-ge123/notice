@@ -169,7 +169,7 @@ public class Receiver {
           log.warn("消息类型未识别，无法发送短信");
         }
         log.debug("短信消息处理完成，msgId:{}", messageDTO.getMsgId());
-      } catch (Exception e) {
+      } catch (InterruptedException e) {
         log.error("消息监听处理异常", e);
       } finally {
         TenantContextHolder.clearTenantId();

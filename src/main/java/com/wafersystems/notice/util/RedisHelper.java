@@ -113,23 +113,6 @@ public class RedisHelper {
   }
 
   /**
-   * 批量获取值
-   *
-   * @param redis
-   * @param keys
-   * @param clazz
-   * @param <T>
-   * @return
-   */
-  public static <T> List<T> multiGet(RedisTemplate<String, String> redis, final Collection keys, final Class<T> clazz) {
-    List<String> list = redis.opsForValue().multiGet(keys);
-    if (CollUtil.isNotEmpty(list)) {
-      return list.stream().map(ss -> JSON.parseObject(ss, clazz)).collect(Collectors.toList());
-    }
-    return Collections.emptyList();
-  }
-
-  /**
    * hash设置值
    *
    * @param redis
@@ -328,30 +311,6 @@ public class RedisHelper {
     return redis.hasKey(key) && redis.getExpire(key) > 0;
   }
 
-  /**
-   * 获取唯一Id
-   *
-   * @param key
-   * @param delta 增加量（不传采用1）
-   * @return
-   * @throws Exception
-   */
-  public static String incrementString(RedisTemplate<String, String> redis, String key, Long delta) {
-    try {
-      if (null == delta) {
-        delta = 1L;
-      }
-      return redis.opsForValue().increment(key, delta).toString();
-    } catch (Exception e) {
-      //redis宕机时采用uuid的方式生成唯一id
-      int first = new Random(10).nextInt(8) + 1;
-      int randNo = UUID.randomUUID().hashCode();
-      if (randNo < 0) {
-        randNo = -randNo;
-      }
-      return first + String.format("%16d", randNo);
-    }
-  }
 
   /**
    * 自增值

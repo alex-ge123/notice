@@ -227,10 +227,10 @@ public class MailServiceImpl extends ServiceImpl<MailTemplateMapper, MailTemplat
     final Page<MailTemplate> result = this.page(page, query);
     final PaginationDTO<MailTemplate> resultDto = new PaginationDTO<>();
     resultDto.setRows(result.getRecords());
-    resultDto.setLimit(Long.valueOf(result.getSize()).intValue());
-    resultDto.setPage(Long.valueOf(result.getCurrent()).intValue());
-    resultDto.setRecords(Long.valueOf(result.getTotal()).intValue());
-    resultDto.setTotal(Long.valueOf(result.getPages()).intValue());
+    resultDto.setLimit((int)result.getSize());
+    resultDto.setPage((int)result.getCurrent());
+    resultDto.setRecords((int)result.getTotal());
+    resultDto.setTotal((int)result.getPages());
     return resultDto;
   }
 
