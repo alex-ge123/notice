@@ -8,7 +8,7 @@ import com.wafersystems.notice.model.MailBean;
 import com.wafersystems.notice.service.GlobalParamService;
 import com.wafersystems.notice.service.IAlertConfService;
 import com.wafersystems.notice.service.MailService;
-import com.wafersystems.notice.util.SmsUtil;
+import com.wafersystems.notice.service.impl.smssend.SmsSendCommonAbstract;
 import com.wafersystems.notice.util.StrUtil;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.UpmsMqConstants;
@@ -50,9 +50,6 @@ public class Receiver {
   private ApplicationContext resource;
 
   @Autowired
-  private SmsUtil smsUtil;
-
-  @Autowired
   private StringEncryptor stringEncryptor;
 
   @Autowired
@@ -63,6 +60,9 @@ public class Receiver {
 
   @Autowired
   private IAlertConfService alertConfService;
+
+  @Autowired
+  private SmsSendCommonAbstract smsSendCommonAbstract;
 
   /**
    * 监听邮件消息队列
@@ -159,11 +159,11 @@ public class Receiver {
         }
         if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
           SmsDTO smsDTO = JSON.parseObject(messageDTO.getData().toString(), SmsDTO.class);
-          smsUtil.batchSendSms(smsDTO);
+          smsSendCommonAbstract.batchSendSmsSelector().smsSendService(smsDTO);
         } else if (MsgTypeEnum.BATCH.name().equals(messageDTO.getMsgType())) {
           final List<SmsDTO> dtoList = JSON.parseArray(messageDTO.getData().toString(), SmsDTO.class);
           dtoList.forEach(smsDTO ->
-            smsUtil.batchSendSms(smsDTO)
+            smsSendCommonAbstract.batchSendSmsSelector().smsSendService(smsDTO)
           );
         } else {
           log.warn("消息类型未识别，无法发送短信");

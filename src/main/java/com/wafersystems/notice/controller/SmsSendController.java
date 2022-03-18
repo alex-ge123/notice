@@ -10,7 +10,7 @@ import com.wafersystems.notice.entity.SmsTemplate;
 import com.wafersystems.notice.model.SmsTemplateVO;
 import com.wafersystems.notice.model.TemplateStateUpdateDTO;
 import com.wafersystems.notice.service.SmsService;
-import com.wafersystems.notice.util.SmsUtil;
+import com.wafersystems.notice.service.impl.smssend.SmsSendCommonAbstract;
 import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.dto.LogDTO;
 import com.wafersystems.virsical.common.core.dto.SmsDTO;
@@ -46,9 +46,6 @@ public class SmsSendController {
   private ApplicationContext resource;
 
   @Autowired
-  private SmsUtil smsUtil;
-
-  @Autowired
   private SmsService smsService;
   /**
    * 短信验证码缓存key
@@ -60,6 +57,9 @@ public class SmsSendController {
 
   @Autowired
   private AsyncTaskManager asyncTaskManager;
+
+  @Autowired
+  private SmsSendCommonAbstract smsSendCommonAbstract;
 
   @Value("${sms.captcha.length}")
   private int length;
@@ -86,7 +86,7 @@ public class SmsSendController {
       return R.fail(resource.getMessage("msg.msg.recipientIdNull", null,
         ParamConstant.getLocaleByStr(lang)));
     }
-    smsUtil.batchSendSms(smsDTO);
+    smsSendCommonAbstract.batchSendSmsSelector().smsSendService(smsDTO);
     return R.ok();
   }
 

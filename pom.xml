@@ -36,6 +36,12 @@
     </sonar.exclusions>
   </properties>
   <dependencies>
+    <!-- 亚马逊aws -->
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk</artifactId>
+      <version>1.12.162</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
