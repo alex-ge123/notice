@@ -42,5 +42,10 @@ public class MailConstants {
   public static final String MAIL_EWS_URL = "MAIL_EWS_URL";
   public static final String MAIL_EWS_ACCOUNT = "MAIL_EWS_ACCOUNT";
   public static final String MAIL_EWS_PASSWORD = "MAIL_EWS_PASSWORD";
+
+  /**
+   * aws亚马逊邮件相关配置
+   */
+  public static final String MAIL_SERVER_TYPE_AMAZON = "amazon";
 }
 

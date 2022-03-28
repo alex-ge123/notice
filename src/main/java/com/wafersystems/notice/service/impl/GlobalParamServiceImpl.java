@@ -211,6 +211,10 @@ public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcP
    */
   @Override
   public MailServerConf getMailServerConf(Integer tenantId) {
+    if (mailProperties.isAmazonType()) {
+      // 亚马逊邮件
+      return getAmazonConf();
+    }
     // 查询租户邮件配置
     List<NtcParameter> systemParamList = getSystemParamList(tenantId, MailConstants.TYPE);
 
@@ -255,6 +259,19 @@ public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcP
     conf.setName(ParamConstant.getDefaultMailMailName());
     conf.setEncryMode(ParamConstant.getDefaultMailEncryModen());
     conf.setProps(props);
+    return conf;
+  }
+
+  /**
+   * 获取amazon配置
+   *
+   * @return MailServerConf
+   */
+  private MailServerConf getAmazonConf() {
+    MailServerConf conf = new MailServerConf();
+    conf.setServerType(MailConstants.MAIL_SERVER_TYPE_AMAZON);
+    conf.setFrom(ParamConstant.getDefaultMailFrom());
+    conf.setName(ParamConstant.getDefaultMailMailName());
     return conf;
   }
 
