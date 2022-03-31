@@ -296,7 +296,10 @@ public class GlobalParamServiceImpl extends ServiceImpl<NtcParameterMapper, NtcP
       }
     }
     conf.setProps(props);
-
+    // 兼容之间版本，不存在时默认给 0 - 不加密
+    if (conf.getEncryMode() == null) {
+      conf.setEncryMode(0);
+    }
     if (conf.getPort() == 0) {
       return smtpDefaultConf();
     } else {
