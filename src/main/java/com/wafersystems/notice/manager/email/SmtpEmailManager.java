@@ -159,6 +159,8 @@ public class SmtpEmailManager extends AbstractEmailManager {
     props.put("mail.mime.charset", ParamConstant.getDefaultMailCharset());
     // 设置认证模式
     props.put("mail.smtp.auth", mailServerConf.getAuth());
+    // 设置超时时间
+    props.put("mail.smtp.timeout", "25000");
     // 设置配置参数
     if (CollUtil.isNotEmpty(mailServerConf.getProps())) {
       props.putAll(mailServerConf.getProps());
