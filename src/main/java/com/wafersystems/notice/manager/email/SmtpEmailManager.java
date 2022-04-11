@@ -161,6 +161,7 @@ public class SmtpEmailManager extends AbstractEmailManager {
     props.put("mail.smtp.auth", mailServerConf.getAuth());
     // 设置超时时间
     props.put("mail.smtp.timeout", "25000");
+    props.setProperty("mail.smtp.timeout", "30000");
     // 设置配置参数
     if (CollUtil.isNotEmpty(mailServerConf.getProps())) {
       props.putAll(mailServerConf.getProps());
