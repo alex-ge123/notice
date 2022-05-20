@@ -54,6 +54,11 @@ public class RabbitMqConfig {
   public static final String QUEUE_NOTICE_ALERT = "queue.notice.alert";
 
   /**
+   * 站内信消息队列
+   */
+  public static final String QUEUE_NOTICE_INMAIL = "queue.notice.inmail";
+
+  /**
    * DirectExchange
    *
    * @return DirectExchange

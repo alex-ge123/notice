@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wafersystems.notice.entity.AlertRecord;
 import com.wafersystems.virsical.common.core.dto.AlertDTO;
+import com.wafersystems.virsical.common.core.dto.InMailDTO;
 
 /**
  * <p>
@@ -32,4 +33,11 @@ public interface IAlertRecordService extends IService<AlertRecord> {
    * @param alertDTO dto
    */
   void processAlertMessage(AlertDTO alertDTO);
+
+  /**
+   * 处理站内信消息
+   *
+   * @param inMailDTO dto
+   */
+  void processInMailMessage(InMailDTO inMailDTO);
 }

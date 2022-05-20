@@ -6,6 +6,7 @@ import com.wafersystems.virsical.common.core.constant.CommonConstants;
 import com.wafersystems.virsical.common.core.constant.NoticeMqConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.dto.AlertDTO;
+import com.wafersystems.virsical.common.core.dto.InMailDTO;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -17,6 +18,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 提醒通知消费者
@@ -52,7 +55,40 @@ public class AlertReceiver {
         log.info("消息类型未识别，无法处理告警通知消息");
       }
     } catch (Exception e) {
-      log.info("消息监听处理异常", e);
+      log.info("告警通知消息监听处理异常", e);
+    } finally {
+      MDC.clear();
+    }
+  }
+
+  /**
+   * 监听站内信消息队列
+   *
+   * @param message 消息
+   */
+  @RabbitListener(bindings = @QueueBinding(
+    value = @Queue(value = RabbitMqConfig.QUEUE_NOTICE_INMAIL, durable = "true"),
+    exchange = @Exchange(value = NoticeMqConstants.EXCHANGE_FANOUT_INMAIL, type = ExchangeTypes.FANOUT)
+  ))
+  public void inMail(@Payload String message) {
+    try {
+      log.info("【{}监听到站内信消息】{}", RabbitMqConfig.QUEUE_NOTICE_INMAIL, message);
+      MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
+      // 业务追踪id
+      MDC.put(CommonConstants.LOG_BIZ_ID, messageDTO.getBizId());
+      if (MsgTypeEnum.ONE.name().equals(messageDTO.getMsgType())) {
+        InMailDTO inMailDTO = JSON.parseObject(messageDTO.getData().toString(), InMailDTO.class);
+        recordService.processInMailMessage(inMailDTO);
+      } else if (MsgTypeEnum.BATCH.name().equals(messageDTO.getMsgType())) {
+        final List<InMailDTO> dtoList = JSON.parseArray(messageDTO.getData().toString(), InMailDTO.class);
+        dtoList.forEach(inMailDTO ->
+          recordService.processInMailMessage(inMailDTO)
+        );
+      } else {
+        log.warn("消息类型未识别，无法发送短信");
+      }
+    } catch (Exception e) {
+      log.info("站内信消息监听处理异常", e);
     } finally {
       MDC.clear();
     }

@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -102,5 +104,16 @@ public class AlertRecord extends Model<AlertRecord> {
    */
   private LocalDateTime updateTime;
 
+  /**
+   * 参数集合
+   */
+  @JsonIgnore
+  private String param;
+
+  /**
+   * 参数集合
+   */
+  @TableField(exist = false)
+  private List<String> paramList;
 
 }

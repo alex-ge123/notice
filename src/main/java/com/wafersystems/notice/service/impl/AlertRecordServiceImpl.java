@@ -2,6 +2,7 @@ package com.wafersystems.notice.service.impl;
 
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -27,6 +28,7 @@ import com.wafersystems.virsical.common.core.constant.SysDictConstants;
 import com.wafersystems.virsical.common.core.constant.enums.MsgActionEnum;
 import com.wafersystems.virsical.common.core.constant.enums.MsgTypeEnum;
 import com.wafersystems.virsical.common.core.dto.AlertDTO;
+import com.wafersystems.virsical.common.core.dto.InMailDTO;
 import com.wafersystems.virsical.common.core.dto.MailDTO;
 import com.wafersystems.virsical.common.core.dto.MessageDTO;
 import com.wafersystems.virsical.common.core.tenant.TenantContextHolder;
@@ -85,7 +87,7 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
   }
 
   /**
-   * 填充产品标识及用户名
+   * 填充产品标识及用户名，参数集合
    *
    * @param alertRecord record
    */
@@ -100,6 +102,10 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
       if (ObjectUtil.isNotNull(user)) {
         alertRecord.setUserName(user.getRealName());
       }
+    }
+    // 填充参数集合
+    if (StrUtil.isNotEmpty(alertRecord.getParam())){
+      alertRecord.setParamList(JSON.parseArray(alertRecord.getParam(), String.class));
     }
   }
 
@@ -258,6 +264,54 @@ public class AlertRecordServiceImpl extends ServiceImpl<AlertRecordMapper, Alert
     record.setTenantId(alertDTO.getTenantId());
     record.setStatus(AlertConstants.ALERT_RECORD_STATUS_UNREAD);
     record.setDeliveryStatus(AlertConstants.ALERT_RECORD_DELIVERY_STATUS_UNSEND);
+    return record;
+  }
+
+  @Override
+  public void processInMailMessage(InMailDTO inMailDTO) {
+    if (CollectionUtil.isEmpty(inMailDTO.getRecipients())) {
+      log.error("站内信接收人为空");
+      return;
+    }
+    final ArrayList<AlertRecord> alertRecords = transformInMailToRecords(inMailDTO);
+    alertRecords.forEach(alertRecord -> {
+      try {
+        // 站内消息
+        sendMqtt(null, alertRecord);
+        // 发送成功，修改投递状态
+        alertRecord.setDeliveryStatus(AlertConstants.ALERT_RECORD_DELIVERY_STATUS_SEND);
+      } catch (Exception e) {
+        log.error("告警消息{}发送失败", alertRecord.getId().toString(), e);
+        // 发送失败，修改投递状态，记录失败原因
+        alertRecord.setDeliveryStatus(AlertConstants.ALERT_RECORD_DELIVERY_STATUS_ERROR);
+        alertRecord.setFailedInfo(StrUtil.subPre(e.getMessage(), 255));
+      }
+    });
+    this.saveBatch(alertRecords);
+  }
+
+  private ArrayList<AlertRecord> transformInMailToRecords(InMailDTO inMailDTO) {
+    final ArrayList<AlertRecord> alertRecords = new ArrayList<>();
+    // 取传递的接收人
+    inMailDTO.getRecipients().forEach(recipient -> {
+      AlertRecord record = createRecords(inMailDTO);
+      record.setRecipient(String.valueOf(recipient));
+      alertRecords.add(record);
+    });
+    return alertRecords;
+  }
+
+  private AlertRecord createRecords(InMailDTO inMailDTO) {
+    AlertRecord record = new AlertRecord();
+    record.setAlertId(inMailDTO.getAlertId());
+    record.setProduct(inMailDTO.getProduct().getCode());
+    record.setTitle(inMailDTO.getTemplate().getTitle());
+    record.setContent(inMailDTO.getTemplate().getContent());
+    record.setParam(JSON.toJSONString(inMailDTO.getParamList()));
+    record.setAlertType(AlertConstants.LOCAL.getType());
+    record.setTenantId(inMailDTO.getTenantId());
+    record.setStatus(AlertConstants.ALERT_RECORD_STATUS_UNREAD);
+    record.setDeliveryStatus(AlertConstants.ALERT_RECORD_DELIVERY_STATUS_SEND);
     return record;
   }
 }
