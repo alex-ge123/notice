@@ -101,7 +101,7 @@
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
-      <version>1.2.70</version>
+      <version>1.2.83</version>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -149,6 +149,12 @@
       <groupId>com.wafersystems</groupId>
       <artifactId>virsical-common-security</artifactId>
       <version>${virsical-common-security.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>fastjson</artifactId>
+          <groupId>com.alibaba</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!--缓存依赖-->
     <dependency>
